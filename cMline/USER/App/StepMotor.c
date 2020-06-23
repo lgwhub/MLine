@@ -48,6 +48,8 @@ void SwitchBitCLK( unsigned char chs , unsigned char level )
 			
 		}
 	else{
+		   switch(	chs )
+		      {
 		      case 0:
 		    	   SetBitCLK1;
 		    	break;
@@ -71,6 +73,7 @@ void SwitchBitCLK( unsigned char chs , unsigned char level )
 		    	case 5:
 		    	   SetBitCLK6;
 		    	break;
+		    }
 		    		
 	    }
 	
@@ -110,6 +113,8 @@ void SwitchBitCW( unsigned char chs , unsigned char level )
 			
 		}
 	else{
+		   switch(	chs )
+		      {
 		      case 0:
 		    	   SetBitCW1;
 		    	break;
@@ -133,6 +138,7 @@ void SwitchBitCW( unsigned char chs , unsigned char level )
 		    	case 5:
 		    	   SetBitCW6;
 		    	break;
+		     }
 	    }
 	
 }
@@ -172,6 +178,8 @@ void SwitchBitEN( unsigned char chs , unsigned char level )
 			
 		}
 	else{
+		   switch(	chs )
+		    {
 		      case 0:
 		    	   SetBitEN1;
 		    	break;
@@ -195,6 +203,7 @@ void SwitchBitEN( unsigned char chs , unsigned char level )
 		    	case 5:
 		    	   SetBitEN6;
 		    	break;
+		    }
 		    		
 	    }
 }

@@ -4,12 +4,24 @@
 	#include "includes.h"
 //#define SPIBufferSize4 4
 //
-//
-//extern uint8_t SPInny_Buffer_Tx[SPIBufferSize4];
-//extern uint8_t SPInnz_Buffer_Tx[SPIBufferSize4];
 
-//uint8_t SPInny_Buffer_Tx[SPIBufferSize4] = {0x01, 0x02, 0x03, 0x04};
 
+
+
+
+unsigned char DispBufnny[24];
+
+
+unsigned char DispBufnnz[24];
+
+unsigned char   Alm_Flag1;    //报警指示灯
+unsigned char   Alm_Flag2;    //报警指示灯
+unsigned char   SngnalLed[4];      //单独指示灯
+
+unsigned char Process_One_Numb1(void);
+unsigned char Process_One_Numbnnz(void);
+unsigned long  Process_N_NUMBnny(void);
+unsigned long  Process_N_NUMBnnz(void);
 
 
 //前三字节是位码，后一字节是段码
@@ -66,53 +78,6 @@ unsigned char LedSegTab[]=
 }    ; 
 
 
-unsigned char DispBufnny[24]=
-{
-//	0x0f,	0x0f,	0x0f,	0x0f,
-//	0x0f,	0x0f,	0x0f,	0x0f,	
-//	0x0f,	0x0f,	0x0f,	0x0f,	
-//	0x0f,	0x0f,	0x0f,	0x0f,	
-//	0x0f,	0x0f,	0x0f,	0x0f,
-//	0x0f,	0x0f,	0x0f,	0x0f	
-	0x00,	0x01,	0x02,	0x03,
-	0x04,	0x05,	0x06,	0x07,	
-	0x08,	0x09,	0x0A,	0x0B,	
-	0x0C,	0x0D,	0x0E,	0x0f,	
-	0x0Ff,	0x0Ff,	0x0Ff,	0x0Ff,
-	0x0f,	0x0f,	0x0f,	0x0f
-	
-};
-
-
-unsigned char DispBufnnz[24]=
-{
-//	0x05,	0x05,	0x05,	0x05,
-//	0x05,	0x05,	0x05,	0x05,	
-//	0x05,	0x05,	0x05,	0x05,	
-//	0x05,	0x05,	0x05,	0x05,	
-//	0x05,	0x05,	0x05,	0x05,
-//	0x05,	0x05,	0x05,	0x05	
-
-		0x00,	0x01,	0x02,	0x03,
-	0x04,	0x05,	0x06,	0x07,	
-	0x08,	0x09,	0x0A,	0x0B,	
-	0x0C,	0x0D,	0x0E,	0x0f,	
-	0x0Ff,	0x0Ff,	0x0Ff,	0x0Ff,
-	0x0f,	0x0f,	0x0f,	0x0f
-};
-
-
-
-void Process_One_Numb1(unsigned char LastNum);
-void Process_One_Numbnnz(unsigned char LastNum);
-void Process_N_NUMBnny(void);
-void Process_N_NUMBnnz(void);
-
-unsigned char   Alm_Flag1;    //报警指示灯
-unsigned char   Alm_Flag2;    //报警指示灯
-unsigned char   led8[4];      //指示灯
-
-
 void PutValToDispBf(unsigned short val , unsigned char  *position )
 {
 	//position+12   position+8  position+4  position+0   DispBufnny
@@ -145,13 +110,16 @@ void PutValToDispBf(unsigned short val , unsigned char  *position )
 
 
 
-void Process_N_NUMBnny(void)
+unsigned long  Process_N_NUMBnny(void)
 {
 
 unsigned char  i;
 unsigned long temp32;
 unsigned long LastNum;   //键盘采样用
-	
+unsigned long KeyGetBit;   //键盘采样用	
+
+KeyGetBit =0;
+
 	temp32 = ( 0x000001 << ( DigMax - DigNmb ) );   //不用的位先移掉
 	
 	if(Alm_Flag1 == 0)  //报警指示灯
@@ -164,22 +132,24 @@ unsigned long LastNum;   //键盘采样用
 	   }
 
 	NUMnny.byte4[3]  =  0xff; 
-	Process_One_Numb1(LastNum);
+	Process_One_Numb1();
 	
 	LastNum = temp32;
 	temp32 <<=1;
 	NUMnny.a32 = temp32;
 	
-	NUMnny.byte4[3]  =   ~led8[0];
-	Process_One_Numb1(LastNum);
+	
+	//单独的指示灯
+	NUMnny.byte4[3]  =   ~SngnalLed[0];
+	Process_One_Numb1();
 	
 	LastNum = temp32;
 	temp32 <<=1;
 	NUMnny.a32 = temp32;
 	
 		
-	NUMnny.byte4[3]  =   ~led8[1];
-	Process_One_Numb1(LastNum);
+	NUMnny.byte4[3]  =   ~SngnalLed[1];
+	Process_One_Numb1();
 	
 	LastNum = temp32;
 	temp32 <<=1;
@@ -190,7 +160,10 @@ for(i=0;i<DigNmb-3;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 
 	NUMnny.byte4[3]  =  ~LedSegTab [  DispBufnny[i] ] ;// 第4个字节
 	
-	Process_One_Numb1(LastNum);
+	if ( Process_One_Numb1() )
+		{
+			KeyGetBit += LastNum;
+		}
 	
 	//NUMnny.byte4[3]  =  0;   //第四字节是A32的最高位
 
@@ -200,16 +173,16 @@ for(i=0;i<DigNmb-3;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 	
 		
 	}
-	
+return	KeyGetBit;
 }
 
-void Process_N_NUMBnnz(void)
+unsigned long  Process_N_NUMBnnz(void)
 {
 
 unsigned char  i;
 unsigned long temp32;
 unsigned long LastNum;   //键盘采样用
-	
+unsigned long KeyGetBit;   //键盘采样用		
 	temp32 = ( 0x000001 << ( DigMax - DigNmb ) );   //不用的位先移掉
 	
 	if(Alm_Flag2 == 0)  //报警指示灯
@@ -222,7 +195,7 @@ unsigned long LastNum;   //键盘采样用
 	   }
 
 	NUMnnz.byte4[3]  =  0xff; 
-	Process_One_Numbnnz(LastNum);
+	Process_One_Numbnnz();
 	
 	LastNum = temp32;
 	temp32 <<=1;
@@ -230,15 +203,15 @@ unsigned long LastNum;   //键盘采样用
 	
 	
 	
-	NUMnnz.byte4[3]  =   ~led8[2];
-	Process_One_Numbnnz(LastNum);
+	NUMnnz.byte4[3]  =   ~SngnalLed[2];
+	Process_One_Numbnnz();
 	LastNum = temp32;
 	temp32 <<=1;
 	NUMnnz.a32 = temp32;
 	
 		
-	NUMnnz.byte4[3]  =   ~led8[3];
-	Process_One_Numbnnz(LastNum);
+	NUMnnz.byte4[3]  =   ~SngnalLed[3];
+	Process_One_Numbnnz();
 	LastNum = temp32;
 	temp32 <<=1;
 	NUMnnz.a32 = temp32;	
@@ -248,8 +221,10 @@ for(i=0;i<DigNmb-3;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 
 	NUMnnz.byte4[3]  =  ~LedSegTab [  DispBufnnz[i] ] ;// 第4个字节
 	
-	Process_One_Numbnnz(LastNum);
-	
+	if( Process_One_Numbnnz() )
+	   {
+	   	KeyGetBit += LastNum;
+	  }
 	//NUMnnz.byte4[3]  =  0;   //第四字节是A32的最高位
 
   LastNum = temp32;
@@ -259,7 +234,7 @@ for(i=0;i<DigNmb-3;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 	
 		
 	}
-	
+return	KeyGetBit;	
 }
 
 
@@ -268,10 +243,10 @@ for(i=0;i<DigNmb-3;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 /////////////////////////////////////
 
 
-void Process_One_Numb1(unsigned char LastNum)
+unsigned char Process_One_Numb1(void)
 {
 	unsigned char i;
-	
+	unsigned char KeyBit=0;
 	
 	for(i=0;i<4;i++)
 	{
@@ -291,26 +266,26 @@ void Process_One_Numb1(unsigned char LastNum)
     
 	  if(SPI_Kiny)
   	{//读
-  		//LastNum
+  		KeyBit=1;
   	}	
-
+   else KeyBit=0;
 //更新
  
   SPI_STR_Highy;    //激活输出
   
 	//OSTimeDly(OS_TICKS_PER_SEC/500);	    //延时0.01秒
 	
-
+return KeyBit;
 	
 }
 
 /////////////////////////////////////
 
 
-void Process_One_Numbnnz(unsigned char LastNum)
+unsigned char Process_One_Numbnnz(void)
 {
 	unsigned char i;
-	
+	unsigned char KeyBit=0;
 	
 	for(i=0;i<4;i++)
 	{
@@ -335,8 +310,10 @@ void Process_One_Numbnnz(unsigned char LastNum)
 	
 	if(SPI_KinnnZ)
   	{//读
-  		//LastNum
+  	KeyBit = 1;
   	}    
+  else	KeyBit = 0;
+  	
 //  while (!DMA_GetFlagStatus(SPI2_MASTER_Tx_DMA_FLAG));
 
 //更新
@@ -344,6 +321,7 @@ void Process_One_Numbnnz(unsigned char LastNum)
   SPI_STR_HighnnZ;    //激活输出
 
 	//OSTimeDly(OS_TICKS_PER_SEC/100);	    //延时0.01秒
+	return KeyBit;
 	
 }
 

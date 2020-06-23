@@ -30,8 +30,8 @@ OS_EVENT *OSSemProcCmdx;
 
 float TempratureSet;   //控制用温度设定值   
 
-
-
+unsigned long ShiftKeyCurnny;   //显示板键盘当前值
+unsigned long ShiftKeyCurnnz;   //显示板键盘当前值
 
 unsigned char lAddressKey;  //拨码开关PB12-PB15，值，最低4位
 
@@ -771,8 +771,18 @@ INT8U err;
 						   OSSemPend(OSSemTest2,0,&err);
 						    #endif
 	
-						Process_N_NUMBnny();
-
+						ShiftKeyCurnny = Process_N_NUMBnny();
+            if( ShiftKeyCurnny != 0 )
+            	{
+            		Alm_Flag1 = 1;
+            		SngnalLed[0]=0xff;      //单独指示灯
+            		SngnalLed[1]=0x0f;      //单独指示灯
+            	}
+            else {
+            	    Alm_Flag1 =0;
+            	    SngnalLed[0]=0;      //单独指示灯
+            	    SngnalLed[1]=0;      //单独指示灯
+                }
 						   
 					//	OSTimeDly(OS_TICKS_PER_SEC/500);	    //延时0.002秒	
 
@@ -816,7 +826,21 @@ INT8U err;
 						    #endif
 						//Seg8
 
-						Process_N_NUMBnnz();   
+						ShiftKeyCurnnz = Process_N_NUMBnnz();  
+						
+						if( ShiftKeyCurnnz != 0 )
+            	{
+            		Alm_Flag2 = 1;
+            		SngnalLed[2]=0xfc;      //单独指示灯
+            		SngnalLed[3]=0x03;      //单独指示灯
+            	}
+            else {
+            	    Alm_Flag2 =0;
+            	    SngnalLed[2]=0;      //单独指示灯
+            	    SngnalLed[3]=0;      //单独指示灯
+                }
+						
+						 
 						//EventTimeLed=2;   
 						   
 						//OSTimeDly(OS_TICKS_PER_SEC/1000);	    //延时0.05秒	
