@@ -28,9 +28,9 @@ void PID_ParaInit(void)
 
 
 	 
-	 Coldw.Pidx[0].Proportion     =       35;//20;//3;          //比例常数
+	 Coldw.Pidx[0].Proportion     =       0.21;//20;//3;          //比例常数
 	 Coldw.Pidx[0].Integral         =       0.015001;//0.02001;          //	 
-	 Coldw.Pidx[0].Derivative     =       2;//22;//55;//50;//2;//1;
+	 Coldw.Pidx[0].Derivative     =       0;//22;//55;//50;//2;//1;
 	 Coldw.Pidx[0].QMax           =       MAX_PID_INTEGRAL_1;
    Coldw.Pidx[0].QMin             =        MIN_PID_INTEGRAL_1;  
 		

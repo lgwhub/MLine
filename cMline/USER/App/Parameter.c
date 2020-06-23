@@ -333,20 +333,20 @@ void Default_ParamInit2(void)
 	    
     Coldw.Ts1_AMP      = 1.001; //温度采样放大倍数1
     Coldw.Ts1_BIAS     = 0.01;  //温度采样偏移系数1
-    Coldw.Ts2_AMP      = 1.002; //温度采样放大倍数2
-    Coldw.Ts2_BIAS     = 0.02;  //温度采样偏移系数2
-    Coldw.Ts3_AMP      = 1.003; //温度采样放大倍数1
-    Coldw.Ts3_BIAS     = 0.03;  //温度采样偏移系数1
-    Coldw.Ts4_AMP      = 1.004; //温度采样放大倍数2
-    Coldw.Ts4_BIAS     = 0.04;  //温度采样偏移系数2
-    Coldw.Ts5_AMP      = 1.005; //温度采样放大倍数1
-    Coldw.Ts5_BIAS     = 0.05;  //温度采样偏移系数1
-    Coldw.Ts6_AMP      = 1.006; //温度采样放大倍数2
-    Coldw.Ts6_BIAS     = 0.06;  //温度采样偏移系数2
-    Coldw.Ts7_AMP      = 1.007; //温度采样放大倍数1
-    Coldw.Ts7_BIAS     = 0.07;  //温度采样偏移系数1
-    Coldw.Ts8_AMP      = 1.008; //温度采样放大倍数2
-    Coldw.Ts8_BIAS     = 0.08;  //温度采样偏移系数2
+//    Coldw.Ts2_AMP      = 1.002; //温度采样放大倍数2
+//    Coldw.Ts2_BIAS     = 0.02;  //温度采样偏移系数2
+//    Coldw.Ts3_AMP      = 1.003; //温度采样放大倍数1
+//    Coldw.Ts3_BIAS     = 0.03;  //温度采样偏移系数1
+//    Coldw.Ts4_AMP      = 1.004; //温度采样放大倍数2
+//    Coldw.Ts4_BIAS     = 0.04;  //温度采样偏移系数2
+//    Coldw.Ts5_AMP      = 1.005; //温度采样放大倍数1
+//    Coldw.Ts5_BIAS     = 0.05;  //温度采样偏移系数1
+//    Coldw.Ts6_AMP      = 1.006; //温度采样放大倍数2
+//    Coldw.Ts6_BIAS     = 0.06;  //温度采样偏移系数2
+//    Coldw.Ts7_AMP      = 1.007; //温度采样放大倍数1
+//    Coldw.Ts7_BIAS     = 0.07;  //温度采样偏移系数1
+//    Coldw.Ts8_AMP      = 1.008; //温度采样放大倍数2
+//    Coldw.Ts8_BIAS     = 0.08;  //温度采样偏移系数2
 
 
 
@@ -412,34 +412,7 @@ unsigned short int _Param_SwapMemery(unsigned char type,unsigned char *p)  //typ
     p+=4;len+=4;
     _copy_4byte(type,(unsigned char *)&Coldw.Ts1_BIAS            , p , 4);         //温度采样偏移系数1
     p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts2_AMP             , p , 4);         //温度采样放大倍数2
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts2_BIAS            , p , 4);         //温度采样偏移系数2
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts3_AMP             , p , 4);         //温度采样放大倍数1
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts3_BIAS            , p , 4);         //温度采样偏移系数1
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts4_AMP             , p , 4);         //温度采样放大倍数2
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts4_BIAS            , p , 4);         //温度采样偏移系数2
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts5_AMP             , p , 4);         //温度采样放大倍数1
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts5_BIAS            , p , 4);         //温度采样偏移系数1
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts6_AMP             , p , 4);         //温度采样放大倍数2
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts6_BIAS            , p , 4);         //温度采样偏移系数2
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts7_AMP             , p , 4);         //温度采样放大倍数1
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts7_BIAS            , p , 4);         //温度采样偏移系数1
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts8_AMP             , p , 4);         //温度采样放大倍数2
-    p+=4;len+=4;
-    _copy_4byte(type,(unsigned char *)&Coldw.Ts8_BIAS            , p , 4);         //温度采样偏移系数2
-    p+=4;len+=4;
+
 
 
 //
@@ -449,18 +422,15 @@ unsigned short int _Param_SwapMemery(unsigned char type,unsigned char *p)  //typ
     _copy_4byte(type,(unsigned char *)&Coldw.Pidx[0].Integral            , p , 4);         //
     p+=4;len+=4;    
     
-    _copy_4byte(type,(unsigned char *)&Coldw.SenType                  , p , 4);         //传感器类型   TYPE_AD590    1     TYPE_RES10K   2      TYPE_PT1000   3
-    p+=4;len+=4; 
-    
-    _copy_4byte(type,(unsigned char *)&Coldw.PcbType                      , p , 4);         //6路温度采样，两路马达控制   PCB_CH6    1   ,  PCB_CH18    2  ,  PCB_MOT2   3 
-    p+=4;len+=4;     
-    
+
+    _copy_4byte(type,(unsigned char *)&Coldw.Pidx[0].Derivative            , p , 4);         //微分常数
+    p+=4;len+=4;
+
     _copy_4byte(type,(unsigned char *)&Coldw.xx1UpSpeed                      , p , 4);         //渐进设定值速度xx1
     p+=4;len+=4;     
 
 
-    _copy_4byte(type,(unsigned char *)&Coldw.Pidx[0].Derivative            , p , 4);         //微分常数
-    p+=4;len+=4;
+
 
 //  _copy_4byte(type,(unsigned char *)&Stm32IdSum6                   , p , 2);                                                   //2字节
 //  p+=2;len+=2;  

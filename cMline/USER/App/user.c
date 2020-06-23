@@ -605,7 +605,7 @@ for(;;)
 			    {
 
                  HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] ; //基本上多余 
-			     PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]                       ); //一般是error = SetPoint - NewPoint ,这里反过来
+			     PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]                       ); //一般是error = SetPoint - NewPoint ,这里反过来
 			    
 			     }
 	     		  	//软启动  软加速  软减速  步进量
