@@ -80,7 +80,7 @@ extern unsigned char EventTimeLed;
 #define Led_Event_Off		LED4_OFF
 
 
-void MotorsRun(unsigned char ch, signed short int steps);
+//void MotorsRun(unsigned char ch, signed short int steps);
 
 void TaskVirPwm(void * pdata);
 void TaskModbus(void * pdata);

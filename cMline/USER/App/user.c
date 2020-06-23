@@ -330,7 +330,7 @@ void ModbusCommand2(void)
 	              if(	( Coldw.one_unit_flag == 0 ) || ( Coldw.one_unit_flag == ( i + 1 )  ) )
 	              	    {
 	  	     	           OSSemPend(OSSemMotors,0,&err);	
-	  	     	           MotorsRun(i,steps);
+	  	     	           StepMotRun(i,steps);//MotorsRun(i,steps);
                        OSSemPost(OSSemMotors);
                        }
                       
@@ -1303,36 +1303,7 @@ ProcessRecvUser(":R1FFFF7E8\r\n",8);
 }
 ////////////////////
 
-void MotorsRun(unsigned char ch, signed short int steps)
-{
-	switch(ch)
-	{
-		case 0:
-		StepMotRun1(steps);	
-		break;
-			
-	  case 1:		
-		StepMotRun2(steps);	
-		break;
-		
-		case 2:
-			StepMotRun3(steps);			
-			
-		break;	
-	  case 3:		
-					StepMotRun4(steps);	
-		break;		
-		case 4:
-					StepMotRun5(steps);	
-			
-		break;	
-	  case 5:		
-					StepMotRun6(steps);	
-		break;		
-		
-	}
-	
-}
+
 ///////////////////////////////////////////////
     
 
