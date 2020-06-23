@@ -5,8 +5,7 @@
 
 
 
-#define     MOTOR_LIMIT_CLOSE     MAX_PID_INTEGRAL_1
-#define     MOTOR_LIMIT_OPEN    ( MIN_PID_INTEGRAL_1 )
+
 
 OS_EVENT *OSSemTest1;
 OS_EVENT *OSSemTest2;
@@ -31,7 +30,10 @@ OS_EVENT *OSSemProcCmdx;
 float TempratureSet;   //控制用温度设定值   
 
 unsigned long ShiftKeyCurnny;   //显示板键盘当前值
+unsigned long ShiftKeyBnny,ShiftKeyCnny;
+
 unsigned long ShiftKeyCurnnz;   //显示板键盘当前值
+unsigned long ShiftKeyBnnz,ShiftKeyCnnz;
 
 unsigned char lAddressKey;  //拨码开关PB12-PB15，值，最低4位
 
@@ -639,6 +641,11 @@ void KeyProcess( uchar *curk,uchar *old)
 		}
 }
 ////////////////////
+
+
+
+////////////////////
+
 void TaskKey(void * pdata)
 {
 INT8U err;
@@ -775,12 +782,12 @@ INT8U err;
             if( ShiftKeyCurnny != 0 )
             	{
             		Alm_Flag1 = 1;
-            		SngnalLed[0]=0xff;      //单独指示灯
+            		//SngnalLed[0]=0xff;      //单独指示灯
             		SngnalLed[1]=0x0f;      //单独指示灯
             	}
             else {
             	    Alm_Flag1 =0;
-            	    SngnalLed[0]=0;      //单独指示灯
+            	    //SngnalLed[0]=0;      //单独指示灯
             	    SngnalLed[1]=0;      //单独指示灯
                 }
 						   
@@ -828,15 +835,34 @@ INT8U err;
 
 						ShiftKeyCurnnz = Process_N_NUMBnnz();  
 						
+						if ( ShiftKeyBnnz != ShiftKeyCurnnz )
+  		                     {//滤波
+  			                   ShiftKeyBnnz = ShiftKeyCurnnz;
+  		                    }
+  	               else { 
+  	               	
+  	               	     if ( ShiftKeyCnnz  !=  ShiftKeyBnnz )
+  	               	     	   {
+  	         	                
+                              ShiftKeyCnnz =  ShiftKeyBnnz;
+                             }
+                          else{//三次相同
+                          	   //KeyProcess( bufkc, bufkb);
+                              }
+  	         	          
+  	                     }
+						
+						
+						
 						if( ShiftKeyCurnnz != 0 )
             	{
             		Alm_Flag2 = 1;
-            		SngnalLed[2]=0xfc;      //单独指示灯
+            		//SngnalLed[2]=0xfc;      //单独指示灯
             		SngnalLed[3]=0x03;      //单独指示灯
             	}
             else {
             	    Alm_Flag2 =0;
-            	    SngnalLed[2]=0;      //单独指示灯
+            	    //SngnalLed[2]=0;      //单独指示灯
             	    SngnalLed[3]=0;      //单独指示灯
                 }
 						
@@ -937,7 +963,21 @@ Led_Test_Adc_On1;
               Coldw.ApmGt[i]=(float)Capture_testSPI_number[ i ];
               #else
                    
-              Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];
+               switch ( i )
+                 {    
+                  case 0:
+                  case 1:
+                  case 2:
+                  case 3:                  	
+                  	
+                  Coldw.ApmGt[i]=(float)Apm_FREQ[ i ] >>1;  //除以2
+                  break;
+                  
+                  case 4:
+                  case 5: 
+                  Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];	
+                  break;	             
+                  }
               #endif
                
 
@@ -956,15 +996,15 @@ Led_Test_Adc_On1;
                
 
 ///////////////
-        PutValToDispBf(Apm_FREQ[5], DispBufnny+12 );  
+        PutValToDispBf(Coldw.ApmGt[5], DispBufnny+12 );  
         PutValToDispBf( 0, DispBufnny+8 );
-        PutValToDispBf( Apm_FREQ[3]>>1, DispBufnny+4 );
-        PutValToDispBf(Apm_FREQ[2]>>1 , DispBufnny+0 );
+        PutValToDispBf( Coldw.ApmGt[3], DispBufnny+4 );
+        PutValToDispBf(Coldw.ApmGt[2] , DispBufnny+0 );
         
-        PutValToDispBf(Apm_FREQ[4] , DispBufnnz+12 );
+        PutValToDispBf(Coldw.ApmGt[4] , DispBufnnz+12 );
         PutValToDispBf( 0, DispBufnnz+8 );
-        PutValToDispBf( Apm_FREQ[1]>>1, DispBufnnz+4 );
-        PutValToDispBf(Apm_FREQ[0]>>1 , DispBufnnz+0 ) ;      
+        PutValToDispBf( Coldw.ApmGt[1], DispBufnnz+4 );
+        PutValToDispBf(Coldw.ApmGt[0] , DispBufnnz+0 ) ;      
         
 // 	      PutValToDispBf(6666 , DispBufnny+12 );
 //         PutValToDispBf( 7777, DispBufnny+8 );
