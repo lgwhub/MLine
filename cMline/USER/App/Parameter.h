@@ -89,10 +89,10 @@ PID_ParaStruct      Pidx[2];   //5X4X2 字节  pid参数
 
 
   //  198x2 byte
-    float               Ts[8];                //
-
+   // float               Ts[8];                //
+float   ApmGt[8];    //  速度测量值    
     unsigned long  int  ApmCt[8];    //  速度设定值        TC_duty[8];           //占空比
-    signed long  int  ApmGt[8];    //  速度测量值FAN_duty[8];          //步进电机
+    signed long  int  FAN_duty[8];          //步进电机
     unsigned long  int  Clcle_times;          //
     unsigned long  int  ADC_error_count;      //
     

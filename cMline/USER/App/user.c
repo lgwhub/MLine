@@ -55,9 +55,11 @@ unsigned  long int Capture_Flag[6+1] ;
 unsigned  long int Apm_FREQ[6+1] ; 
 unsigned  long int Capture_number[6+1] ;
 
-unsigned  long int CaptureValueStart[6+1] ;
-unsigned  long int CaptureValueEnd[6+1];
-
+//unsigned  long int CaptureValueStart[6+1] ;
+//unsigned  long int CaptureValueEnd[6+1];
+//因为使用16位定时器，所以这两个变量也使用16位
+unsigned  short int CaptureValueStart[6+1] ;
+unsigned  short int CaptureValueEnd[6+1];
 
 ///////////////////////////////////////////////////////////////////////
 void ViewTestStatu(uchar *text)
@@ -666,7 +668,7 @@ INT8U err;
  
 uchar i;
 
-unsigned  long int temp32;
+unsigned  short int temp16;
 
 	pdata = pdata;                          	 	// 避免编译警告	
 	   
@@ -702,12 +704,12 @@ Led_Test_Adc_On1;
               	
               if( Capture_number[i] > 1 )
               			{
-              				temp32 = CaptureValueEnd[ i ] - CaptureValueStart[ i ];
-              				if( temp32 != 0)
+              				temp16 = CaptureValueEnd[ i ] - CaptureValueStart[ i ];
+              				if( temp16 != 0)
               					  {
-              				    //Apm_FREQ[ i ] = 72000000 * Capture_number[i] / temp32;   //hz
+              				    //Apm_FREQ[ i ] = 72000000 * Capture_number[i] / temp16;   //hz
               				
-              				    Apm_FREQ[ i ] = Capture_number[i]; //temp32;
+              				    Apm_FREQ[ i ] = temp16;//Capture_number[i]; //
 
               			     }
               	  }   
@@ -715,7 +717,7 @@ Led_Test_Adc_On1;
               	    Apm_FREQ[ i ] = 0;
                   }
 ;             
-              Coldw.ApmGt[i]=Apm_FREQ[ i ];
+              Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];
 
                Capture_number[i] = 0;
                Capture_Flag[i] = 1; //再开始
@@ -727,7 +729,7 @@ Led_Test_Adc_On1;
 
 
 
-				OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时10ms  改为 2ms		 改为 1ms	
+				OSTimeDly(OS_TICKS_PER_SEC/2);	    //延时10ms  改为 2ms		 改为 1ms	
 				
 				
 										

@@ -48,9 +48,11 @@ extern unsigned  long int Capture_Flag[6+1] ;
 extern unsigned  long int Apm_FREQ[6+1] ; 
 extern unsigned  long int Capture_number[6+1] ;
 
-extern unsigned  long int CaptureValueStart[6+1] ;
-extern unsigned  long int CaptureValueEnd[6+1];
-
+//extern unsigned  long int CaptureValueStart[6+1] ;
+//extern unsigned  long int CaptureValueEnd[6+1];
+//因为使用16位定时器，所以这两个变量也使用16位
+extern unsigned  short int CaptureValueStart[6+1] ;
+extern unsigned  short int CaptureValueEnd[6+1];
 ///////////////////////////////
 
 extern unsigned char FlagKey;

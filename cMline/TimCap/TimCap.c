@@ -124,6 +124,14 @@ void Cap_Configuration_T4(void)
 	
 	TIM_ICInitTypeDef  TIM_ICInitStructure;
 	
+	
+	
+		  TIM_TimeBaseInitTypeDef  		TIM_TimeBaseStructure;
+   	TIM_TimeBaseStructure.TIM_Prescaler     = 72000000/100000-1;			//Ô¤·ÖÅä¼Ä´æÆ÷   100khz    0.5S.<65536
+    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+	
+	
+	
   TIM_ICInitStructure.TIM_Channel = TIM_Channel_1;
   TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
   TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;

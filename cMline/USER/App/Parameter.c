@@ -264,7 +264,7 @@ FlagSetAllDefault = 0;
     {
 	Coldw.unit_onof_flag[i]=0;					   
     Coldw.limit_recode[i] = 0xF0;//0;
-    Coldw.Ts[i] = (0.1)*i;                //
+//    Coldw.Ts[i] = (0.1)*i;                //
     Coldw.ApmCt[i] = 223;//Coldw.TC_duty[i] = 0;           //
     Coldw.ApmGt[i] = 0 ;//Coldw.FAN_duty[i] = 0 ;          //
     }
