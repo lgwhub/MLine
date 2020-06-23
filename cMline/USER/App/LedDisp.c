@@ -115,12 +115,14 @@ unsigned long  Process_N_NUMBnny(void)
 
 unsigned char  i;
 unsigned long temp32;
-unsigned long LastNum;   //键盘采样用
+static unsigned long LastNum=0;   //键盘采样用
 unsigned long KeyGetBit;   //键盘采样用	
 
 KeyGetBit =0;
 
 	temp32 = ( 0x000001 << ( DigMax - DigNmb ) );   //不用的位先移掉
+	
+	
 	
 	if(Alm_Flag1 == 0)  //报警指示灯
 	   {
@@ -131,8 +133,12 @@ KeyGetBit =0;
 		NUMnny.a32 = temp32;
 	   }
 
-	NUMnny.byte4[3]  =  0xff; 
-	Process_One_Numb1();
+	NUMnny.byte4[3]  =  0xff;
+	 
+	if ( Process_One_Numb1() )
+		{
+			KeyGetBit += LastNum;
+		}
 	
 	LastNum = temp32;
 	temp32 <<=1;
@@ -141,7 +147,10 @@ KeyGetBit =0;
 	
 	//单独的指示灯
 	NUMnny.byte4[3]  =   ~SngnalLed[0];
-	Process_One_Numb1();
+	if ( Process_One_Numb1() )
+		{
+			KeyGetBit += LastNum;
+		}
 	
 	LastNum = temp32;
 	temp32 <<=1;
@@ -149,7 +158,10 @@ KeyGetBit =0;
 	
 		
 	NUMnny.byte4[3]  =   ~SngnalLed[1];
-	Process_One_Numb1();
+	if ( Process_One_Numb1() )
+		{
+			KeyGetBit += LastNum;
+		}
 	
 	LastNum = temp32;
 	temp32 <<=1;
@@ -181,8 +193,11 @@ unsigned long  Process_N_NUMBnnz(void)
 
 unsigned char  i;
 unsigned long temp32;
-unsigned long LastNum;   //键盘采样用
+static unsigned long LastNum=0;   //键盘采样用
 unsigned long KeyGetBit;   //键盘采样用		
+	
+	KeyGetBit =0;
+	
 	temp32 = ( 0x000001 << ( DigMax - DigNmb ) );   //不用的位先移掉
 	
 	if(Alm_Flag2 == 0)  //报警指示灯
@@ -195,7 +210,10 @@ unsigned long KeyGetBit;   //键盘采样用
 	   }
 
 	NUMnnz.byte4[3]  =  0xff; 
-	Process_One_Numbnnz();
+	if( Process_One_Numbnnz() )
+	   {
+	   	KeyGetBit += LastNum;
+	  }
 	
 	LastNum = temp32;
 	temp32 <<=1;
@@ -204,14 +222,20 @@ unsigned long KeyGetBit;   //键盘采样用
 	
 	
 	NUMnnz.byte4[3]  =   ~SngnalLed[2];
-	Process_One_Numbnnz();
+	if( Process_One_Numbnnz() )
+	   {
+	   	KeyGetBit += LastNum;
+	  }
 	LastNum = temp32;
 	temp32 <<=1;
 	NUMnnz.a32 = temp32;
 	
 		
 	NUMnnz.byte4[3]  =   ~SngnalLed[3];
-	Process_One_Numbnnz();
+	if( Process_One_Numbnnz() )
+	   {
+	   	KeyGetBit += LastNum;
+	  }
 	LastNum = temp32;
 	temp32 <<=1;
 	NUMnnz.a32 = temp32;	
