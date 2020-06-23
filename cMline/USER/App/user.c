@@ -562,21 +562,22 @@ for(;;)
 		      } 		  	
 		  	
 		  	
-		  	
+		  	#define DLBC_STEP_ADD25  10
+		  	#define DLBC_STEP_DEC25  10
 
         for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {
-                 if( ( BLDC_PwmVal[ i ] + 100 ) < BLDC_PwmBuf[i] )  // s < a-100
+                 if( ( BLDC_PwmVal[ i ] + DLBC_STEP_ADD25 ) < BLDC_PwmBuf[i] )  // s < a-100
                  	   { 
-                 	   	BLDC_PwmVal[ i ] += 100;                      // +100
+                 	   	BLDC_PwmVal[ i ] += DLBC_STEP_ADD25;                      // +100
                  	   }
                  else if ( BLDC_PwmVal[ i ]  < BLDC_PwmBuf[i] )     // +++++
                  	   {
                      BLDC_PwmVal[ i ] =   BLDC_PwmBuf[i] ;          //970
                      }
-                 else if (  BLDC_PwmVal[ i ] > ( BLDC_PwmBuf[i] + 100 ) )
+                 else if (  BLDC_PwmVal[ i ] > ( BLDC_PwmBuf[i] + DLBC_STEP_DEC25 ) )
      	               {
-                 	   	BLDC_PwmVal[ i ] -= 100;
+                 	   	BLDC_PwmVal[ i ] -= DLBC_STEP_DEC25;
                  	   }
                  else{
                      BLDC_PwmVal[ i ] =   BLDC_PwmBuf[i] ;
@@ -1547,9 +1548,9 @@ for(;;)
      	if( FlagRuningnny )   //控制 34 步进电机
 		  	  {
 		  		StepMot[2].PulseCircleSet = 20  +  Coldw.ApmCt[6];  //fast
-		  		StepMotRun(2,20000);
+		  		StepMotRun(  2  ,  20000  );
 		  		StepMot[3].PulseCircleSet = 200 +  Coldw.ApmCt[7];  //slow
-		  		StepMotRun(3,4);
+		  		StepMotRun(  3 , 4 );
 		  	  }
 		  else{
 		  		StepMotStop(2);
@@ -1559,13 +1560,13 @@ for(;;)
 		  if( FlagRuningnnz )  //控制 12  步进电机
 		  	  {
 		  	  StepMot[0].PulseCircleSet = 20 +  Coldw.ApmCt[6];  //fast
-		  		StepMotRun(0,20000);
+		  		StepMotRun(  0 , 20000 );
 		  		StepMot[1].PulseCircleSet = 200 +  Coldw.ApmCt[7];  //slow
-		  		StepMotRun(1,4);
+		  		StepMotRun(  1 , 4  );
 		  	  }
 		  else{
-		  		StepMotStop(0);
-		  		StepMotStop(1);		  	
+		  		StepMotStop( 0 );
+		  		StepMotStop( 1 );		  	
 		      } 
      OSSemPost(OSSemMotors);
    
