@@ -63,6 +63,10 @@
 	
 	
 		#include "TimCap.h"
+	#include   "spi.h"
+	
+	#include "LedDisp.h"
+	
 	
 	
 #include "StepMotor.h"	
@@ -80,7 +84,7 @@
 
 //#include	"GetAverage.h"
 	
-//	#include "STM32_DeviceId.h"
+#include "STM32_DeviceId.h"
 	
 
 

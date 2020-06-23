@@ -20,6 +20,13 @@
 //#define InPin_SW13	(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_3))
 
 
+#define SPI_STR_Lowy		  GPIO_ResetBits(GPIOA,GPIO_Pin_4)
+#define SPI_STR_Highy			GPIO_SetBits(GPIOA,GPIO_Pin_4)
+#define SPI_STR_LowZ		  GPIO_ResetBits(GPIOB,GPIO_Pin_12)
+#define SPI_STR_HighZ			GPIO_SetBits(GPIOB,GPIO_Pin_12)
+#define SPI_Kiny	        (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_6))
+#define SPI_Kinz	        (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14))
+
 
 
 #define InPin_K1	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_3))
@@ -29,17 +36,17 @@
 #define InPin_K4	1
 #define InPin_K5	1
 
-//PC5
+//PC5  
 #define LED1_OFF		GPIO_ResetBits(GPIOC,GPIO_Pin_5)
 #define LED1_ON			GPIO_SetBits(GPIOC,GPIO_Pin_5)
-//PC13
+//PC13     FK103M5开发板上
 #define LED2_OFF		GPIO_ResetBits(GPIOC,GPIO_Pin_13)
 #define LED2_ON			GPIO_SetBits(GPIOC,GPIO_Pin_13)
 //PD15  TIM4--CH4
 #define LED3_OFF		;//GPIO_ResetBits(GPIOD,GPIO_Pin_15)
 #define LED3_ON			;//GPIO_SetBits(GPIOD,GPIO_Pin_15)
 
-//PC0  开发板上
+//PC0  FK103M3开发板上
 #define LED4_OFF		GPIO_SetBits(GPIOC,GPIO_Pin_0)
 #define LED4_ON			GPIO_ResetBits(GPIOC,GPIO_Pin_0)
 
@@ -146,6 +153,11 @@
 #define Clr_SDDA			GPIO_ResetBits(GPIOB,GPIO_Pin_9)
 #define SetbSCCL			GPIO_SetBits(GPIOB,GPIO_Pin_8)
 #define Clr_SCCL			GPIO_ResetBits(GPIOB,GPIO_Pin_8)
+
+
+
+
+
 
 
 void InitGpio(void);

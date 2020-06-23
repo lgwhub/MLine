@@ -42,9 +42,13 @@
 
 #define  CONFIG_HD_TIM		1
 #define  CONFIG_CAP_TIM   1
+
+#define  CONFIG_SPI_DISP		1
+
 #define SOFT_VER   01
 
 
+//#define CONFIG_CHECK_DEVICE_ID  1
 /*
 *********************************************************************************************************
 *                                              TASKS NAMES
@@ -78,13 +82,13 @@
 #define  TaskTimePr_PRIO          	 		(OS_LOWEST_PRIO - 15)
 #define  TaskHpwm_PRIO          	 		(OS_LOWEST_PRIO - 14)
 #define  TaskStatus_PRIO          	 		(OS_LOWEST_PRIO - 13)
-#define  Task13_PRIO          	 		(OS_LOWEST_PRIO - 12)
+#define  TaskLed_PRIO          	 		(OS_LOWEST_PRIO - 32)
 
-#define  Task14_PRIO          	 		(OS_LOWEST_PRIO - 11)
+#define  TaskApm_PRIO          	 		(OS_LOWEST_PRIO - 11)
 
 
 #define  Task11_PRIO          	 		(OS_LOWEST_PRIO - 10)
-#define  Task12_PRIO          	 		(OS_LOWEST_PRIO - 9)
+#define  TaskKey_PRIO          	 		(OS_LOWEST_PRIO - 9)
 
 
 #define  MyTASK_PRIO          	 		(OS_LOWEST_PRIO - 7)
@@ -109,14 +113,14 @@
 #define  OS_VIEW_TASK_STK_SIZE                           128u
 
 #define  MyTASKStk_SIZE                          (64+2u)
-#define  Task14Stk_SIZE                          (250+2u)
+#define  TaskApmStk_SIZE                          (250+2u)
 
 #define  Task11Stk_SIZE                         80
-#define  Task12Stk_SIZE                         80
+#define  TaskKeyStk_SIZE                         80
 
 #define  TaskRecvStk_SIZE                          (76+2u)
 #define  TaskSaveStk_SIZE                          (124+2u)
-#define  Task13Stk_SIZE                          (76+2u)
+#define  TaskLedStk_SIZE                          (126+2u)
 
 #define  TaskVirPwmStk_SIZE                          (76+2u)
 #define  TaskModbusStk_SIZE                          (155+2u)

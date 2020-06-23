@@ -8,7 +8,8 @@
 #define     MOTOR_LIMIT_CLOSE     MAX_PID_INTEGRAL_1
 #define     MOTOR_LIMIT_OPEN    ( MIN_PID_INTEGRAL_1 )
 
-
+OS_EVENT *OSSemTest1;
+OS_EVENT *OSSemTest2;
 
 OS_EVENT *OSSemMotors;
 OS_EVENT *OSSemUart1;
@@ -54,6 +55,10 @@ signed short int TestOutBuf[2+(MAX_TEMPRATURE_CHNALL)];
 unsigned  long int Capture_Flag[6+1] ;
 unsigned  long int Apm_FREQ[6+1] ; 
 unsigned  long int Capture_number[6+1] ;
+
+#if Flag_test_spi_DMA     
+  unsigned  long int Capture_testSPI_number[6+1] ;
+#endif
 
 //unsigned  long int CaptureValueStart[6+1] ;
 //unsigned  long int CaptureValueEnd[6+1];
@@ -358,6 +363,9 @@ void TaskModbus(void * pdata)
 {
 	CPU_SR          cpu_sr;
 INT8U err;
+
+unsigned long temp32;
+
 pdata = pdata;                          	 	// 避免编译警告		
 
 lAddressKey=0;  //拨码开关PB12-PB15，值，最低4位
@@ -392,16 +400,40 @@ TimeForSaveParam = 0;
 
 
 
+
+
 #if CONFIG_CHECK_DEVICE_ID
-		if(GetStm32F103_DeviceId_Sum6() == gpParam->Stm32IdSum6)
+	
+	InitSTM32DeciceID();
+	
+	
+		if(GetStm32F103_DeviceId_Sum6() == temp32 )  //Pmbuf->Stm32Id )
 				{
 					STM32DeviceId.Checked=1;
 				}
 		else{
 			STM32DeviceId.Checked=0;
 				}
-#endif
+#endif	
 
+//  		  	  #if CONFIG_CHECK_DEVICE_ID	
+//  		  	  	
+//  		      Pmbuf->Stm32Id = GetStm32F103_DeviceId_Sum6();  
+//  		      
+//  		      #endif
+
+
+//第二块  0xff31,0x05db,0x5641,0x3636,0x7428,0x5709,    0xc0ff,0xfffc,0x9768,0x00ff,0xc13e,0x7f80,0x5aa5,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff
+//0x31,0xFF,0xDB,0x05,0x41,0x56,0x36,0x36,0x28,0x74,0x09,0x57
+/*
+芯片内BootLoader版本号：2.2
+芯片PID：00000414
+芯片FLASH容量为512KB
+芯片SRAM容量为65535KB(此信息仅供参考,新版本芯片已不包含此信息)
+96位的芯片唯一序列号：31FFDB054156363628740957
+读出的选项字节:
+A55AFF00FF00FF00FF00FF00FF00FF00
+*/
 
 OSTimeDly(OS_TICKS_PER_SEC/100);	    //延时0.01秒
 
@@ -616,28 +648,128 @@ pdata = pdata;                          	 	// 避免编译警告
 }
 ////////////////////
 
-
-void Task12(void * pdata) //Task_Cmdy
+void KeyProcess( uchar *curk,uchar *old)
 {
-	CPU_SR          cpu_sr;
-INT8U err;
-pdata = pdata;                          	 	// 避免编译警告		
-
-//OSTimeDly(OS_TICKS_PER_SEC);	    //延时1秒
-
-//////
-	for(;;)
+	if( * ( curk + 2  )  != 0 )
+		{
+			if( * ( curk + 2  )  !=  * ( old + 2  ) ) //key3
 				{
 					
-					
-					OSTimeDly(OS_TICKS_PER_SEC);	    //延时1秒
+
+         OSSemPost(OSSemTest1);
+          OSSemPost(OSSemTest2);
 					
 				}
+		}
 }
+////////////////////
+void TaskKey(void * pdata)
+{
+INT8U err;
+INT8U  i;
+INT8U  bufka[5+1];
+INT8U  bufkb[5+1];
+INT8U  bufkc[5+1];
+
+
+
+	pdata = pdata;        
+	
+	OSSemTest1   = OSSemCreate(0);
+	OSSemTest2   = OSSemCreate(0);
+	                  	 	// 避免编译警告	   
+//#define InPin_K1	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_3))
+//#define InPin_K2	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4))
+////PC1  开发板上
+//#define InPin_K3	(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_1))
+
+
+for( i = 0 ; i<5 ; i++ )
+  {
+  	bufka[ i ] = 0;
+  	bufkb[ i ] = 0;
+  	bufkc[ i ] = 0;	
+  }
+
+
+		for(;;)
+						{
+						//OS_ENTER_CRITICAL();
+						//OS_EXIT_CRITICAL();
+						OSTimeDly(OS_TICKS_PER_SEC/20);	    //延时0.05秒		
+						
+
+						if( InPin_K1 )
+							{
+								bufka[ 0 ] = 0;
+							}								
+	          else{
+	          	  bufka[ 0 ] = 1;
+	              }
+
+						if( InPin_K2 )
+							{
+								bufka[ 1 ] = 0;
+							}								
+	          else{
+	          	  bufka[ 1 ] = 1;
+	              }
+
+						if( InPin_K3 )
+							{
+								bufka[ 2 ] = 0;
+							}								
+	          else{
+	          	  bufka[ 2 ] = 1;
+	              }
+
+						if( InPin_K4 )
+							{
+								bufka[ 3 ] = 0;
+							}								
+	          else{
+	          	  bufka[ 3 ] = 1;
+	              }
+										
+						if( InPin_K5 )
+							{
+								bufka[ 4 ] = 0;
+							}								
+	          else{
+	          	  bufka[ 4 ] = 1;
+	              }
+
+
+	
+
+            for( i = 0 ; i<5 ; i++ )
+                   {
+  	                  if ( bufkb[ i ] != bufka[ i ] )
+  		                     {//滤波
+  			                   bufkb[ i ] = bufka[ i ];
+  		                    }
+  	               else { 
+  	               	
+  	               	     if ( bufkc[ i ]  !=  bufkb[ i ] )
+  	               	     	   {
+  	         	                KeyProcess( bufkc, bufkb);
+                              bufkc[ i ] =  bufkb[ i ];
+                             }
+  	         	          
+  	                     }
+  	                 
+  	                
+                  }
+										
+				}	
+}
+
+
+
 ////////////////////
 
 
-void Task13(void * pdata)  //TaskSyncUp
+void TaskLed(void * pdata)  //TaskSyncUp
 {
 INT8U err;
  
@@ -645,15 +777,40 @@ INT8U err;
 
 	pdata = pdata;     // 避免编译警告	   
 
+#if CONFIG_SPI_DISP
 
+  SpiInit_nny();
+  SpiInit_nnz();
+  
+#endif  
+  
+//SPIy_Buffer_Tx
 
-OSTimeDly(OS_TICKS_PER_SEC*2);	    //延时2秒		
+OSTimeDly(OS_TICKS_PER_SEC/2);	    //延时2秒		
 
 		for(;;)
 						{
 						//OS_ENTER_CRITICAL();
 						//OS_EXIT_CRITICAL();
-						OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时0.1秒		
+						#if CONFIG_SPI_DISP
+						
+						   #if Flag_test_spi_DMA
+						   OSSemPend(OSSemTest2,0,&err);
+						    #endif
+						//Seg8
+						Process_N_Numb1();
+						   
+						EventTimeLed=2;   
+						       OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时1秒	
+						   
+						OSTimeDly(OS_TICKS_PER_SEC/500);	    //延时0.1秒	
+
+						#else
+						
+						OSTimeDly(OS_TICKS_PER_SEC);	    //延时1秒	
+						
+						#endif
+							
 
 				    }	
 }
@@ -665,7 +822,7 @@ OSTimeDly(OS_TICKS_PER_SEC*2);	    //延时2秒
 //  1234号高压电动机12000转  ，  2400HZ脉冲  ，4*3极
 //  56号低压电动机24000转  ，    2400HZ脉冲  ，2*3极
 
-void Task14(void * pdata) //TaskTs
+void TaskApm(void * pdata) //TaskTs
 {
 INT8U err;
  
@@ -676,7 +833,14 @@ unsigned  short int temp16;
 	pdata = pdata;                          	 	// 避免编译警告	
 	   
 
+#if Flag_test_spi_DMA     
+  for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
+			        {
+              Capture_testSPI_number[i]= 0; 
 
+               }
+#endif               
+               
 //OSTimeDly(OS_TICKS_PER_SEC);	    //延时0.5秒
 
 //////
@@ -700,11 +864,7 @@ Led_Test_Adc_On1;
       for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
 			        {//读速度
               
-              
-              
-              
-              
-              	
+
               if( Capture_number[i] > 1 )
               			{
               				temp16 = CaptureValueEnd[ i ] - CaptureValueStart[ i ];
@@ -719,18 +879,45 @@ Led_Test_Adc_On1;
               else{
               	    Apm_FREQ[ i ] = 0;
                   }
-;             
-              Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];
+                  
+              #if Flag_test_spi_DMA
 
-               Capture_number[i] = 0;
-               Capture_Flag[i] = 1; //再开始
+              Coldw.ApmGt[i]=(float)Capture_testSPI_number[ i ];
+              #else
+                   
+              Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];
+              #endif
+               
 
                }	
                
+             #if Flag_test_spi_DMA
+             OSSemPend(OSSemTest1,0,&err);
+             #endif  
+             
+             for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
+			        {  
+			        	Capture_number[i] = 0;
+               Capture_Flag[i] = 1; //再开始
+              }
+               
+               
+////////////////
 
+         #if Flag_test_spi_DMA     
+          Capture_testSPI_number[6] ++ ;
+          Coldw.ApmGt[6]=Capture_testSPI_number[6] ;
+          if( Capture_testSPI_number [6] > 6000 )
+          	{
+             for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
+			           {
+                 Capture_testSPI_number[i] = 0; 
 
-
-
+                 }
+             }
+             
+             #endif
+///////////////
 
 				OSTimeDly(OS_TICKS_PER_SEC);	    //延时10ms  改为 2ms		 改为 1ms	
 				

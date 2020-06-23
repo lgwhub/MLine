@@ -478,7 +478,7 @@ if(len<2)
   #else
   if( Checksum != (*(p+len-2)+ *(p+len-1)*0x100) ) return;  //校验错误   低位在前
   #endif
-  	EventTimeLed=2;
+//  	EventTimeLed=2;
   _ModbusParameterProcess(Channl,p,len-2)	;  //长度忽略校验码
 
 }

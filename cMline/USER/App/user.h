@@ -48,6 +48,12 @@ extern unsigned  long int Capture_Flag[6+1] ;
 extern unsigned  long int Apm_FREQ[6+1] ; 
 extern unsigned  long int Capture_number[6+1] ;
 
+#define Flag_test_spi_DMA   1
+
+#if Flag_test_spi_DMA     
+    extern unsigned  long int Capture_testSPI_number[6+1] ;
+#endif
+
 //extern unsigned  long int CaptureValueStart[6+1] ;
 //extern unsigned  long int CaptureValueEnd[6+1];
 //因为使用16位定时器，所以这两个变量也使用16位
@@ -84,11 +90,11 @@ void TaskHpwm(void * pdata);
 void TaskStatus(void * pdata);
 
 void Task11(void * pdata);
-void Task12(void * pdata);
-void Task14(void * pdata);
+void TaskKey(void * pdata);
+void TaskApm(void * pdata);
 void TaskRecv(void * pdata);
 void TaskSave(void * pdata);
-void Task13(void * pdata);
+void TaskLed(void * pdata);
 
 void ModbusCommand2(void);
 

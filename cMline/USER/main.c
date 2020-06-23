@@ -181,9 +181,6 @@ SendText_UART3("UART3 OK\r\n");
 
 
 
-
-
-
 #if (OS_TASK_STAT_EN > 0)
     OSStatInit();                                            /* Determine CPU capacity.                              */
 #endif

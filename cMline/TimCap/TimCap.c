@@ -88,7 +88,7 @@ void Cap_Configuration_T3(void)
 	TIM_ICInitTypeDef  TIM_ICInitStructure;
 	
 	  TIM_TimeBaseInitTypeDef  		TIM_TimeBaseStructure;
-   	TIM_TimeBaseStructure.TIM_Prescaler     = 72000000/100000-1;			//Ô¤·ÖÅä¼Ä´æÆ÷   100khz    0.5S.<65536
+   	TIM_TimeBaseStructure.TIM_Prescaler     = 1;//72000000/100000-1;			//Ô¤·ÖÅä¼Ä´æÆ÷   100khz    0.5S.<65536
 //    TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;//TIM_CounterMode_Down;//
 //    TIM_TimeBaseStructure.TIM_Period        = 1000;		//  1/1000
 //    TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
@@ -127,7 +127,7 @@ void Cap_Configuration_T4(void)
 	
 	
 		  TIM_TimeBaseInitTypeDef  		TIM_TimeBaseStructure;
-   	TIM_TimeBaseStructure.TIM_Prescaler     = 72000000/100000-1;			//Ô¤·ÖÅä¼Ä´æÆ÷   100khz    0.5S.<65536
+   	TIM_TimeBaseStructure.TIM_Prescaler     = 1;//72000000/100000-1;			//Ô¤·ÖÅä¼Ä´æÆ÷   100khz    0.5S.<65536
     TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
 	
 	

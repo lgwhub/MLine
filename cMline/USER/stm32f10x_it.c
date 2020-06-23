@@ -191,9 +191,10 @@ void TIM3_IRQHandler(void)
    
    
    //.....          
+      #if Flag_test_spi_DMA     
+         Capture_testSPI_number[0]++;
+      #endif   
       
-         
-         
      if( Capture_Flag[0] !=0 )
     	 {
           if(Capture_number[0] == 0)
@@ -218,6 +219,10 @@ void TIM3_IRQHandler(void)
      {
     /* Clear TIM3 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM3, TIM_IT_CC4);
+    
+    #if Flag_test_spi_DMA     
+    Capture_testSPI_number[1]++;
+    #endif
     
      if( Capture_Flag[1] !=0 )
     	   {
@@ -248,6 +253,10 @@ void TIM4_IRQHandler(void)
     /* Clear TIM4 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC1);
     
+    #if Flag_test_spi_DMA     
+    Capture_testSPI_number[2]++;
+    #endif
+    
     if( Capture_Flag[2] !=0 )
     	   {
          if(Capture_number[2] == 0)
@@ -270,6 +279,10 @@ void TIM4_IRQHandler(void)
   {
     /* Clear TIM4 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC2);
+     
+     #if Flag_test_spi_DMA     
+     Capture_testSPI_number[3]++;
+    #endif
     
     if( Capture_Flag[3] !=0 )
     	   {
@@ -293,6 +306,9 @@ void TIM4_IRQHandler(void)
     /* Clear TIM4 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC3);
     
+      #if Flag_test_spi_DMA     
+        Capture_testSPI_number[4]++;
+      #endif
         
     if( Capture_Flag[4] !=0 )
     	   {
@@ -317,7 +333,11 @@ void TIM4_IRQHandler(void)
     /* Clear TIM4 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC4);
     
-        
+    
+    #if Flag_test_spi_DMA    
+        Capture_testSPI_number[5]++;
+     #endif    
+     
     if( Capture_Flag[5] !=0 )
     	   {
          if(Capture_number[5] == 0)
@@ -430,6 +450,73 @@ void UART5_IRQHandler(void)
 		#endif	
 #endif
 }
+
+/////////////////////////////
+void SPI1_IRQHandler(void)
+{
+	
+	//unsigned char xxx;
+  if (SPI_I2S_GetITStatus(SPI1, SPI_I2S_IT_TXE) != RESET)
+  {
+SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE, DISABLE);
+
+  SPI_I2S_ClearITPendingBit(SPI1,  SPI_I2S_IT_TXE);     
+  //SPI_I2S_ClearITPendingBit(SPI1,  SPI_I2S_FLAG_TXE); 
+
+		
+	//	SPI1->SR  =0;
+//xxx=SPI_I2S_GetITStatus(SPI1, SPI_I2S_IT_TXE) ;
+		
+      //SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE, DISABLE);
+	//	xxx+=0x80;
+		
+
+  }
+}
+//////////////////////////////
+
+void SPI2_IRQHandler(void)
+{
+  /* Store SPI_SLAVE received data */
+ // SPI_SLAVE_Buffer_Rx[RxIdx++] = SPI_I2S_ReceiveData(SPI_SLAVE);
+ 
+   if (SPI_I2S_GetITStatus(SPI2, SPI_I2S_IT_TXE) != RESET)
+  {
+
+SPI_I2S_ITConfig(SPI2, SPI_I2S_IT_TXE, DISABLE);
+
+      //SPI_I2S_ITConfig(SPI_MASTER, SPI_I2S_IT_TXE, DISABLE);
+
+  }
+ 
+ 
+}
+
+
+
+//SELECTED_SPI_INT
+void DMA1_Channel3_IRQHandler(void)
+{
+    if(DMA_GetITStatus(DMA1_IT_TC3)==SET)
+        {
+         DMA_Cmd(DMA1_Channel3,DISABLE);
+        //DMA1_Channel3->CNDTR = 3;//ADC_DATASIZE;
+         //DMA_Cmd(DMA1_Channel3,ENABLE);
+         DMA_ClearITPendingBit(DMA1_IT_TC3);
+        }
+}
+////////////////////////////////////
+void DMA1_Channel5_IRQHandler(void)
+{
+    if(DMA_GetITStatus(DMA1_IT_TC5)==SET)
+        {
+          DMA_Cmd(DMA1_Channel5,DISABLE);
+         // DMA1_Channel5->CNDTR = 3;//ADC_DATASIZE;
+        // DMA_Cmd(DMA1_Channel5,ENABLE);
+          DMA_ClearITPendingBit(DMA1_IT_TC5);
+        }
+}
+
 
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
