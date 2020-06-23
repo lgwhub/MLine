@@ -45,8 +45,8 @@ float wAdcResoult[MAX_TEMPRATURE_CHNALL];  //MAX_ADC_CH
 /////////////////////////////////////////////
 
 
-//signed short int PowerOutBuf[2+(MAX_TEMPRATURE_CHNALL)];
-//signed short int TestOutBuf[2+(MAX_TEMPRATURE_CHNALL)];
+signed short int PowerOutBuf[2+(MAX_TEMPRATURE_CHNALL)];
+signed short int TestOutBuf[2+(MAX_TEMPRATURE_CHNALL)];
 
 
 
@@ -702,7 +702,9 @@ Led_Test_Adc_On1;
               		if( Capture_number[i] > 1 )
               			{
               				
-              				Apm_FREQ[ i ] = 72000000 * Capture_number[i] / temp32;   //hz
+              				//Apm_FREQ[ i ] = 72000000 * Capture_number[i] / temp32;   //hz
+              				
+              				Apm_FREQ[ i ] = Capture_number[i]; //temp32;
 
               			}
               	}

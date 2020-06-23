@@ -134,10 +134,10 @@ void Cap_Configuration_T4(void)
  
 
   /* Enable the CC2 Interrupt Request */
-  TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
-  TIM_ITConfig(TIM3, TIM_IT_CC2, ENABLE);
-  TIM_ITConfig(TIM3, TIM_IT_CC3, ENABLE);
-  TIM_ITConfig(TIM3, TIM_IT_CC4, ENABLE);  
+  TIM_ITConfig(TIM4, TIM_IT_CC1, ENABLE);
+  TIM_ITConfig(TIM4, TIM_IT_CC2, ENABLE);
+  TIM_ITConfig(TIM4, TIM_IT_CC3, ENABLE);
+  TIM_ITConfig(TIM4, TIM_IT_CC4, ENABLE);  
   
   
 }

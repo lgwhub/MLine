@@ -122,8 +122,8 @@ InitGpio();
 
 
 #if CONFIG_CAP_TIM
-Cap_Configuration_T3();
-Cap_Configuration_T4();
+Init_Capture_T3();
+Init_Capture_T4();
 #endif
 
 StepMotInit();
@@ -138,6 +138,9 @@ PWM_T1_Configuration();
 GPIO_Configuration_PWM_T5();
 PWM_T5_Configuration();  
 #endif
+
+
+
 
 
 

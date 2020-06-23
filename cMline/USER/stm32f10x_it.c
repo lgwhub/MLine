@@ -176,8 +176,8 @@ void TIM2_IRQHandler(void)
 
 void TIM3_IRQHandler(void)
 { 
-  if(TIM_GetITStatus(TIM3, TIM_IT_CC1) == SET) 
-  {
+  if(TIM_GetITStatus(TIM3, TIM_IT_CC3) == SET) 
+     {
     /* Clear TIM3 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM3, TIM_IT_CC3);
     
@@ -194,22 +194,22 @@ void TIM3_IRQHandler(void)
       
          
          
-    if( Capture_Flag[0] !=0 )
+     if( Capture_Flag[0] !=0 )
     	 {
-        if(Capture_number[0] == 0)
-             {
+          if(Capture_number[0] == 0)
+               {
 
-             CaptureValueStart[0] = TIM_GetCapture3(TIM3);
-             Capture_number[0] = 1;
-             }
+               CaptureValueStart[0] = TIM_GetCapture3(TIM3);
+               Capture_number[0] = 1;
+               }
          else
                {
 
                CaptureValueEnd[0]  = TIM_GetCapture3(TIM3); 
                Capture_number[0] ++ ;
                }
-       }
-  
+         }
+  	}
  
  
  
