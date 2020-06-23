@@ -44,7 +44,7 @@
 
 
 
-extern unsigned  long int Capture_Flag[MAX_BLDC_CH6 + 1] ;
+extern unsigned  char Capture_Flag[MAX_BLDC_CH6 + 1] ;
 extern unsigned  long int Apm_FREQ[MAX_BLDC_CH6 + 1] ; 
 extern unsigned  long int Capture_number[MAX_BLDC_CH6 +1 ] ;
 
@@ -60,11 +60,13 @@ extern unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwm速度控制值  
 //    extern unsigned  long int Capture_testSPI_number[6+1] ;
 //#endif
 
-//extern unsigned  long int CaptureValueStart[6+1] ;
-//extern unsigned  long int CaptureValueEnd[6+1];
+extern unsigned  long int CaptureValueStart[6+1] ;
+extern unsigned  long int CaptureValueEnd[6+1];
 //因为使用16位定时器，所以这两个变量也使用16位
-extern unsigned  short int CaptureValueStart[6+1] ;
-extern unsigned  short int CaptureValueEnd[6+1];
+//extern unsigned  short int CaptureValueStart[6+1] ;
+//extern unsigned  short int CaptureValueEnd[6+1];
+extern unsigned  long int CaptureValueHigh_T3;
+extern unsigned  long int CaptureValueHigh_T4;
 ///////////////////////////////
 
 extern unsigned char EventTimeBuz;
@@ -87,7 +89,7 @@ extern unsigned char EventTimeLed;
 
 //void MotorsRun(unsigned char ch, signed short int steps);
 
-void TaskVirPwm(void * pdata);
+void TaskRush(void * pdata);
 void TaskModbus(void * pdata);
 void TaskStepMotor(void * pdata);
 void TaskTimePr(void * pdata);

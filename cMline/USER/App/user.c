@@ -58,7 +58,7 @@ unsigned long ShiftKeySavennz;
 unsigned  short int  BLDC_PwmBuf[ MAX_BLDC_CH6 + 1 ];   //pwm速度中间变量
 unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwm速度控制值   1000  max 
 
-unsigned  long int Capture_Flag[ MAX_BLDC_CH6 + 1 ] ;
+unsigned  char Capture_Flag[ MAX_BLDC_CH6 + 1 ] ;
 unsigned  long int Apm_FREQ[ MAX_BLDC_CH6 +1 ] ; 
 unsigned  long int Capture_number[ MAX_BLDC_CH6 + 1 ] ;
 
@@ -69,11 +69,13 @@ unsigned  long int Capture_number[ MAX_BLDC_CH6 + 1 ] ;
 //  unsigned  long int Capture_testSPI_number[6+1] ;
 //#endif
 
-//unsigned  long int CaptureValueStart[6+1] ;
-//unsigned  long int CaptureValueEnd[6+1];
+unsigned  long int CaptureValueStart[6+1] ;
+unsigned  long int CaptureValueEnd[6+1];
 //因为使用16位定时器，所以这两个变量也使用16位
-unsigned  short int CaptureValueStart[6+1] ;
-unsigned  short int CaptureValueEnd[6+1];
+//unsigned  short int CaptureValueStart[6+1] ;
+unsigned  long int CaptureValueHigh_T3;
+unsigned  long int CaptureValueHigh_T4;
+//unsigned  short int CaptureValueEnd[6+1];
 
 
 
@@ -179,62 +181,41 @@ void VirtualPwmOutPin(unsigned char ch , unsigned char High)
 	
 }
 //////////////////////////////////////////////
-void TaskVirPwm(void * pdata)  //Virtual
+void TaskRush(void * pdata)  //Virtual
 {
 INT8U err;
-unsigned char i;
-unsigned char curDuty[8];//占空比
-unsigned char curCycle;//周期
 
 pdata = pdata;                          	 	// 避免编译警告		
 
 //#if CONFIG_ADC
 //ADC_Configuration();
 //#endif
-//
 
+	    PutValToDispBf(6666 , DispBufnny+12 );
+        PutValToDispBf( 0, DispBufnny+8 );
+        PutValToDispBf(4444 , DispBufnny+4 );
+        PutValToDispBf(3333 , DispBufnny+0 );
+        
+        PutValToDispBf(5555 , DispBufnnz+12 );
+        PutValToDispBf(0, DispBufnnz+8 );
+        PutValToDispBf(2222 , DispBufnnz+4 );
+        PutValToDispBf(1111 , DispBufnnz+0 ) ;     
+        
+		OSTimeDly(OS_TICKS_PER_SEC*2);	    //延时10ms 
 
-
-curCycle = 200;//周期
-
-OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时0.1秒
 for(;;)
 		{
-			//电加热 软件 PWM
-			/*
-			for(i=0;i<8;i++)
-			    {
-			     if(curDuty[i] > 0)
-			     	  {
-			     		
-			     		 curDuty[i] --;
-			     	  }
-			     else{//关输出
-			     	
-			     	   VirtualPwmOutPin(i,0);
-			         }
-			     }
-			
-			  if(curCycle > 0)
-			     	{
-			     		curCycle --;
-			     	}
-			  else{
-			     	 curCycle = 200 ;//周期到
-                for(i=0;i<8;i++)
-			            {
-                   curDuty[i] = Coldw.TC_duty[i]       ;//刷新PWM值
-			     	       //开输出
-			     	       if(Coldw.unit_onof_flag[i]>0)
-			     	       	   {
-			     	       		  VirtualPwmOutPin(i,1);
-			     	       	   }
-			     	       
-			     	       }			     	    
-			       }
-			        
-							*/
-		  OSTimeDly(OS_TICKS_PER_SEC);	    //延时0.001秒
+        PutValToDispBf(Apm_FREQ[5], DispBufnny+12 );   //Coldw.ApmGt
+        PutValToDispBf(  0, DispBufnny+8 );
+        PutValToDispBf( Apm_FREQ[3], DispBufnny+4 );
+        PutValToDispBf(Apm_FREQ[2] , DispBufnny+0 );
+        
+        PutValToDispBf(Apm_FREQ[4] , DispBufnnz+12 );
+        PutValToDispBf( 0, DispBufnnz+8 );
+        PutValToDispBf( Apm_FREQ[1], DispBufnnz+4 );
+        PutValToDispBf(Apm_FREQ[0] , DispBufnnz+0 ) ;      
+        
+		  OSTimeDly(OS_TICKS_PER_SEC);	    //延时1秒
 
 		}		
 }
@@ -654,15 +635,17 @@ for(;;)
 		if(1)
 					{
 					Led_Status_Off;
-					OSTimeDly(OS_TICKS_PER_SEC/4);	    //延时0.05秒
+					OSTimeDly(OS_TICKS_PER_SEC/4);	    //延时0.25秒
 		
 					Led_Status_On;
-					OSTimeDly(OS_TICKS_PER_SEC/4);	    //延时0.05秒
+					OSTimeDly(OS_TICKS_PER_SEC/4);	    //延时0.25秒
 					}
 			else{
 					Led_Status_On;
-					OSTimeDly(OS_TICKS_PER_SEC/2);	    //延时0.1秒
+					OSTimeDly(OS_TICKS_PER_SEC/2);	    //延时0.5秒
 					}	
+
+
 
 		if(EventTimeBuz>0)
 			{
@@ -1022,14 +1005,14 @@ INT8U err;
 void TaskApm(void * pdata) //TaskTs
 {
 INT8U err;
- 
+ 	CPU_SR          cpu_sr;
 uchar i;
 
-unsigned  short int temp16 ;
+unsigned  long  int    temp32T ,temp32N;
 
 	pdata = pdata;                          	 	// 避免编译警告	
 	   
-      Coldw.limit_recode[7] =0; //永远计数器。脉冲测量用
+Coldw. T_bias_set = 0; //永远计数器。脉冲测量用
       
 //#if Flag_test_spi_DMA     
 //  for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
@@ -1039,19 +1022,8 @@ unsigned  short int temp16 ;
 //               }
 //#endif               
         
-        
-	      PutValToDispBf(6666 , DispBufnny+12 );
-        PutValToDispBf( 0, DispBufnny+8 );
-        PutValToDispBf(4444 , DispBufnny+4 );
-        PutValToDispBf(3333 , DispBufnny+0 );
-        
-        PutValToDispBf(5555 , DispBufnnz+12 );
-        PutValToDispBf(0, DispBufnnz+8 );
-        PutValToDispBf(2222 , DispBufnnz+4 );
-        PutValToDispBf(1111 , DispBufnnz+0 ) ;     
-        
-				OSTimeDly(OS_TICKS_PER_SEC*2);	    //延时10ms  改为 2ms		 改为 1ms	
-//OSTimeDly(OS_TICKS_PER_SEC);	    //延时0.5秒
+
+OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时0.5秒
 
 //////
 	for(;;)
@@ -1063,33 +1035,49 @@ unsigned  short int temp16 ;
 Led_Test_Adc_On1;
 
 	
-		    Led_Test_Adc_Off1;			   
-
+		    Led_Test_Adc_Off1;		
+		    	   
+      OS_ENTER_CRITICAL();
+      
       for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {
               Capture_Flag[i] = 0;   //暂停
 
                }	
 
+	   OS_EXIT_CRITICAL();
+
+
       for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {//读速度
-              
-
-              if( Capture_number[i] > 1 )
+			        	
+                     OS_ENTER_CRITICAL();
+                      temp32N = Capture_number[i];
+                      temp32T = CaptureValueEnd[ i ] - CaptureValueStart[ i ];
+                     OS_EXIT_CRITICAL();
+              if(  temp32N   >   1  )
               			{
-              				temp16 = CaptureValueEnd[ i ] - CaptureValueStart[ i ];
-              				if( temp16 != 0)
-              					  {
-              				    //Apm_FREQ[ i ] = 72000000 * Capture_number[i] / temp16;   //hz
-              				
-              				    Apm_FREQ[ i ] = Capture_number[i]; //temp16;//
+              				                      //temp32T = CaptureValueHigh_T3 + CaptureValueEnd[ i ] - CaptureValueStart[ i ];
+              				                      //temp32T = CaptureValueHigh_T4 + CaptureValueEnd[ i ] - CaptureValueStart[ i ];
+              				                      temp32T = CaptureValueEnd[ i ] - CaptureValueStart[ i ];
 
-              			     }
+              				
+              				
+              				if( temp32T != 0)
+              					  {
+              				      Apm_FREQ[ i ] = ( long )(  (  temp32N -1 )  * ( float ) 720000000 / temp32T );   //hz
+              			          }
+              			     else{
+              			     	  // Apm_FREQ[ i ] = ( long )   (  temp32N -1 )  * 100;  //10ms
+              			           }
+              			          
               	  }   
               else{
               	    Apm_FREQ[ i ] = 0;
                   }
                   
+                
+                 
                // #if Flag_test_spi_DMA
 
               //Coldw.ApmGt[i]=(float)Capture_testSPI_number[ i ];
@@ -1111,37 +1099,44 @@ Led_Test_Adc_On1;
                   break;	             
                   }
    
-               Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];	
+
+                 Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];	
 
                }	
                
+ 
 //             #if Flag_test_spi_DMA
 //             OSSemPend(OSSemTest1,0,&err);
 //             #endif  
-             
+
+							 	Coldw.limit_recode[7] =  CaptureValueStart[0 ];
+							 	//Coldw.limit_recode[6] = CaptureValueHigh_T3 + CaptureValueEnd[ 0 ] - CaptureValueStart[0 ] ;
+                                Coldw.limit_recode[6] =   CaptureValueEnd[ 0 ] - CaptureValueStart[0 ] ;
+								
+							
+							 
+CaptureValueHigh_T3 = 0;
+CaptureValueHigh_T4 = 0;
+
+
+       OS_ENTER_CRITICAL();
+				 
              for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {  
+			        	
+			        	CaptureValueStart[i] =0  ;
+                        
+			        	CaptureValueEnd[i] =0;
+			        	
 			        	Capture_number[i] = 0;
                Capture_Flag[i] = 1; //再开始
               }
-               
+              
+			 OS_EXIT_CRITICAL();			
                
 
-///////////////      Coldw.limit_recode[7] 
-        PutValToDispBf(Apm_FREQ[5], DispBufnny+12 );   //Coldw.ApmGt
-        PutValToDispBf( Coldw.limit_recode[7], DispBufnny+8 );
-        PutValToDispBf( Apm_FREQ[3], DispBufnny+4 );
-        PutValToDispBf(Apm_FREQ[2] , DispBufnny+0 );
-        
-        PutValToDispBf(Apm_FREQ[4] , DispBufnnz+12 );
-        PutValToDispBf( 0, DispBufnnz+8 );
-        PutValToDispBf( Apm_FREQ[1], DispBufnnz+4 );
-        PutValToDispBf(Coldw.ApmGt[0] , DispBufnnz+0 ) ;      
-        
-   	
 							
-							
-				OSTimeDly(OS_TICKS_PER_SEC);	    //延时10ms  改为 2ms		 改为 1ms	
+				OSTimeDly( OS_TICKS_PER_SEC  /100 );	    //延时10ms  
 										
 
 					}
@@ -1558,8 +1553,8 @@ for(;;)
 		  		StepMotRun(  2  ,  20000  );
 		  		
 		  			 //4 #步进电机
-		  		StepMot[3].PulseCircleSet = 200 +  Coldw.ApmCt[7];  //slow
-		  		StepMotRun(  3 , 4 );
+		  		StepMot[3].PulseCircleSet = 40 +  Coldw.ApmCt[7];  //slow
+		  		StepMotRun(  3 , 400 );
 		  	  }
 		  else{
 		  		StepMotStop(2);  	 //3 #步进电机
@@ -1573,8 +1568,8 @@ for(;;)
 		  		StepMotRun(  0 , 20000 );
 		  		
 		  		 //2 #步进电机	  	
-		  		StepMot[1].PulseCircleSet = 200 +  Coldw.ApmCt[7];  //slow
-		  		StepMotRun(  1 , 4  );
+		  		StepMot[1].PulseCircleSet = 40 +  Coldw.ApmCt[7];  //slow
+		  		StepMotRun(  1 , 400  );
 		  	  }
 		  else{
 		  		StepMotStop( 0 );  //1 #步进电机
@@ -1582,9 +1577,14 @@ for(;;)
 		      } 
      OSSemPost(OSSemMotors);
    
-     Coldw.FAN_duty [ 6 ]   =    StepMot[0].PulseCircleSet;    //显示
-     Coldw.FAN_duty [ 7 ]   =    StepMot[1].PulseCircleSet;    //显示
+
                   
+                  Coldw.ApmGt[ 6 ]         =    StepMot[0].PulseCircleSet;    //显示
+                  Coldw.ApmGt[ 7 ]         =    StepMot[1].PulseCircleSet;    //显示
+                  Coldw.FAN_duty [ 6 ]   =    StepMot[2].PulseCircleSet;    //显示
+                  Coldw.FAN_duty [ 7 ]   =    StepMot[3].PulseCircleSet;    //显示
+     
+                   
     OSTimeDly(OS_TICKS_PER_SEC/50);  //补充延时
 
 		}

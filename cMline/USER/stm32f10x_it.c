@@ -176,6 +176,18 @@ void TIM2_IRQHandler(void)
 
 void TIM3_IRQHandler(void)
 { 
+	
+ if( TIM_GetITStatus( TIM3 ,  TIM_IT_Update )  ==  SET ) 	
+ 	{
+ 		TIM_ClearITPendingBit( TIM3 ,  TIM_IT_Update );
+ 		 //if(  Capture_Flag[0]  != 0 )
+    	    {
+
+          		CaptureValueHigh_T3 += 65536;
+
+ 		   }
+ 	}
+ 	
   if(TIM_GetITStatus(TIM3, TIM_IT_CC3) == SET) 
      {
     /* Clear TIM3 Capture compare interrupt pending bit */
@@ -196,20 +208,20 @@ void TIM3_IRQHandler(void)
 //      #endif   
       
      // Capture_number_All32 ++ ;  //永远计数器。脉冲测量用
-      Coldw.limit_recode[7] ++; //永远计数器。脉冲测量用
+      Coldw. T_bias_set++; //永远计数器。脉冲测量用
       
      if( Capture_Flag[0] !=0 )
     	 {
           if(Capture_number[0] == 0)
                {
 
-               CaptureValueStart[0] = TIM_GetCapture3(TIM3);
+               CaptureValueStart[0] = TIM_GetCapture3(TIM3) + CaptureValueHigh_T3;
                Capture_number[0] = 1;
                }
          else
                {
 
-               CaptureValueEnd[0]  = TIM_GetCapture3(TIM3); 
+               CaptureValueEnd[0]  = TIM_GetCapture3(TIM3)  + CaptureValueHigh_T3; 
                Capture_number[0] ++ ;
                }
          }
@@ -232,13 +244,13 @@ void TIM3_IRQHandler(void)
          if(Capture_number[1] == 0)
                {
 
-             CaptureValueStart[1] = TIM_GetCapture4(TIM3);
+             CaptureValueStart[1] = (unsigned  long int)TIM_GetCapture4(TIM3) +  CaptureValueHigh_T3;
              Capture_number[1] = 1;
                }
           else
                {
 
-               CaptureValueEnd[1]  = TIM_GetCapture4(TIM3); 
+               CaptureValueEnd[1]  =  (unsigned  long int)TIM_GetCapture4(TIM3)   +  CaptureValueHigh_T3; 
                Capture_number[1] ++ ;
                }
         }   
@@ -251,6 +263,17 @@ void TIM3_IRQHandler(void)
 
 void TIM4_IRQHandler(void)
 {
+	
+	 if( TIM_GetITStatus( TIM4 ,  TIM_IT_Update )  ==  SET ) 	
+ 	{
+ 		TIM_ClearITPendingBit( TIM4 ,  TIM_IT_Update );
+ 		 //if(  Capture_Flag[2]  != 0 )
+    	    {
+          		CaptureValueHigh_T4 += 65536;
+ 		   }
+ 	}
+	
+	
   if(TIM_GetITStatus(TIM4, TIM_IT_CC1) == SET) 
   {
     /* Clear TIM4 Capture compare interrupt pending bit */
@@ -265,13 +288,13 @@ void TIM4_IRQHandler(void)
          if(Capture_number[2] == 0)
                {
 
-             CaptureValueStart[2] = TIM_GetCapture1(TIM4);
+             CaptureValueStart[2] = TIM_GetCapture1(TIM4) + CaptureValueHigh_T4;
              Capture_number[2] = 1;
                }
           else
                {
 
-               CaptureValueEnd[2]  = TIM_GetCapture1(TIM4); 
+               CaptureValueEnd[2]  = TIM_GetCapture1(TIM4) + CaptureValueHigh_T4 ; 
                Capture_number[2] ++ ;
                }
         }
@@ -292,13 +315,13 @@ void TIM4_IRQHandler(void)
          if(Capture_number[3] == 0)
                {
 
-             CaptureValueStart[3] = TIM_GetCapture2(TIM4);
+             CaptureValueStart[3] = TIM_GetCapture2(TIM4) + CaptureValueHigh_T4;
              Capture_number[3] = 1;
                }
           else
                {
 
-               CaptureValueEnd[3]  = TIM_GetCapture2(TIM4); 
+               CaptureValueEnd[3]  = TIM_GetCapture2(TIM4) + CaptureValueHigh_T4 ; 
                Capture_number[3] ++ ;
                }
         }
@@ -318,13 +341,13 @@ void TIM4_IRQHandler(void)
          if(Capture_number[4] == 0)
                {
 
-             CaptureValueStart[4] = TIM_GetCapture3(TIM4);
+             CaptureValueStart[4] = TIM_GetCapture3(TIM4) + CaptureValueHigh_T4;
              Capture_number[4] = 1;
                }
           else
                {
 
-               CaptureValueEnd[4]  = TIM_GetCapture3(TIM4); 
+               CaptureValueEnd[4]  = TIM_GetCapture3(TIM4) + CaptureValueHigh_T4 ; 
                Capture_number[4] ++ ;
                }
         }
@@ -346,13 +369,13 @@ void TIM4_IRQHandler(void)
          if(Capture_number[5] == 0)
                {
 
-             CaptureValueStart[5] = TIM_GetCapture4(TIM4);
+             CaptureValueStart[5] = TIM_GetCapture4(TIM4) + CaptureValueHigh_T4;
              Capture_number[5] = 1;
                }
           else
                {
 
-               CaptureValueEnd[5]  = TIM_GetCapture4(TIM4); 
+               CaptureValueEnd[5]  = TIM_GetCapture4(TIM4) + CaptureValueHigh_T4 ; 
                Capture_number[5] ++ ;
                }
         }

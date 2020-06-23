@@ -87,14 +87,21 @@ void Cap_Configuration_T3(void)
 	
 	TIM_ICInitTypeDef  TIM_ICInitStructure;
 	
-	  TIM_TimeBaseInitTypeDef  		TIM_TimeBaseStructure;
-   	TIM_TimeBaseStructure.TIM_Prescaler     = 1;//72000000/100000-1;			//Ô¤·ÖÅä¼Ä´æÆ÷   100khz    0.5S.<65536
-//    TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;//TIM_CounterMode_Down;//
-//    TIM_TimeBaseStructure.TIM_Period        = 1000;		//  1/1000
+  //TIM_TimeBaseInitTypeDef  		TIM_TimeBaseStructure;	
+	
+	
+	TIM_DeInit(TIM3);
+	
+	
+
+	/*
+   	TIM_TimeBaseStructure.TIM_Prescaler     = 1;			//Ô¤·ÖÅä¼Ä´æÆ÷   400khz    0.1S.<65536
+    TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;//TIM_CounterMode_Down;//
+    TIM_TimeBaseStructure.TIM_Period        = 0xffff;		//  1/1000
 //    TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
 //    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
-	
+*/
 	
 	
 	
@@ -102,7 +109,7 @@ void Cap_Configuration_T3(void)
   TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
   TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
   TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
-  TIM_ICInitStructure.TIM_ICFilter = 0x0;
+  TIM_ICInitStructure.TIM_ICFilter = 0x04;
 
   TIM_ICInit(TIM3, &TIM_ICInitStructure);
   
@@ -117,6 +124,9 @@ void Cap_Configuration_T3(void)
   /* Enable the CC3 CC4 Interrupt Request */
   TIM_ITConfig(TIM3, TIM_IT_CC3, ENABLE);
 TIM_ITConfig(TIM3, TIM_IT_CC4, ENABLE);
+TIM_ITConfig(TIM3,TIM_IT_Update, ENABLE);
+
+
 }
 
 void Cap_Configuration_T4(void)
@@ -124,11 +134,11 @@ void Cap_Configuration_T4(void)
 	
 	TIM_ICInitTypeDef  TIM_ICInitStructure;
 	
+	TIM_DeInit(TIM4);
 	
-	
-		  TIM_TimeBaseInitTypeDef  		TIM_TimeBaseStructure;
-   	TIM_TimeBaseStructure.TIM_Prescaler     = 1;//72000000/100000-1;			//Ô¤·ÖÅä¼Ä´æÆ÷   100khz    0.5S.<65536
-    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+//		  TIM_TimeBaseInitTypeDef  		TIM_TimeBaseStructure;
+//   	TIM_TimeBaseStructure.TIM_Prescaler     = 1;//72000000/100000-1;			//Ô¤·ÖÅä¼Ä´æÆ÷   100khz    0.5S.<65536
+//   TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
 	
 	
 	
@@ -136,7 +146,7 @@ void Cap_Configuration_T4(void)
   TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
   TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
   TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
-  TIM_ICInitStructure.TIM_ICFilter = 0x0;
+  TIM_ICInitStructure.TIM_ICFilter = 0;//0x04;
 
   TIM_ICInit(TIM4, &TIM_ICInitStructure);
   
@@ -158,6 +168,7 @@ void Cap_Configuration_T4(void)
   TIM_ITConfig(TIM4, TIM_IT_CC3, ENABLE);
   TIM_ITConfig(TIM4, TIM_IT_CC4, ENABLE);  
   
+  TIM_ITConfig(TIM4,TIM_IT_Update, ENABLE);
   
 }
 
@@ -200,7 +211,7 @@ void GPIO_Configuration_T3(void)
 
   /* TIM3 channel 3 4 pin (PB.0 PB.1) configuration */
   GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_0 | GPIO_Pin_1;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_InitStructure.GPIO_Mode =  GPIO_Mode_IPU;//GPIO_Mode_IN_FLOATING;
   //GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
   GPIO_Init(GPIOB, &GPIO_InitStructure);
@@ -232,8 +243,8 @@ void NVIC_Configuration_T3(void)
 
   /* Enable the TIM3 global Interrupt */
   NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority =2;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }
@@ -244,8 +255,8 @@ void NVIC_Configuration_T4(void)
 
   /* Enable the TIM3 global Interrupt */
   NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }

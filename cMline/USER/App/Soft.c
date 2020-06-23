@@ -40,7 +40,7 @@ static  OS_STK         TaskKeyStk[TaskKeyStk_SIZE];
 static  OS_STK         TaskSaveStk[TaskSaveStk_SIZE];
 static  OS_STK         TaskLedzStk[TaskLedzStk_SIZE];
 
-static  OS_STK         TaskVirPwmStk[TaskVirPwmStk_SIZE];
+static  OS_STK         TaskRushStk[TaskRushStk_SIZE];
 static  OS_STK         TaskModbusStk[TaskModbusStk_SIZE];
 static  OS_STK         TaskStepMotorStk[TaskStepMotorStk_SIZE];
 static  OS_STK         TaskTimePrStk[TaskTimePrStk_SIZE];
@@ -168,13 +168,13 @@ OSSemProcCmdx = OSSemCreate(0);
                              (INT16U          )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
 
 
-    os_err = OSTaskCreateExt((void (*)(void *)) TaskVirPwm,
+    os_err = OSTaskCreateExt((void (*)(void *)) TaskRush,
                              (void          * ) 0,
-                             (OS_STK        * )&TaskVirPwmStk[TaskVirPwmStk_SIZE - 1],
-                             (INT8U           ) TaskVirPwm_PRIO,
-                             (INT16U          ) TaskVirPwm_PRIO,
-                             (OS_STK        * )&TaskVirPwmStk[0],
-                             (INT32U          ) TaskVirPwmStk_SIZE,
+                             (OS_STK        * )&TaskRushStk[TaskRushStk_SIZE - 1],
+                             (INT8U           ) TaskRush_PRIO,
+                             (INT16U          ) TaskRush_PRIO,
+                             (OS_STK        * )&TaskRushStk[0],
+                             (INT32U          ) TaskRushStk_SIZE,
                              (void          * ) 0,
                              (INT16U          )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
 
@@ -239,7 +239,7 @@ OSSemProcCmdx = OSSemCreate(0);
     	OSTaskNameSet(TaskLedz_PRIO, "TaskLedz", &os_err);			
     	OSTaskNameSet(TaskSave_PRIO, "TaskSave", &os_err);
     	
-    	OSTaskNameSet(TaskVirPwm_PRIO, "TaskVirPwm", &os_err);
+    	OSTaskNameSet(TaskRush_PRIO, "TaskRush", &os_err);
     	
     	OSTaskNameSet(TaskModbus_PRIO, "TaskModbus", &os_err);
     	OSTaskNameSet(TaskStepMotor_PRIO, "TaskStepMotor", &os_err);

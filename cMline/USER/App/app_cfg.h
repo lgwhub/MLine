@@ -26,7 +26,7 @@
 */
 #define  OS_VIEW_MODULE                 0*DEF_ENABLED	     	/* DEF_ENABLED = Present, DEF_DISABLED = Not Present        */
 
-#define  OS_VIEW_USART_NUMBER			3
+#define  OS_VIEW_USART_NUMBER			2
 
 #if   OS_VIEW_USART_NUMBER == 1
 #define  OS_VIEW_USART				     USART1	    
@@ -73,6 +73,7 @@
 
 #define  TaskTimePr_PRIO          	 		(OS_LOWEST_PRIO - 33)
 #define  TaskModbus_PRIO          	 		(OS_LOWEST_PRIO - 32)
+
 #define  TaskLedy_PRIO          	 		(OS_LOWEST_PRIO - 31)
 #define  TaskLedz_PRIO          	 		(OS_LOWEST_PRIO - 30)
 
@@ -82,19 +83,16 @@
 #define  TaskRecv_PRIO          	 		(OS_LOWEST_PRIO - 22)
 
 
-#define  TaskVirPwm_PRIO          	 		(OS_LOWEST_PRIO - 18)
+#define  TaskApm_PRIO          	 		(OS_LOWEST_PRIO - 17)
+
 #define  TaskStepMotor_PRIO          	 		(OS_LOWEST_PRIO - 16)
 
 #define  TaskHpwm_PRIO          	 		(OS_LOWEST_PRIO - 14)
 #define  TaskStatus_PRIO          	 		(OS_LOWEST_PRIO - 13)
 
 
-#define  TaskApm_PRIO          	 		(OS_LOWEST_PRIO - 11)
-
-
-
-#define  TaskKey_PRIO          	 		(OS_LOWEST_PRIO - 9)
-
+#define  TaskKey_PRIO          	 		(OS_LOWEST_PRIO - 10)
+#define  TaskRush_PRIO          	 		(OS_LOWEST_PRIO - 9)
 
 #define  MyTASK_PRIO          	 		(OS_LOWEST_PRIO - 7)
 #define  APP_TASK_BLINK_PRIO          	 (OS_LOWEST_PRIO - 6)
@@ -120,14 +118,15 @@
 #define  MyTASKStk_SIZE                          (64+2u)
 #define  TaskApmStk_SIZE                          (250+2u)
 
-#define  TaskLedyStk_SIZE                         80
-#define  TaskKeyStk_SIZE                         80
+#define  TaskLedyStk_SIZE                         90
+#define  TaskKeyStk_SIZE                         90
+#define  TaskLedzStk_SIZE                          (96+2u)
 
 #define  TaskRecvStk_SIZE                          (76+2u)
 #define  TaskSaveStk_SIZE                          (124+2u)
-#define  TaskLedzStk_SIZE                          (126+2u)
 
-#define  TaskVirPwmStk_SIZE                          (76+2u)
+
+#define  TaskRushStk_SIZE                          (106+2u)
 #define  TaskModbusStk_SIZE                          (155+2u)
 #define  TaskStepMotorStk_SIZE                          (164+2u)
 #define  TaskTimePrStk_SIZE                          (88+2u)
