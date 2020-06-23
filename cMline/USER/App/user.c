@@ -662,6 +662,9 @@ OSTimeDly(OS_TICKS_PER_SEC*2);	    //延时2秒
 
 ////////////////////////////////////////////////
 
+//  1234号高压电动机12000转  ，  2400HZ脉冲  ，4*3极
+//  56号低压电动机24000转  ，    2400HZ脉冲  ，2*3极
+
 void Task14(void * pdata) //TaskTs
 {
 INT8U err;
@@ -709,7 +712,7 @@ Led_Test_Adc_On1;
               					  {
               				    //Apm_FREQ[ i ] = 72000000 * Capture_number[i] / temp16;   //hz
               				
-              				    Apm_FREQ[ i ] = temp16;//Capture_number[i]; //
+              				    Apm_FREQ[ i ] = Capture_number[i]; //temp16;//
 
               			     }
               	  }   
@@ -729,7 +732,7 @@ Led_Test_Adc_On1;
 
 
 
-				OSTimeDly(OS_TICKS_PER_SEC/2);	    //延时10ms  改为 2ms		 改为 1ms	
+				OSTimeDly(OS_TICKS_PER_SEC);	    //延时10ms  改为 2ms		 改为 1ms	
 				
 				
 										
