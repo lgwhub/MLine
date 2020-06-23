@@ -53,7 +53,10 @@
 
 #define CONFIG_TEST_LED_BLINK		1
 #define USART1_REMAP						0
-#define JTAG_REMAP							1
+//#define JTAG_REMAP							1
+
+#define SWD_DEBUG_DISABLE   0
+
 
 /*
 *********************************************************************************************************

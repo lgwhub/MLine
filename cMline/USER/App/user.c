@@ -666,6 +666,8 @@ INT8U err;
  
 uchar i;
 
+unsigned  long int temp32;
+
 	pdata = pdata;                          	 	// ±‹√‚±‡“ÎæØ∏Ê	
 	   
 
@@ -692,23 +694,26 @@ Led_Test_Adc_On1;
 
       for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
 			        {//∂¡ÀŸ∂»
-              unsigned  long int temp32;
               
               
-              temp32 = CaptureValueEnd[ i ] - CaptureValueStart[ i ];
               
-              if( temp32 != 0)
-              	{
-              		if( Capture_number[i] > 1 )
+              
+              
+              	
+              if( Capture_number[i] > 1 )
               			{
+              				temp32 = CaptureValueEnd[ i ] - CaptureValueStart[ i ];
+              				if( temp32 != 0)
+              					  {
+              				    //Apm_FREQ[ i ] = 72000000 * Capture_number[i] / temp32;   //hz
               				
-              				//Apm_FREQ[ i ] = 72000000 * Capture_number[i] / temp32;   //hz
-              				
-              				Apm_FREQ[ i ] = Capture_number[i]; //temp32;
+              				    Apm_FREQ[ i ] = Capture_number[i]; //temp32;
 
-              			}
-              	}
-              
+              			     }
+              	  }   
+              else{
+              	    Apm_FREQ[ i ] = 0;
+                  }
 ;             
               Coldw.ApmGt[i]=Apm_FREQ[ i ];
 
