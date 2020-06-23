@@ -418,6 +418,12 @@ TimeForSaveParam = 0;
 //  		      #endif
 
 
+
+//第一块   32FFD905564E363131600551
+
+
+
+
 //第二块  0xff31,0x05db,0x5641,0x3636,0x7428,0x5709,    0xc0ff,0xfffc,0x9768,0x00ff,0xc13e,0x7f80,0x5aa5,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff
 //0x31,0xFF,0xDB,0x05,0x41,0x56,0x36,0x36,0x28,0x74,0x09,0x57
 /*
@@ -691,7 +697,7 @@ void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
 {
  if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
  	  {
- //  	FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
+     	FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
  	  }
  else{
  	   if ( KEY_BIT_RUN ==  (*curl)  )
@@ -706,7 +712,7 @@ void KeyShiftProcessnnz( unsigned  long int  *curl , unsigned  long int*oldl )
 {
  if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
  	  {
- //	  	FlagRuningnnz = 0 ;   //控制 12 5 BLDC电机   12 步进电机
+  	  	FlagRuningnnz = 0 ;   //控制 12 5 BLDC电机   12 步进电机
  	  }
  else{
  	   if ( KEY_BIT_RUN ==  (*curl)  )
@@ -1065,7 +1071,8 @@ Led_Test_Adc_On1;
               				
               				if( temp32T != 0)
               					  {
-              				      Apm_FREQ[ i ] = ( long )(  (  temp32N -1 )  * ( float ) 720000000 / temp32T );   //hz
+              				      Apm_FREQ[ i ] = ( long )(  (  temp32N -1 )  * ( float ) 72000000 / temp32T );   //hz
+              				     // Apm_FREQ[ i ] = ( long )(  (  temp32N -1 )  * ( float ) 720000000 / temp32T );   //0.1hz
               			          }
               			     else{
               			     	  // Apm_FREQ[ i ] = ( long )   (  temp32N -1 )  * 100;  //10ms
@@ -1553,8 +1560,8 @@ for(;;)
 		  		StepMotRun(  2  ,  20000  );
 		  		
 		  			 //4 #步进电机
-		  		StepMot[3].PulseCircleSet = 40 +  Coldw.ApmCt[7];  //slow
-		  		StepMotRun(  3 , 400 );
+		  		StepMot[3].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
+		  		StepMotRun(  3 , 200 );
 		  	  }
 		  else{
 		  		StepMotStop(2);  	 //3 #步进电机
@@ -1568,8 +1575,8 @@ for(;;)
 		  		StepMotRun(  0 , 20000 );
 		  		
 		  		 //2 #步进电机	  	
-		  		StepMot[1].PulseCircleSet = 40 +  Coldw.ApmCt[7];  //slow
-		  		StepMotRun(  1 , 400  );
+		  		StepMot[1].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
+		  		StepMotRun(  1 , 200  );
 		  	  }
 		  else{
 		  		StepMotStop( 0 );  //1 #步进电机
