@@ -211,9 +211,9 @@ RCC_AHBPeriphClockCmd(SPI1_MASTER_DMA_CLK, ENABLE);
   /* SPInny Config -------------------------------------------------------------*/
   SPI_InitStructure.SPI_Direction = SPI_Direction_1Line_Tx;//SPI_Direction_2Lines_FullDuplex;
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master;           //SPI_Mode_Slave;
-  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;       //SPI_DataSize_16b
+  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;       //SPI_DataSize_16b;    //
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;            //SPI_CPHA_1Edge
+  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;            //SPI_CPHA_1Edge;    //
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;               //SPI_NSS_Hard
   SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;//6.4    SPI_BaudRatePrescaler_4;  0.1us
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_LSB;
@@ -363,8 +363,8 @@ void RCC_Configuration(void)
 
 
   /* PCLK2 = HCLK/2 */
-  //RCC_PCLK2Config(RCC_HCLK_Div2); 
-
+//RCC_PCLK2Config(RCC_HCLK_Div8); 
+//RCC_PCLK1Config(RCC_HCLK_Div8); 
 /* Enable peripheral clocks --------------------------------------------------*/
 
 //void RCC_PCLK2Config(uint32_t RCC_HCLK)

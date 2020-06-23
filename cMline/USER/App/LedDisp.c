@@ -25,14 +25,14 @@ union _Num_X    NUMnny , NUMnnz ;
 
 
 //seg7 difine                                        
-#define seg_a   0x08                                                   
-#define seg_b   0x04                                                   
-#define seg_c   0x02                                                   
-#define seg_d   0x01                                                   
+#define seg_a   0x80                                                   
+#define seg_b   0x40                                                   
+#define seg_c   0x20                                                   
+#define seg_d   0x10                                                   
                                                                         
-#define seg_f   0x080                                                  
-#define seg_g   0x040                                                  
-#define seg_e   0x020  
+#define seg_f   0x08                                                  
+#define seg_g   0x04                                                  
+#define seg_e   0x02  
 
 
 unsigned char LedSegTab[]=                                         
@@ -67,27 +67,37 @@ unsigned char LedSegTab[]=
 
 unsigned char DispBufnny[24]=
 {
-	0x0f,	0x0f,	0x0f,	0x0f,
-	0x0f,	0x0f,	0x0f,	0x0f,	
-	0x0f,	0x0f,	0x0f,	0x0f,	
-	0x0f,	0x0f,	0x0f,	0x0f,	
-	0x0f,	0x0f,	0x0f,	0x0f,
-	0x0f,	0x0f,	0x0f,	0x0f	
-
+//	0x0f,	0x0f,	0x0f,	0x0f,
+//	0x0f,	0x0f,	0x0f,	0x0f,	
+//	0x0f,	0x0f,	0x0f,	0x0f,	
+//	0x0f,	0x0f,	0x0f,	0x0f,	
+//	0x0f,	0x0f,	0x0f,	0x0f,
+//	0x0f,	0x0f,	0x0f,	0x0f	
+	0x00,	0x01,	0x02,	0x03,
+	0x04,	0x05,	0x06,	0x07,	
+	0x08,	0x09,	0x0A,	0x0B,	
+	0x0C,	0x0D,	0x0E,	0x0f,	
+	0x0Ff,	0x0Ff,	0x0Ff,	0x0Ff,
+	0x0f,	0x0f,	0x0f,	0x0f
 	
 };
 
 
 unsigned char DispBufnnz[24]=
 {
-	0x05,	0x05,	0x05,	0x05,
-	0x05,	0x05,	0x05,	0x05,	
-	0x05,	0x05,	0x05,	0x05,	
-	0x05,	0x05,	0x05,	0x05,	
-	0x05,	0x05,	0x05,	0x05,
-	0x05,	0x05,	0x05,	0x05	
+//	0x05,	0x05,	0x05,	0x05,
+//	0x05,	0x05,	0x05,	0x05,	
+//	0x05,	0x05,	0x05,	0x05,	
+//	0x05,	0x05,	0x05,	0x05,	
+//	0x05,	0x05,	0x05,	0x05,
+//	0x05,	0x05,	0x05,	0x05	
 
-	
+		0x00,	0x01,	0x02,	0x03,
+	0x04,	0x05,	0x06,	0x07,	
+	0x08,	0x09,	0x0A,	0x0B,	
+	0x0C,	0x0D,	0x0E,	0x0f,	
+	0x0Ff,	0x0Ff,	0x0Ff,	0x0Ff,
+	0x0f,	0x0f,	0x0f,	0x0f
 };
 
 
@@ -99,22 +109,33 @@ void Process_N_NUMBnnZ(void);
 
 
 
+//四片595最多可以送的位数
+#define  	DigMax    24	
+	
+//要送的位数
+#define  	DigNmb    19
+
+
+
 
 void Process_N_NUMBnny(void)
 {
 
 unsigned char  i;
+
 	
 NUMnny.a32 = 0x000001;
+	
+NUMnny.a32	<<= (DigMax - DigNmb  );   //不用的位先移掉
 
-for(i=0;i<20;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
+for(i=0;i<DigNmb;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 	{
 	
 	NUMnny.byte4[3]  =  LedSegTab [  DispBufnny[i] ] ;// 第4个字节
 	
 	Process_One_Numb1();
 	
-	NUMnny.byte4[3]  =  0;
+	NUMnny.byte4[3]  =  0;   //第四字节是A32的最高位
 	
 	NUMnny.a32 <<= 1 ;
 		
@@ -130,7 +151,9 @@ unsigned char  i;
 	
 NUMnnz.a32 = 0x000001;
 
-for(i=0;i<20;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
+NUMnnz.a32	<<= ( DigMax - DigNmb  );   //不用的位先移掉	
+	
+for(i=0;i<DigNmb;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 	{
 	
 	NUMnnz.byte4[3]  =  LedSegTab [  DispBufnnz[i] ] ;// 第4个字节
@@ -191,7 +214,7 @@ void Process_One_Numb1(void)
   //SPI_STR_Lowy;
   SPI_STR_Highy;    //激活输出
   
-	OSTimeDly(OS_TICKS_PER_SEC/100);	    //延时0.01秒
+	OSTimeDly(OS_TICKS_PER_SEC/400);	    //延时0.01秒
 	
   if(SPI_Kiny)
   	{//读
@@ -247,7 +270,7 @@ void Process_One_NumbnnZ(void)
   //SPI_STR_LownnZ;
   SPI_STR_HighnnZ;    //激活输出
   
-	OSTimeDly(OS_TICKS_PER_SEC/100);	    //延时0.01秒
+	OSTimeDly(OS_TICKS_PER_SEC/400);	    //延时0.01秒
 	
   if(SPI_KinnnZ)
   	{//读

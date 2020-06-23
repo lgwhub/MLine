@@ -48,7 +48,7 @@ extern unsigned  long int Capture_Flag[6+1] ;
 extern unsigned  long int Apm_FREQ[6+1] ; 
 extern unsigned  long int Capture_number[6+1] ;
 
-#define Flag_test_spi_DMA   1
+#define Flag_test_spi_DMA   0
 
 #if Flag_test_spi_DMA     
     extern unsigned  long int Capture_testSPI_number[6+1] ;
@@ -89,12 +89,12 @@ void TaskTimePr(void * pdata);
 void TaskHpwm(void * pdata);
 void TaskStatus(void * pdata);
 
-void Task11(void * pdata);
+void TaskLedy(void * pdata);
 void TaskKey(void * pdata);
 void TaskApm(void * pdata);
 void TaskRecv(void * pdata);
 void TaskSave(void * pdata);
-void TaskLed(void * pdata);
+void TaskLedz(void * pdata);
 
 void ModbusCommand2(void);
 

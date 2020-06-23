@@ -82,12 +82,12 @@
 #define  TaskTimePr_PRIO          	 		(OS_LOWEST_PRIO - 15)
 #define  TaskHpwm_PRIO          	 		(OS_LOWEST_PRIO - 14)
 #define  TaskStatus_PRIO          	 		(OS_LOWEST_PRIO - 13)
-#define  TaskLed_PRIO          	 		(OS_LOWEST_PRIO - 32)
+#define  TaskLedz_PRIO          	 		(OS_LOWEST_PRIO - 32)
 
 #define  TaskApm_PRIO          	 		(OS_LOWEST_PRIO - 11)
 
 
-#define  Task11_PRIO          	 		(OS_LOWEST_PRIO - 10)
+#define  TaskLedy_PRIO          	 		(OS_LOWEST_PRIO - 10)
 #define  TaskKey_PRIO          	 		(OS_LOWEST_PRIO - 9)
 
 
@@ -115,12 +115,12 @@
 #define  MyTASKStk_SIZE                          (64+2u)
 #define  TaskApmStk_SIZE                          (250+2u)
 
-#define  Task11Stk_SIZE                         80
+#define  TaskLedyStk_SIZE                         80
 #define  TaskKeyStk_SIZE                         80
 
 #define  TaskRecvStk_SIZE                          (76+2u)
 #define  TaskSaveStk_SIZE                          (124+2u)
-#define  TaskLedStk_SIZE                          (126+2u)
+#define  TaskLedzStk_SIZE                          (126+2u)
 
 #define  TaskVirPwmStk_SIZE                          (76+2u)
 #define  TaskModbusStk_SIZE                          (155+2u)

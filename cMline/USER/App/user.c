@@ -622,31 +622,7 @@ for(;;)
 		}
 }
 ////////////////////
-void Task11(void * pdata)  //TaskCmdx
-{
-	CPU_SR          cpu_sr;
-INT8U err;
-uchar i;
 
-pdata = pdata;                          	 	// ±‹√‚±‡“ÎæØ∏Ê		
-
-
-
-//OSTimeDly(OS_TICKS_PER_SEC);	    //—” ±1√Î
-
-//////
-	for(;;)
-				{
-					
-					
-         // OSSemPend(OSSemProcCmdx,0,&err);
-          
-          OSTimeDly(OS_TICKS_PER_SEC*6);	    //—” ±6√Î
-
-					
-				}
-}
-////////////////////
 
 void KeyProcess( uchar *curk,uchar *old)
 {
@@ -767,9 +743,7 @@ for( i = 0 ; i<5 ; i++ )
 
 
 ////////////////////
-
-
-void TaskLed(void * pdata)  //TaskSyncUp
+void TaskLedy(void * pdata)  //TaskCmdx
 {
 INT8U err;
  
@@ -780,13 +754,12 @@ INT8U err;
 #if CONFIG_SPI_DISP
 
   SpiInit_nny();
-  SpiInit_nnz();
   
 #endif  
   
 
 
-OSTimeDly(OS_TICKS_PER_SEC/2);	    //—” ±2√Î		
+OSTimeDly(OS_TICKS_PER_SEC/5);	    //—” ±0.2√Î		
 
 		for(;;)
 						{
@@ -799,11 +772,54 @@ OSTimeDly(OS_TICKS_PER_SEC/2);	    //—” ±2√Î
 						    #endif
 						//Seg8
 						Process_N_NUMBnny();
-						Process_N_NUMBnnZ();   
-						EventTimeLed=2;   
-						       OSTimeDly(OS_TICKS_PER_SEC/10);	    //—” ±1√Î	
+
 						   
-						OSTimeDly(OS_TICKS_PER_SEC/500);	    //—” ±0.1√Î	
+						OSTimeDly(OS_TICKS_PER_SEC/200);	    //—” ±0.05√Î	
+
+						#else
+						
+						OSTimeDly(OS_TICKS_PER_SEC);	    //—” ±1√Î	
+						
+						#endif
+							
+
+				    }	
+}
+////////////////////
+
+void TaskLedz(void * pdata)  //TaskSyncUp
+{
+INT8U err;
+ 
+
+
+	pdata = pdata;     // ±‹√‚±‡“ÎæØ∏Ê	   
+
+#if CONFIG_SPI_DISP
+
+  SpiInit_nnz();
+  
+#endif  
+  
+
+
+OSTimeDly(OS_TICKS_PER_SEC/5);	    //—” ±0.2√Î		
+
+		for(;;)
+						{
+						//OS_ENTER_CRITICAL();
+						//OS_EXIT_CRITICAL();
+						#if CONFIG_SPI_DISP
+						
+						   #if Flag_test_spi_DMA
+						   OSSemPend(OSSemTest2,0,&err);
+						    #endif
+						//Seg8
+
+						Process_N_NUMBnnZ();   
+						//EventTimeLed=2;   
+						   
+						OSTimeDly(OS_TICKS_PER_SEC/200);	    //—” ±0.05√Î	
 
 						#else
 						
