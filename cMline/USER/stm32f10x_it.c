@@ -191,9 +191,9 @@ void TIM3_IRQHandler(void)
    
    
    //.....          
-      #if Flag_test_spi_DMA     
-         Capture_testSPI_number[0]++;
-      #endif   
+//      #if Flag_test_spi_DMA     
+//         Capture_testSPI_number[0]++;
+//      #endif   
       
      if( Capture_Flag[0] !=0 )
     	 {
@@ -220,9 +220,9 @@ void TIM3_IRQHandler(void)
     /* Clear TIM3 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM3, TIM_IT_CC4);
     
-    #if Flag_test_spi_DMA     
-    Capture_testSPI_number[1]++;
-    #endif
+//    #if Flag_test_spi_DMA     
+//    Capture_testSPI_number[1]++;
+//    #endif
     
      if( Capture_Flag[1] !=0 )
     	   {
@@ -253,9 +253,9 @@ void TIM4_IRQHandler(void)
     /* Clear TIM4 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC1);
     
-    #if Flag_test_spi_DMA     
-    Capture_testSPI_number[2]++;
-    #endif
+//    #if Flag_test_spi_DMA     
+//    Capture_testSPI_number[2]++;
+//    #endif
     
     if( Capture_Flag[2] !=0 )
     	   {
@@ -280,9 +280,9 @@ void TIM4_IRQHandler(void)
     /* Clear TIM4 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC2);
      
-     #if Flag_test_spi_DMA     
-     Capture_testSPI_number[3]++;
-    #endif
+//     #if Flag_test_spi_DMA     
+//     Capture_testSPI_number[3]++;
+//    #endif
     
     if( Capture_Flag[3] !=0 )
     	   {
@@ -306,9 +306,9 @@ void TIM4_IRQHandler(void)
     /* Clear TIM4 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC3);
     
-      #if Flag_test_spi_DMA     
-        Capture_testSPI_number[4]++;
-      #endif
+//      #if Flag_test_spi_DMA     
+//        Capture_testSPI_number[4]++;
+//      #endif
         
     if( Capture_Flag[4] !=0 )
     	   {
@@ -334,9 +334,9 @@ void TIM4_IRQHandler(void)
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC4);
     
     
-    #if Flag_test_spi_DMA    
-        Capture_testSPI_number[5]++;
-     #endif    
+//    #if Flag_test_spi_DMA    
+//        Capture_testSPI_number[5]++;
+//     #endif    
      
     if( Capture_Flag[5] !=0 )
     	   {

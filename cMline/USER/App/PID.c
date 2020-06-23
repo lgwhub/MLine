@@ -15,8 +15,8 @@
 
 //PID_ParaStruct      PidParam[2];
 
-PidBufStruct HeatPidBuf[MAX_TEMPRATURE_CHNALL];
-PidBufStruct StepPidBuf[MAX_TEMPRATURE_CHNALL];
+PidBufStruct HeatPidBuf[MAX_BLDC_CH6];
+PidBufStruct StepPidBuf[MAX_BLDC_CH6];
 
 
 

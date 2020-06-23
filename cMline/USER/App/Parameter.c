@@ -247,7 +247,7 @@ FlagSetAllDefault = 0;
     
 
     
-    for(i=0;i<MAX_TEMPRATURE_CHNALL;i++)
+    for(i=0;i<MAX_BLDC_CH6;i++)
 	    {
     Coldw.ApmGt[i] = 0;          //
     Coldw.ApmCt[i] = 0;         //
@@ -260,7 +260,7 @@ FlagSetAllDefault = 0;
     Coldw.one_onoff_flag = 0;       //
     
     
-    for(i=0;i<MAX_TEMPRATURE_CHNALL;i++)
+    for(i=0;i<MAX_BLDC_CH6;i++)
     {
 	Coldw.unit_onof_flag[i]=0;					   
     Coldw.limit_recode[i] = 0xF0;//0;
@@ -288,13 +288,13 @@ FlagSetAllDefault = 0;
 
     
     
-    for(i=0;i<MAX_TEMPRATURE_CHNALL;i++)
+    for(i=0;i<MAX_BLDC_CH6;i++)
     		{
     			Coldw.Tin[i] = 0;//150+i;		//结温控制用    
     
        }
        
-    for(i=0;i<MAX_TEMPRATURE_CHNALL;i++)
+    for(i=0;i<MAX_BLDC_CH6;i++)
     {
      Coldw.Counter_MaxOpen[i]=0;				//温度超过设定值15度以上，不使用PID,强制打开水冷，开n次后暂停，然后等温度到正常范围
      Coldw.Counter_MaxClose[i]=0;				//温度低于设定值15度以上，不使用PID,强制关闭水冷，关n次后暂停，然后等温度到正常范围
@@ -304,7 +304,7 @@ FlagSetAllDefault = 0;
  
  PID_ParaInit();
  //PID_Inc_ParaInit();
- for(i=0;i<MAX_TEMPRATURE_CHNALL;i++)
+ for(i=0;i<MAX_BLDC_CH6;i++)
     {
      PID_BufInit(&HeatPidBuf[i]);//电加热控制
      PID_BufInit(&StepPidBuf[i]);//水冷增量PID

@@ -53,8 +53,8 @@ typedef struct
     
 }PidBufStruct;  //¡Ÿ ±±‰¡ø
 
-extern PidBufStruct HeatPidBuf[MAX_TEMPRATURE_CHNALL];
-extern PidBufStruct StepPidBuf[MAX_TEMPRATURE_CHNALL];
+extern PidBufStruct HeatPidBuf[MAX_BLDC_CH6];
+extern PidBufStruct StepPidBuf[MAX_BLDC_CH6];
 
 
 /********************************************************

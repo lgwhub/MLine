@@ -324,7 +324,7 @@ void Process_CMD5(void)
   
   //Coldw.WATCHING     = 0;     //¼àÊÓ×´Ì¬
   
-  for(i=0;i<MAX_TEMPRATURE_CHNALL;i++)
+  for(i=0;i<MAX_BLDC_CH6;i++)
     {
 
   }

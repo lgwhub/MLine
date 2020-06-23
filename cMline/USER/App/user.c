@@ -16,7 +16,7 @@ OS_EVENT *OSSemUart1;
 
 
 OS_EVENT *OSSemTimePid_StepMotor;
-OS_EVENT *OSSemTimePid_Heat;
+OS_EVENT *OSSemTimePid_PWM;
 
 OS_EVENT *OSSemProcCmdx;
 
@@ -27,46 +27,53 @@ OS_EVENT *OSSemProcCmdx;
 
 
 
-float TempratureSet;   //控制用温度设定值   
 
-unsigned long ShiftKeyCurnny;   //显示板键盘当前值
-unsigned long ShiftKeyBnny,ShiftKeyCnny;
 
-unsigned long ShiftKeyCurnnz;   //显示板键盘当前值
-unsigned long ShiftKeyBnnz,ShiftKeyCnnz;
 
 unsigned char lAddressKey;  //拨码开关PB12-PB15，值，最低4位
 
-unsigned char FlagKey;
+
 unsigned char EventTimeBuz=0;
 unsigned char EventTimeLed=0;
 
 
 
-float wAdcResoult[MAX_TEMPRATURE_CHNALL];  //MAX_ADC_CH 
+////////////////////////////////////////////
+#define   KEY_BIT_STOP    0x00800000
+#define   KEY_BIT_RUN     0x00400000
 
-/////////////////////////////////////////////
+unsigned long ShiftKeyCurnny;   //显示板键盘当前值
+unsigned long ShiftKeyBnny,ShiftKeyCnny;
+unsigned long ShiftKeySavenny;
 
+unsigned long ShiftKeyCurnnz;   //显示板键盘当前值
+unsigned long ShiftKeyBnnz,ShiftKeyCnnz;
+unsigned long ShiftKeySavennz;
 
-signed short int PowerOutBuf[2+(MAX_TEMPRATURE_CHNALL)];
-signed short int TestOutBuf[2+(MAX_TEMPRATURE_CHNALL)];
+unsigned char FlagRuningnny;   //控制 34 6 BLDC电机   34 步进电机
+unsigned char FlagRuningnnz;   //控制 12 5 BLDC电机   12 步进电机
 
+unsigned  short int  BLDC_PwmBuf[ MAX_BLDC_CH6 + 1 ];   //pwm速度中间变量
+unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwm速度控制值   1000  max 
 
+unsigned  long int Capture_Flag[ MAX_BLDC_CH6 + 1 ] ;
+unsigned  long int Apm_FREQ[ MAX_BLDC_CH6 +1 ] ; 
+unsigned  long int Capture_number[ MAX_BLDC_CH6 + 1 ] ;
 
-
-unsigned  long int Capture_Flag[6+1] ;
-unsigned  long int Apm_FREQ[6+1] ; 
-unsigned  long int Capture_number[6+1] ;
-
-#if Flag_test_spi_DMA     
-  unsigned  long int Capture_testSPI_number[6+1] ;
-#endif
+//#if Flag_test_spi_DMA     
+//  unsigned  long int Capture_testSPI_number[6+1] ;
+//#endif
 
 //unsigned  long int CaptureValueStart[6+1] ;
 //unsigned  long int CaptureValueEnd[6+1];
 //因为使用16位定时器，所以这两个变量也使用16位
 unsigned  short int CaptureValueStart[6+1] ;
 unsigned  short int CaptureValueEnd[6+1];
+
+
+
+signed short int PowerOutBuf[2+( MAX_BLDC_CH6 )];
+signed short int TestOutBuf [2+( MAX_BLDC_CH6 ) ];
 
 ///////////////////////////////////////////////////////////////////////
 void ViewTestStatu(uchar *text)
@@ -261,7 +268,7 @@ void Test_Adc(void)
 //					//ViewTestStatu
 //					//AdcFilter();
 //					ViewTestStatu("....");//SendText_UART1("....");
-//											for(i=0;i<MAX_TEMPRATURE_CHNALL;i++)
+//											for(i=0;i<MAX_BLDC_CH6;i++)
 //														{
 //														MakeValAsc16("",(uint16)(wAdcResoult[i]*10),"(0.1C),",buf);
 //														
@@ -327,7 +334,7 @@ void ModbusCommand2(void)
      	 }
 
 
-	for( i=0; i<MAX_TEMPRATURE_CHNALL ; i++)
+	for( i=0; i<MAX_BLDC_CH6 ; i++)
 	              {  		
 	              if(	( Coldw.one_unit_flag == 0 ) || ( Coldw.one_unit_flag == ( i + 1 )  ) )
 	              	    {
@@ -492,7 +499,7 @@ void TaskTimePr(void * pdata)
                if(timer1 >= 20)  //200ms
                     {
                      timer1  = 0 ;
-                     OSSemPost(OSSemTimePid_Heat);   //电加热PID控制周期
+                     OSSemPost(OSSemTimePid_PWM);   //电加热PID控制周期
 
                     }
          
@@ -520,15 +527,72 @@ pdata = pdata;                          	 	// 避免编译警告
 
 
 OSTimeDly(OS_TICKS_PER_SEC/100);	    //延时0.01秒
+
+
 for(;;)
 		{
 			
-			OSSemPend(OSSemTimePid_Heat,0,&err);  //   OSSemTimePid_Heat
+			OSSemPend(OSSemTimePid_PWM,0,&err);  //   OSSemTimePid_Heat
 
 
-              
+    
+		
+		  if( FlagRuningnny )   //控制 34 6 BLDC电机
+		  	  {
+		  		BLDC_PwmBuf[2] = Coldw.ApmCt[2];  //3
+		  		BLDC_PwmBuf[3] = Coldw.ApmCt[3];  //4
+		  		BLDC_PwmBuf[5] = Coldw.ApmCt[5];  //6
+		  	  }
+		  else{
+		  		BLDC_PwmBuf[2] = 0;
+		  		BLDC_PwmBuf[3] = 0;
+		  		BLDC_PwmBuf[5] = 0;		  	
+		      }  
+		      	
+		  if( FlagRuningnnz )  //控制 12 5 BLDC电机
+		  	  {
+		  		BLDC_PwmBuf[0] = Coldw.ApmCt[0];  //1
+		  		BLDC_PwmBuf[1] = Coldw.ApmCt[1];  //2
+		  		BLDC_PwmBuf[4] = Coldw.ApmCt[4];  //5
+		  	  }
+		  else{
+		  		BLDC_PwmBuf[0] = 0;
+		  		BLDC_PwmBuf[1] = 0;
+		  		BLDC_PwmBuf[4] = 0;		  	
+		      } 		  	
+		  	
+		  	
+		  	
 
-      for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
+        for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
+			        {
+                 if( ( BLDC_PwmVal[ i ] + 100 ) < BLDC_PwmBuf[i] )  // s < a-100
+                 	   { 
+                 	   	BLDC_PwmVal[ i ] += 100;                      // +100
+                 	   }
+                 else if ( BLDC_PwmVal[ i ]  < BLDC_PwmBuf[i] )     // +++++
+                 	   {
+                     BLDC_PwmVal[ i ] =   BLDC_PwmBuf[i] ;          //970
+                     }
+                 else if (  BLDC_PwmVal[ i ] > ( BLDC_PwmBuf[i] + 100 ) )
+     	               {
+                 	   	BLDC_PwmVal[ i ] -= 100;
+                 	   }
+                 else{
+                     BLDC_PwmVal[ i ] =   BLDC_PwmBuf[i] ;
+                     }
+                 
+                  if( BLDC_PwmVal[ i ] > 1000 )        
+                      {
+                      	BLDC_PwmVal[ i ] = 1000;  
+                      } 
+     	
+     	        Coldw.FAN_duty [ i ]   =    BLDC_PwmVal[ i ];    //显示
+     	
+              }    
+                     
+                     
+          for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			    {
 
           //HeatPidBuf[i].SetPoint = TempratureSet; //Coldw.T_set; //基本上多余 
@@ -540,25 +604,17 @@ for(;;)
 //    Coldw.MONI_PX2 = HeatPidBuf[0].Px;  	   
 //    Coldw.MONI_IX2 = HeatPidBuf[0].Ix;  	       
 //    Coldw.MONI_DX2 = HeatPidBuf[0].Dx;  	        
-//    Coldw.MONI_QX2 = HeatPidBuf[0].Qx; //0.14;
-    
-		
-		
-      for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
-			        {
-               //Coldw.ApmCt[i]=400;
-              
-               }		
-
-		   TIM_SetCompare1(TIM5, Coldw.ApmCt[0]);
-       TIM_SetCompare2(TIM5, Coldw.ApmCt[1]);   
-       TIM_SetCompare1(TIM1, Coldw.ApmCt[2]);
-       TIM_SetCompare2(TIM1, Coldw.ApmCt[3]);
-       TIM_SetCompare3(TIM1, Coldw.ApmCt[4]);
-       TIM_SetCompare4(TIM1, Coldw.ApmCt[5]);
+//    Coldw.MONI_QX2 = HeatPidBuf[0].Qx; //0.14;           
+                     
+		   TIM_SetCompare1(TIM5, BLDC_PwmVal[0]);
+       TIM_SetCompare2(TIM5, BLDC_PwmVal[1]);   
+       TIM_SetCompare1(TIM1, BLDC_PwmVal[2]);
+       TIM_SetCompare2(TIM1, BLDC_PwmVal[3]);
+       TIM_SetCompare3(TIM1, BLDC_PwmVal[4]);
+       TIM_SetCompare4(TIM1, BLDC_PwmVal[5]);
 		
 
-		  OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时0.1秒
+		  OSTimeDly(OS_TICKS_PER_SEC/20);	    //延时0.1秒
 
 		}
 }
@@ -640,6 +696,39 @@ void KeyProcess( uchar *curk,uchar *old)
 				}
 		}
 }
+
+
+void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
+{
+ if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
+ 	  {
+ 	  	FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
+ 	  }
+ else{
+ 	   if ( KEY_BIT_RUN ==  (*curl)  )
+ 	       {
+ 	  	    FlagRuningnny = 1 ;   //控制 34 6 BLDC电机   34 步进电机
+ 	       }
+ 	    }
+}
+
+
+void KeyShiftProcessnnz( unsigned  long int  *curl , unsigned  long int*oldl )
+{
+ if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
+ 	  {
+ 	  	FlagRuningnnz = 0 ;   //控制 12 5 BLDC电机   12 步进电机
+ 	  }
+ else{
+ 	   if ( KEY_BIT_RUN ==  (*curl)  )
+ 	       {
+ 	  	    FlagRuningnnz = 1 ;   //控制 34 6 BLDC电机   34 步进电机
+ 	       }
+ 	    }
+}
+
+
+
 ////////////////////
 
 
@@ -774,22 +863,51 @@ INT8U err;
 						//OS_EXIT_CRITICAL();
 						#if CONFIG_SPI_DISP
 						
-						   #if Flag_test_spi_DMA
-						   OSSemPend(OSSemTest2,0,&err);
-						    #endif
+//						   #if Flag_test_spi_DMA
+//						   OSSemPend(OSSemTest2,0,&err);
+//						    #endif
 	
 						ShiftKeyCurnny = Process_N_NUMBnny();
-            if( ShiftKeyCurnny != 0 )
-            	{
-            		Alm_Flag1 = 1;
-            		//SngnalLed[0]=0xff;      //单独指示灯
-            		SngnalLed[1]=0x0f;      //单独指示灯
-            	}
-            else {
-            	    Alm_Flag1 =0;
-            	    //SngnalLed[0]=0;      //单独指示灯
-            	    SngnalLed[1]=0;      //单独指示灯
-                }
+						
+							if ( ShiftKeyBnny != ShiftKeyCurnny )
+  		                     {//滤波
+  			                   ShiftKeyBnny = ShiftKeyCurnny;
+  		                    }
+  	               else { 
+  	               	
+  	               	     if ( ShiftKeyCnny  !=  ShiftKeyBnny )
+  	               	     	   {
+  	         	                
+                              ShiftKeyCnny =  ShiftKeyBnny;
+                             }
+                          else{//三次相同
+														   if ( ShiftKeyCnny != 0)
+															     {
+                          	       KeyShiftProcessnny( &ShiftKeyCnny, &ShiftKeySavenny);
+																	 }
+                              }
+  	         	          
+  	                     }
+						
+					  if( FlagRuningnny)   //控制 34 6 BLDC电机   34 步进电机	
+					  	{
+					  		SngnalLed[1]  |=  0x80;      //单独指示灯
+					  	}
+					  else{
+					  	  SngnalLed[1]  &=  (~0x80);      //单独指示灯
+					     }	
+					  	
+//            if( ShiftKeyCurnny != 0 )
+//            	{
+//            		Alm_Flag1 = 1;
+//            		SngnalLed[1]=0x0f;      //单独指示灯
+//            	}
+//            else {
+//            	    Alm_Flag1 =0;
+//            	    SngnalLed[1]=0;      //单独指示灯
+//                }
+						   
+						   
 						   
 					//	OSTimeDly(OS_TICKS_PER_SEC/500);	    //延时0.002秒	
 
@@ -828,10 +946,10 @@ INT8U err;
 						//OS_EXIT_CRITICAL();
 						#if CONFIG_SPI_DISP
 						
-						   #if Flag_test_spi_DMA
-						   OSSemPend(OSSemTest2,0,&err);
-						    #endif
-						//Seg8
+//						   #if Flag_test_spi_DMA
+//						   OSSemPend(OSSemTest2,0,&err);
+//						    #endif
+
 
 						ShiftKeyCurnnz = Process_N_NUMBnnz();  
 						
@@ -847,24 +965,31 @@ INT8U err;
                               ShiftKeyCnnz =  ShiftKeyBnnz;
                              }
                           else{//三次相同
-                          	   //KeyProcess( bufkc, bufkb);
+														   if ( ShiftKeyCnnz != 0)
+															     {
+                          	        KeyShiftProcessnnz( &ShiftKeyCnnz, &ShiftKeySavennz);
+																	 }
                               }
   	         	          
   	                     }
 						
+						if( FlagRuningnnz)   //控制 12 5 BLDC电机   12 步进电机	
+					  	{
+					  		SngnalLed[3]  |=  0x80;      //单独指示灯
+					  	}
+					  else{
+					  	  SngnalLed[3]  &=  (~0x80);      //单独指示灯
+					     }	
 						
-						
-						if( ShiftKeyCurnnz != 0 )
-            	{
-            		Alm_Flag2 = 1;
-            		//SngnalLed[2]=0xfc;      //单独指示灯
-            		SngnalLed[3]=0x03;      //单独指示灯
-            	}
-            else {
-            	    Alm_Flag2 =0;
-            	    //SngnalLed[2]=0;      //单独指示灯
-            	    SngnalLed[3]=0;      //单独指示灯
-                }
+//						if( ShiftKeyCurnnz != 0 )
+//            	{
+//            		Alm_Flag2 = 1;
+//            		SngnalLed[3]=0x03;      //单独指示灯
+//            	}
+//            else {
+//            	    Alm_Flag2 =0;
+//            	    SngnalLed[3]=0;      //单独指示灯
+//                }
 						
 						 
 						//EventTimeLed=2;   
@@ -899,13 +1024,13 @@ unsigned  short int temp16 ;
 	pdata = pdata;                          	 	// 避免编译警告	
 	   
 
-#if Flag_test_spi_DMA     
-  for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
-			        {
-              Capture_testSPI_number[i]= 0; 
-
-               }
-#endif               
+//#if Flag_test_spi_DMA     
+//  for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
+//			        {
+//              Capture_testSPI_number[i]= 0; 
+//
+//               }
+//#endif               
         
         
 	      PutValToDispBf(6666 , DispBufnny+12 );
@@ -933,13 +1058,13 @@ Led_Test_Adc_On1;
 	
 		    Led_Test_Adc_Off1;			   
 
-      for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
+      for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {
               Capture_Flag[i] = 0;   //暂停
 
                }	
 
-      for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
+      for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {//读速度
               
 
@@ -958,10 +1083,10 @@ Led_Test_Adc_On1;
               	    Apm_FREQ[ i ] = 0;
                   }
                   
-              #if Flag_test_spi_DMA
+               // #if Flag_test_spi_DMA
 
-              Coldw.ApmGt[i]=(float)Capture_testSPI_number[ i ];
-              #else
+              //Coldw.ApmGt[i]=(float)Capture_testSPI_number[ i ];
+              // else
                    
                switch ( i )
                  {    
@@ -969,25 +1094,25 @@ Led_Test_Adc_On1;
                   case 1:
                   case 2:
                   case 3:                  	
-                  	
-                  Coldw.ApmGt[i]=(float)Apm_FREQ[ i ] >>1;  //除以2
+                  	Apm_FREQ[ i ] >>= 1;  //除以2
+                  
                   break;
                   
                   case 4:
                   case 5: 
-                  Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];	
+                  
                   break;	             
                   }
-              #endif
-               
+   
+               Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];	
 
                }	
                
-             #if Flag_test_spi_DMA
-             OSSemPend(OSSemTest1,0,&err);
-             #endif  
+//             #if Flag_test_spi_DMA
+//             OSSemPend(OSSemTest1,0,&err);
+//             #endif  
              
-             for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
+             for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {  
 			        	Capture_number[i] = 0;
                Capture_Flag[i] = 1; //再开始
@@ -996,25 +1121,17 @@ Led_Test_Adc_On1;
                
 
 ///////////////
-        PutValToDispBf(Coldw.ApmGt[5], DispBufnny+12 );  
+        PutValToDispBf(Apm_FREQ[5], DispBufnny+12 );   //Coldw.ApmGt
         PutValToDispBf( 0, DispBufnny+8 );
-        PutValToDispBf( Coldw.ApmGt[3], DispBufnny+4 );
-        PutValToDispBf(Coldw.ApmGt[2] , DispBufnny+0 );
+        PutValToDispBf( Apm_FREQ[3], DispBufnny+4 );
+        PutValToDispBf(Apm_FREQ[2] , DispBufnny+0 );
         
-        PutValToDispBf(Coldw.ApmGt[4] , DispBufnnz+12 );
+        PutValToDispBf(Apm_FREQ[4] , DispBufnnz+12 );
         PutValToDispBf( 0, DispBufnnz+8 );
-        PutValToDispBf( Coldw.ApmGt[1], DispBufnnz+4 );
+        PutValToDispBf( Apm_FREQ[1], DispBufnnz+4 );
         PutValToDispBf(Coldw.ApmGt[0] , DispBufnnz+0 ) ;      
         
-// 	      PutValToDispBf(6666 , DispBufnny+12 );
-//         PutValToDispBf( 7777, DispBufnny+8 );
-//         PutValToDispBf(4444 , DispBufnny+4 );
-//         PutValToDispBf(3333 , DispBufnny+0 );
-//         
-//         PutValToDispBf(5555 , DispBufnnz+12 );
-//         PutValToDispBf( 8888, DispBufnnz+8 );
-//         PutValToDispBf(2222 , DispBufnnz+4 );
-//         PutValToDispBf(1111 , DispBufnnz+0 ) ;    	
+   	
 							
 							
 				OSTimeDly(OS_TICKS_PER_SEC);	    //延时10ms  改为 2ms		 改为 1ms	
@@ -1050,7 +1167,7 @@ void ReceivedPowerOut(uchar type1,uchar *p)
 {
 		  INT8U err;
 	uint16 temp16;
-	uchar buf[MAX_TEMPRATURE_CHNALL+1][8];
+	uchar buf[MAX_BLDC_CH6+1][8];
 	uchar 	num=0; 		//项目字符串记数。
 	uchar 	j=0;    	//逗号个数
 	uchar 	i=0;			//整个字符串位置计数
@@ -1059,7 +1176,7 @@ void ReceivedPowerOut(uchar type1,uchar *p)
 	num=0; 		//项目字符串记数。
 	j=0;    	//逗号个数
 	i=0;			//整个字符串位置计数
-	while((*(p+i))&&(i<250)&&(j<MAX_TEMPRATURE_CHNALL))
+	while((*(p+i))&&(i<250)&&(j<MAX_BLDC_CH6))
 		{
 
 		if(*(p+i)==',' )
@@ -1082,7 +1199,7 @@ void ReceivedPowerOut(uchar type1,uchar *p)
 		 i++;	
 		 }
 		 
-for(j=0;j<MAX_TEMPRATURE_CHNALL;j++)
+for(j=0;j<MAX_BLDC_CH6;j++)
 		{		 
 		temp16=NumberAscStringToInt16(&buf[j][0]);	
 		//if(temp16>255)temp16=255;
@@ -1114,7 +1231,7 @@ for(j=0;j<MAX_TEMPRATURE_CHNALL;j++)
 
 //void ResponeTempratur(void)
 //{				 INT8U err;
-//	uchar buf[10+6*(MAX_TEMPRATURE_CHNALL)];
+//	uchar buf[10+6*(MAX_BLDC_CH6)];
 //	uchar i,n;
 //
 //	uint16 temp16;
@@ -1122,7 +1239,7 @@ for(j=0;j<MAX_TEMPRATURE_CHNALL;j++)
 //	n=PutString("^T",buf,5);
 //
 //	
-//	for(i=0;i<MAX_TEMPRATURE_CHNALL;i++)
+//	for(i=0;i<MAX_BLDC_CH6;i++)
 //				{
 //
 //				if( wAdcResoult[ i ] < 0 )
@@ -1150,12 +1267,12 @@ for(j=0;j<MAX_TEMPRATURE_CHNALL;j++)
 ///////////////////////////////////////
 //void ResponePower(void)
 //{		INT8U err;
-//	uchar buf[10+6*(MAX_TEMPRATURE_CHNALL)];
+//	uchar buf[10+6*(MAX_BLDC_CH6)];
 //	uchar n,i;
 //	n=PutString("^P",buf,5);
 //
 //	
-//	for(i=0;i<MAX_TEMPRATURE_CHNALL;i++)
+//	for(i=0;i<MAX_BLDC_CH6;i++)
 //				{
 //				n+=MakeValAsc16("",PowerOutBuf[i],",",&buf[n]);
 //				}
@@ -1195,7 +1312,7 @@ for(j=0;j<MAX_TEMPRATURE_CHNALL;j++)
 //		{
 //		case 'R':	//请求查询温度
 //
-//		//wAdcResoult[MAX_TEMPRATURE_CHNALL];    //用来存放求平均值之后的结果
+//		//wAdcResoult[MAX_BLDC_CH6];    //用来存放求平均值之后的结果
 //	
 //		
 //		ResponeTempratur();
@@ -1406,64 +1523,56 @@ INT8U err;
 
 uchar i;
 
+pdata = pdata;    // 避免编译警告		
 
+ OSSemMotors = OSSemCreate(1);
 
+ OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时0.1秒
 
-pdata = pdata;                          	 	// 避免编译警告		
-OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时0.1秒
-
-
-
-  
-  OSSemMotors = OSSemCreate(1);
-  
-
-							
+						
 
 for(;;)
 		{
 
      OSSemPend(OSSemTimePid_StepMotor,0,&err);  //OSSemPost(OSSemTimePid_StepMotor);   OSSemTimePid_Heat
      
-
-
-
-
-
-
     
-    
-    
-     OSSemPend(OSSemMotors,0,&err);
+     //OSSemPend(OSSemMotors,0,&err);
      
+     //OSSemPost(OSSemMotors);
+     
+
+      OSSemPend(OSSemMotors,0,&err);
+     
+     	if( FlagRuningnny )   //控制 34 步进电机
+		  	  {
+		  		StepMot[2].PulseCircleSet = 20  +  Coldw.ApmCt[6];  //fast
+		  		StepMotRun(2,20000);
+		  		StepMot[3].PulseCircleSet = 200 +  Coldw.ApmCt[7];  //slow
+		  		StepMotRun(3,4);
+		  	  }
+		  else{
+		  		StepMotStop(2);
+		  		StepMotStop(3);  	
+		      }  
+		      	
+		  if( FlagRuningnnz )  //控制 12  步进电机
+		  	  {
+		  	  StepMot[0].PulseCircleSet = 20 +  Coldw.ApmCt[6];  //fast
+		  		StepMotRun(0,20000);
+		  		StepMot[1].PulseCircleSet = 200 +  Coldw.ApmCt[7];  //slow
+		  		StepMotRun(1,4);
+		  	  }
+		  else{
+		  		StepMotStop(0);
+		  		StepMotStop(1);		  	
+		      } 
      OSSemPost(OSSemMotors);
-     
-     for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )
-         {
-
-
-//			    PID_Calc(&Coldw.Pidx[0], &StepPidBuf[i], (TempratureSet + 0.2 + 0.0 -  TempratureWaterAdj [ i ]),   0 ); //一般是error = SetPoint - NewPoint ,这里反过来
-
-           			 //  	      Coldw.FAN_duty[i] = StepPidBuf[i].Qx;
- 
-           					
-           				OSSemPend(OSSemMotors,0,&err);	
    
-                  OSSemPost(OSSemMotors);
-
-				} 
-//		Coldw.MONI_PX1 = StepPidBuf[0].Px;//0.11;                //
-//    Coldw.MONI_IX1 = StepPidBuf[0].Ix;//0.12;
-//    Coldw.MONI_DX1 = StepPidBuf[0].Dx;//0.13;
-//    Coldw.MONI_QX1 = StepPidBuf[0].Qx; //0.14;
-//                  
-//    Coldw.MONI_PX2 = StepPidBuf[1].Px;  	   
-//    Coldw.MONI_IX2 = StepPidBuf[1].Ix;  	       
-//    Coldw.MONI_DX2 = StepPidBuf[1].Dx;  	        
-//    Coldw.MONI_QX2 = StepPidBuf[1].Qx; //0.14;                  
+     Coldw.FAN_duty [ 6 ]   =    StepMot[0].PulseCircleSet;    //显示
+     Coldw.FAN_duty [ 7 ]   =    StepMot[1].PulseCircleSet;    //显示
                   
-                  
-    OSTimeDly(OS_TICKS_PER_SEC/500);  //补充延时
+    OSTimeDly(OS_TICKS_PER_SEC/50);  //补充延时
 
 		}
 }

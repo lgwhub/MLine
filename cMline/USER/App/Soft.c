@@ -26,7 +26,7 @@ extern OS_EVENT *OSSemProcCmdx;
 extern OS_EVENT *OSSemUart1;
 //extern OS_EVENT *OSSemUart2;
 extern OS_EVENT *OSSemTimePid_StepMotor;
-extern OS_EVENT *OSSemTimePid_Heat;
+extern OS_EVENT *OSSemTimePid_PWM;
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -81,7 +81,7 @@ OSSemUart1 = OSSemCreate(1);
 //OSSemUart2 = OSSemCreate(1);
 			
 OSSemTimePid_StepMotor = OSSemCreate(0);
-OSSemTimePid_Heat = OSSemCreate(0);
+OSSemTimePid_PWM = OSSemCreate(0);
 
 OSSemProcCmdx = OSSemCreate(0);
 //MyStk

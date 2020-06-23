@@ -28,7 +28,7 @@
 //通道数
 
 
-   #define MAX_TEMPRATURE_CHNALL   6
+   #define MAX_BLDC_CH6   6
 
 
 
@@ -44,15 +44,18 @@
 
 
 
-extern unsigned  long int Capture_Flag[6+1] ;
-extern unsigned  long int Apm_FREQ[6+1] ; 
-extern unsigned  long int Capture_number[6+1] ;
+extern unsigned  long int Capture_Flag[MAX_BLDC_CH6 + 1] ;
+extern unsigned  long int Apm_FREQ[MAX_BLDC_CH6 + 1] ; 
+extern unsigned  long int Capture_number[MAX_BLDC_CH6 +1 ] ;
 
-#define Flag_test_spi_DMA   0
+extern unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwm速度控制值   1000  max 
 
-#if Flag_test_spi_DMA     
-    extern unsigned  long int Capture_testSPI_number[6+1] ;
-#endif
+
+//#define Flag_test_spi_DMA   0
+
+//#if Flag_test_spi_DMA     
+//    extern unsigned  long int Capture_testSPI_number[6+1] ;
+//#endif
 
 //extern unsigned  long int CaptureValueStart[6+1] ;
 //extern unsigned  long int CaptureValueEnd[6+1];
@@ -61,7 +64,6 @@ extern unsigned  short int CaptureValueStart[6+1] ;
 extern unsigned  short int CaptureValueEnd[6+1];
 ///////////////////////////////
 
-extern unsigned char FlagKey;
 extern unsigned char EventTimeBuz;
 extern unsigned char EventTimeLed;
 
