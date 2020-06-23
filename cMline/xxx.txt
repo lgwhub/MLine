@@ -1,0 +1,157 @@
+STM32F1系列SPI DMA发送和接收配置详解(2016-04-13 14:47:07)转载▼
+ 分类： 嵌入式系统开发  
+一、概述
+在项目开发中，需要用到SPI接口来进行大量数据的传输，为了能节省CPU的工作时间，采用DMA来进行数据发送则是明智之举。
+二、工作模式描述
+1、发送方作为主机发送数据，接收方作为从机接收数据，基本的硬件连接为：
+主机——从机
+NSS ——NSS
+SCK——SCK
+MOSI——MOSI
+GND——GND（注意一定要共地，否则数据会错很多）
+2、关于主从机NSS管脚各自功能的说明
+主机的NSS作为GPIO口使用，在进行SPI初始化时设置为SPI_NSS_Soft。
+从机的NSS由主机NSS管脚的输出状态决定，在进行SPI初始化时设置为SPI_NSS_Hard。
+三、主机（发送数据）代码详解
+1、结构体变量定义 
+SPI_InitTypeDef  SPI_InitStructure;//SPI初始化结构体
+DMA_InitTypeDef  DMA_InitStructure;//DMA初始化结构体
+GPIO_InitTypeDef GPIO_InitStructure;//GPIO初始化结构体
+NVIC_InitTypeDef NVIC_InitStructure;//NVIC初始化结构体
+2、开相关设备时钟
+RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO,ENABLE);//GPIO、AFIO时钟使能
+RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2,ENABLE);//使能SPI2时钟
+RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);//使能DMA1时钟
+3、SPI接口GPIO初始化
+由于只用到SPI接口的三个信号线，故只需进行三个GPIO口的初始化
+GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_15;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;//将SCK和MOSI管脚设置为复用推挽输出    
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+    
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;//NSS作为GPIO口使用，设置为推挽输出  
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+4、SPI初始化
+  SPI_Cmd(SPI2, DISABLE);
+  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex ;
+  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;  
+  SPI_InitStructure.SPI_DataSize = SPI_DataSize_16b;
+  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;  
+  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
+  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;  
+  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;  
+  SPI_InitStructure.SPI_CRCPolynomial = 7;
+  SPI_Init(SPI2, &SPI_InitStructure);
+5、DMA初始化
+DMA_DeInit(DMA1_Channel5);
+DMA_InitStructure.DMA_PeripheralBaseAddr = 0x4000380C;
+DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADC_Data;
+DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+DMA_InitStructure.DMA_BufferSize = ADC_DATASIZE;
+DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+DMA_InitStructure.DMA_Priority = DMA_Priority_Medium;
+DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+
+
+DMA_ITConfig(DMA1_Channel5, DMA_IT_TC, ENABLE);//使能DMA1通道5中断，注意一定要是“DMA_IT_TC”，否则会出现进不了中断的问题。
+6、NVIC初始化
+NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1); 
+NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel5_IRQn;
+NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+NVIC_Init(&NVIC_InitStructure);
+7、使能SPI2、DMA1、SPI2 DMA发送
+SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Tx, ENABLE);//使能SPI2 DMA发送功能
+SPI_Cmd(SPI2, ENABLE);//使能SPI2
+DMA_Cmd(DMA1_Channel5,ENABLE);//使能SPI2 DMA发送通道
+8、DMA发送中断服务程序
+注意进入中断服务程序，需要先关闭相应通道的DMA功能，再修改CNDTR的值，修改完成后再打开并清除中断标志位。
+void DMA1_Channel5_IRQHandler(void)
+{
+if(DMA_GetITStatus(DMA1_IT_TC5)==SET)
+{
+          DMA_Cmd(DMA1_Channel5,DISABLE);
+         DMA1_Channel5->CNDTR = ADC_DATASIZE;
+         DMA_Cmd(DMA1_Channel5,ENABLE);
+DMA_ClearITPendingBit(DMA1_IT_TC5);
+}
+}
+四、从机（接收数据）代码详解
+1、结构体变量定义 
+SPI_InitTypeDef SPI_InitStructure;//SPI初始化结构体
+DMA_InitTypeDef DMA_InitStructure;//DMA初始化结构体
+GPIO_InitTypeDef GPIO_InitStructure;//GPIO初始化结构体
+NVIC_InitTypeDef NVIC_InitStructure;//NVIC初始化结构体
+2、开相关设备时钟
+RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO,ENABLE);//GPIO、AFIO时钟使能
+RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2,ENABLE);//使能SPI2时钟
+RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);//使能DMA1时钟
+3、SPI接口GPIO初始化
+
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_15;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;                   
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+4、SPI初始化
+SPI_Cmd(SPI2, DISABLE);
+  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+  SPI_InitStructure.SPI_Mode = SPI_Mode_Slave;       
+  SPI_InitStructure.SPI_DataSize = SPI_DataSize_16b;   
+  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;       
+  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
+  SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2; 
+  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;     
+  SPI_InitStructure.SPI_CRCPolynomial = 7;
+  SPI_Init(SPI2, &SPI_InitStructure);
+5、DMA初始化
+DMA_DeInit(DMA1_Channel4);
+ DMA_InitStructure.DMA_PeripheralBaseAddr = 0x4000380C;
+ DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADC_Data;
+ DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+ DMA_InitStructure.DMA_BufferSize = ADC_DATASIZE;
+ DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+ DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+ DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+ DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+ DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+ DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+ DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+ DMA_Init(DMA1_Channel4, &DMA_InitStructure);
+ 
+ DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
+6、NVIC初始化
+NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+ NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel4_IRQn;
+ NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+ NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ NVIC_Init(&NVIC_InitStructure);
+7、使能SPI2、DMA1、SPI2 DMA发送
+SPI_I2S_DMACmd(SPI2,SPI_I2S_DMAReq_Rx,ENABLE);
+ SPI_Cmd(SPI2, ENABLE);
+ DMA_Cmd(DMA1_Channel4,ENABLE);
+8、DMA接收中断服务程序
+void DMA1_Channel4_IRQHandler(void)
+{
+ if(DMA_GetFlagStatus(DMA1_IT_TC4) == SET)
+ {
+  DMA_Cmd(DMA1_Channel4,DISABLE);
+  DMA1_Channel4->CNDTR = ADC_DATASIZE;
+  DMA_Cmd(DMA1_Channel4,ENABLE);
+  DMA_ClearITPendingBit(DMA1_IT_TC4);
+ }
+}
+五、总结
+在产品开发中需要进行大量数据传输的场合，DMA是很好的选择，用好DMA功能能使程序设计效率大大提高。
+分享： .16
+喜欢
+0

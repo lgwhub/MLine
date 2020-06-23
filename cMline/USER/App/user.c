@@ -784,7 +784,7 @@ INT8U err;
   
 #endif  
   
-//SPIy_Buffer_Tx
+
 
 OSTimeDly(OS_TICKS_PER_SEC/2);	    //—” ±2√Î		
 
@@ -798,8 +798,8 @@ OSTimeDly(OS_TICKS_PER_SEC/2);	    //—” ±2√Î
 						   OSSemPend(OSSemTest2,0,&err);
 						    #endif
 						//Seg8
-						Process_N_Numb1();
-						   
+						Process_N_NUMBnny();
+						Process_N_NUMBnnZ();   
 						EventTimeLed=2;   
 						       OSTimeDly(OS_TICKS_PER_SEC/10);	    //—” ±1√Î	
 						   

@@ -22,10 +22,10 @@
 
 #define SPI_STR_Lowy		  GPIO_ResetBits(GPIOA,GPIO_Pin_4)
 #define SPI_STR_Highy			GPIO_SetBits(GPIOA,GPIO_Pin_4)
-#define SPI_STR_LowZ		  GPIO_ResetBits(GPIOB,GPIO_Pin_12)
-#define SPI_STR_HighZ			GPIO_SetBits(GPIOB,GPIO_Pin_12)
+#define SPI_STR_LownnZ		  GPIO_ResetBits(GPIOB,GPIO_Pin_12)
+#define SPI_STR_HighnnZ			GPIO_SetBits(GPIOB,GPIO_Pin_12)
 #define SPI_Kiny	        (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_6))
-#define SPI_Kinz	        (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14))
+#define SPI_KinnnZ	        (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14))
 
 
 
