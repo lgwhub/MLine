@@ -48,6 +48,9 @@ extern unsigned  long int Capture_Flag[MAX_BLDC_CH6 + 1] ;
 extern unsigned  long int Apm_FREQ[MAX_BLDC_CH6 + 1] ; 
 extern unsigned  long int Capture_number[MAX_BLDC_CH6 +1 ] ;
 
+//extern unsigned  long int Capture_number_All32  ;  //永远计数器。脉冲测量用
+
+
 extern unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwm速度控制值   1000  max 
 
 

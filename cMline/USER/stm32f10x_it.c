@@ -195,6 +195,9 @@ void TIM3_IRQHandler(void)
 //         Capture_testSPI_number[0]++;
 //      #endif   
       
+     // Capture_number_All32 ++ ;  //永远计数器。脉冲测量用
+      Coldw.limit_recode[7] ++; //永远计数器。脉冲测量用
+      
      if( Capture_Flag[0] !=0 )
     	 {
           if(Capture_number[0] == 0)

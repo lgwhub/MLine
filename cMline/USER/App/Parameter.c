@@ -240,7 +240,7 @@ FlagSetAllDefault = 0;
     
     
     
-    Coldw.T_set = 38;                //温度设置值
+    Coldw.T_set = 0; // 38;                //温度设置值
 
 
     Coldw.Cycle_times_set = 0;      //

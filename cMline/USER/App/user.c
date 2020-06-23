@@ -50,8 +50,10 @@ unsigned long ShiftKeyCurnnz;   //显示板键盘当前值
 unsigned long ShiftKeyBnnz,ShiftKeyCnnz;
 unsigned long ShiftKeySavennz;
 
-unsigned char FlagRuningnny;   //控制 34 6 BLDC电机   34 步进电机
-unsigned char FlagRuningnnz;   //控制 12 5 BLDC电机   12 步进电机
+//unsigned char FlagRuningnny;   //控制 34 6 BLDC电机   34 步进电机
+//unsigned char FlagRuningnnz;   //控制 12 5 BLDC电机   12 步进电机
+#define  FlagRuningnny    (Coldw.T_set )              //温度设置值
+#define  FlagRuningnnz    (Coldw.TC_sx )                //温度上限设置值
 
 unsigned  short int  BLDC_PwmBuf[ MAX_BLDC_CH6 + 1 ];   //pwm速度中间变量
 unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwm速度控制值   1000  max 
@@ -59,6 +61,9 @@ unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwm速度控制值   1000  
 unsigned  long int Capture_Flag[ MAX_BLDC_CH6 + 1 ] ;
 unsigned  long int Apm_FREQ[ MAX_BLDC_CH6 +1 ] ; 
 unsigned  long int Capture_number[ MAX_BLDC_CH6 + 1 ] ;
+
+//unsigned  long int Capture_number_All32  = 0 ;  //永远计数器。脉冲测量用
+
 
 //#if Flag_test_spi_DMA     
 //  unsigned  long int Capture_testSPI_number[6+1] ;
@@ -537,7 +542,7 @@ for(;;)
 
     
 		
-		  if( FlagRuningnny )   //控制 34 6 BLDC电机
+		  if( FlagRuningnny >=1 )   //控制 34 6 BLDC电机
 		  	  {
 		  		BLDC_PwmBuf[2] = Coldw.ApmCt[2];  //3
 		  		BLDC_PwmBuf[3] = Coldw.ApmCt[3];  //4
@@ -549,7 +554,7 @@ for(;;)
 		  		BLDC_PwmBuf[5] = 0;		  	
 		      }  
 		      	
-		  if( FlagRuningnnz )  //控制 12 5 BLDC电机
+		  if( FlagRuningnnz >= 1 )  //控制 12 5 BLDC电机
 		  	  {
 		  		BLDC_PwmBuf[0] = Coldw.ApmCt[0];  //1
 		  		BLDC_PwmBuf[1] = Coldw.ApmCt[1];  //2
@@ -703,7 +708,7 @@ void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
 {
  if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
  	  {
- 	  	FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
+ //  	FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
  	  }
  else{
  	   if ( KEY_BIT_RUN ==  (*curl)  )
@@ -718,7 +723,7 @@ void KeyShiftProcessnnz( unsigned  long int  *curl , unsigned  long int*oldl )
 {
  if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
  	  {
- 	  	FlagRuningnnz = 0 ;   //控制 12 5 BLDC电机   12 步进电机
+ //	  	FlagRuningnnz = 0 ;   //控制 12 5 BLDC电机   12 步进电机
  	  }
  else{
  	   if ( KEY_BIT_RUN ==  (*curl)  )
@@ -890,7 +895,7 @@ INT8U err;
   	         	          
   	                     }
 						
-					  if( FlagRuningnny)   //控制 34 6 BLDC电机   34 步进电机	
+					  if(  FlagRuningnny >=1  )   //控制 34 6 BLDC电机   34 步进电机	
 					  	{
 					  		SngnalLed[1]  |=  0x80;      //单独指示灯
 					  	}
@@ -974,7 +979,7 @@ INT8U err;
   	         	          
   	                     }
 						
-						if( FlagRuningnnz)   //控制 12 5 BLDC电机   12 步进电机	
+						if(FlagRuningnnz >= 1)   //控制 12 5 BLDC电机   12 步进电机	
 					  	{
 					  		SngnalLed[3]  |=  0x80;      //单独指示灯
 					  	}
@@ -1024,7 +1029,8 @@ unsigned  short int temp16 ;
 
 	pdata = pdata;                          	 	// 避免编译警告	
 	   
-
+      Coldw.limit_recode[7] =0; //永远计数器。脉冲测量用
+      
 //#if Flag_test_spi_DMA     
 //  for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 //			        {
@@ -1121,9 +1127,9 @@ Led_Test_Adc_On1;
                
                
 
-///////////////
+///////////////      Coldw.limit_recode[7] 
         PutValToDispBf(Apm_FREQ[5], DispBufnny+12 );   //Coldw.ApmGt
-        PutValToDispBf( 0, DispBufnny+8 );
+        PutValToDispBf( Coldw.limit_recode[7], DispBufnny+8 );
         PutValToDispBf( Apm_FREQ[3], DispBufnny+4 );
         PutValToDispBf(Apm_FREQ[2] , DispBufnny+0 );
         
@@ -1545,28 +1551,34 @@ for(;;)
 
       OSSemPend(OSSemMotors,0,&err);
      
-     	if( FlagRuningnny )   //控制 34 步进电机
+     	if(  FlagRuningnny >=1  )   //控制 34 步进电机
 		  	  {
+		  	  	 //3 #步进电机
 		  		StepMot[2].PulseCircleSet = 20  +  Coldw.ApmCt[6];  //fast
 		  		StepMotRun(  2  ,  20000  );
+		  		
+		  			 //4 #步进电机
 		  		StepMot[3].PulseCircleSet = 200 +  Coldw.ApmCt[7];  //slow
 		  		StepMotRun(  3 , 4 );
 		  	  }
 		  else{
-		  		StepMotStop(2);
-		  		StepMotStop(3);  	
+		  		StepMotStop(2);  	 //3 #步进电机
+		  		StepMotStop(3);  	 //4 #步进电机
 		      }  
 		      	
-		  if( FlagRuningnnz )  //控制 12  步进电机
+		  if(FlagRuningnnz >= 1 )  //控制 12  步进电机
 		  	  {
+		  	  	  //1 #步进电机
 		  	  StepMot[0].PulseCircleSet = 20 +  Coldw.ApmCt[6];  //fast
 		  		StepMotRun(  0 , 20000 );
+		  		
+		  		 //2 #步进电机	  	
 		  		StepMot[1].PulseCircleSet = 200 +  Coldw.ApmCt[7];  //slow
 		  		StepMotRun(  1 , 4  );
 		  	  }
 		  else{
-		  		StepMotStop( 0 );
-		  		StepMotStop( 1 );		  	
+		  		StepMotStop( 0 );  //1 #步进电机
+		  		StepMotStop( 1 );	  //2 #步进电机	  	
 		      } 
      OSSemPost(OSSemMotors);
    
