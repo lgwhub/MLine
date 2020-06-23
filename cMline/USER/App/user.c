@@ -759,7 +759,7 @@ INT8U err;
   
 
 
-OSTimeDly(OS_TICKS_PER_SEC/5);	    //延时0.2秒		
+//OSTimeDly(OS_TICKS_PER_SEC/5);	    //延时0.2秒		
 
 		for(;;)
 						{
@@ -803,7 +803,7 @@ INT8U err;
   
 
 
-OSTimeDly(OS_TICKS_PER_SEC/5);	    //延时0.2秒		
+//OSTimeDly(OS_TICKS_PER_SEC/5);	    //延时0.2秒		
 
 		for(;;)
 						{
@@ -835,7 +835,7 @@ OSTimeDly(OS_TICKS_PER_SEC/5);	    //延时0.2秒
 
 ////////////////////////////////////////////////
 
-//  1234号高压电动机12000转  ，  2400HZ脉冲  ，4*3极
+//  1234号高压电动机12000转  ，  2400HZ脉冲  ，4*3极  * 0.5
 //  56号低压电动机24000转  ，    2400HZ脉冲  ，2*3极
 
 void TaskApm(void * pdata) //TaskTs
@@ -844,7 +844,7 @@ INT8U err;
  
 uchar i;
 
-unsigned  short int temp16;
+unsigned  short int temp16 ;
 
 	pdata = pdata;                          	 	// 避免编译警告	
 	   
@@ -856,7 +856,19 @@ unsigned  short int temp16;
 
                }
 #endif               
-               
+        
+        
+	      PutValToDispBf(6666 , DispBufnny+12 );
+        PutValToDispBf( 0, DispBufnny+8 );
+        PutValToDispBf(4444 , DispBufnny+4 );
+        PutValToDispBf(3333 , DispBufnny+0 );
+        
+        PutValToDispBf(5555 , DispBufnnz+12 );
+        PutValToDispBf(0, DispBufnnz+8 );
+        PutValToDispBf(2222 , DispBufnnz+4 );
+        PutValToDispBf(1111 , DispBufnnz+0 ) ;     
+        
+				OSTimeDly(OS_TICKS_PER_SEC*2);	    //延时10ms  改为 2ms		 改为 1ms	
 //OSTimeDly(OS_TICKS_PER_SEC);	    //延时0.5秒
 
 //////
@@ -918,26 +930,30 @@ Led_Test_Adc_On1;
               }
                
                
-////////////////
 
-         #if Flag_test_spi_DMA     
-          Capture_testSPI_number[6] ++ ;
-          Coldw.ApmGt[6]=Capture_testSPI_number[6] ;
-          if( Capture_testSPI_number [6] > 6000 )
-          	{
-             for ( i = 0 ; i < MAX_TEMPRATURE_CHNALL ; i++ )			
-			           {
-                 Capture_testSPI_number[i] = 0; 
-
-                 }
-             }
-             
-             #endif
 ///////////////
-
+        PutValToDispBf(Apm_FREQ[5], DispBufnny+12 );  
+        PutValToDispBf( 0, DispBufnny+8 );
+        PutValToDispBf( Apm_FREQ[3]>>1, DispBufnny+4 );
+        PutValToDispBf(Apm_FREQ[2]>>1 , DispBufnny+0 );
+        
+        PutValToDispBf(Apm_FREQ[4] , DispBufnnz+12 );
+        PutValToDispBf( 0, DispBufnnz+8 );
+        PutValToDispBf( Apm_FREQ[1]>>1, DispBufnnz+4 );
+        PutValToDispBf(Apm_FREQ[0]>>1 , DispBufnnz+0 ) ;      
+        
+// 	      PutValToDispBf(6666 , DispBufnny+12 );
+//         PutValToDispBf( 7777, DispBufnny+8 );
+//         PutValToDispBf(4444 , DispBufnny+4 );
+//         PutValToDispBf(3333 , DispBufnny+0 );
+//         
+//         PutValToDispBf(5555 , DispBufnnz+12 );
+//         PutValToDispBf( 8888, DispBufnnz+8 );
+//         PutValToDispBf(2222 , DispBufnnz+4 );
+//         PutValToDispBf(1111 , DispBufnnz+0 ) ;    	
+							
+							
 				OSTimeDly(OS_TICKS_PER_SEC);	    //延时10ms  改为 2ms		 改为 1ms	
-				
-				
 										
 
 					}

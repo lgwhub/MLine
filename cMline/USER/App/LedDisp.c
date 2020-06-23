@@ -54,14 +54,14 @@ unsigned char LedSegTab[]=
 	seg_b + seg_c + seg_d + seg_e + seg_g  ,                       //d             
   seg_a + seg_d + seg_e + seg_f + seg_g  ,                       //E 
   seg_a + seg_e + seg_f + seg_g,                                 //F                 
-	seg_a ,                                                        // -a   上横         g 16
-	seg_g ,                                                        // -g	 中横         h  17     
+	seg_a ,                                                        // -a   上横  0x10       g 16
+	seg_g ,                                                        // -g	 中横  0x11       h  17     
 	seg_d ,                                                        // -d   下横         i
 	seg_a + seg_b + seg_f  + seg_g ,	                             //上口               j
   seg_c + seg_d + seg_e  + seg_g ,                               //下口               k   20
-	seg_a + seg_b + seg_f  ,	                                     //上盖               l
+	seg_a + seg_b + seg_f  ,	                                     //上盖        0x15      l
   seg_c + seg_d + seg_e  ,                                       //下盖               m   22
-	0                                                              //space		          n   23
+	0                                                              //space		   0x17       n   23
 	                                                                      
 }    ; 
 
@@ -103,14 +103,36 @@ unsigned char DispBufnnz[24]=
 
 
 
-void Process_One_Numb1(void);
-void Process_One_Numbnnz(void);
+void Process_One_Numb1(unsigned char LastNum);
+void Process_One_Numbnnz(unsigned char LastNum);
 void Process_N_NUMBnny(void);
 void Process_N_NUMBnnz(void);
 
 unsigned char   Alm_Flag1;    //报警指示灯
 unsigned char   Alm_Flag2;    //报警指示灯
 unsigned char   led8[4];      //指示灯
+
+
+void PutValToDispBf(unsigned short val , unsigned char  *position )
+{
+	//position+12   position+8  position+4  position+0   DispBufnny
+	
+	if(val>9999)val=9999;
+	
+	if(val<1000)  *position         = 0x17 ;  //隐
+	else          *position         = val/1000%10;
+	
+  if(val<100)   *( position +1)   = 0x17 ;  //隐
+	else          *( position +1)   = val/100%10;
+	
+	if(val<10)    *( position +2)   = 0x17 ;  //隐
+	else 	        *( position +2)   = val/10%10;
+	
+	*( position +3) = val%10;	
+} 
+
+
+
 
 //四片595最多可以送的位数
 #define  	DigMax    24	
@@ -128,6 +150,7 @@ void Process_N_NUMBnny(void)
 
 unsigned char  i;
 unsigned long temp32;
+unsigned long LastNum;   //键盘采样用
 	
 	temp32 = ( 0x000001 << ( DigMax - DigNmb ) );   //不用的位先移掉
 	
@@ -141,21 +164,24 @@ unsigned long temp32;
 	   }
 
 	NUMnny.byte4[3]  =  0xff; 
-	Process_One_Numb1();
+	Process_One_Numb1(LastNum);
 	
-	
+	LastNum = temp32;
 	temp32 <<=1;
 	NUMnny.a32 = temp32;
 	
 	NUMnny.byte4[3]  =   ~led8[0];
-	Process_One_Numb1();
+	Process_One_Numb1(LastNum);
+	
+	LastNum = temp32;
 	temp32 <<=1;
 	NUMnny.a32 = temp32;
 	
 		
 	NUMnny.byte4[3]  =   ~led8[1];
-	Process_One_Numb1();
+	Process_One_Numb1(LastNum);
 	
+	LastNum = temp32;
 	temp32 <<=1;
 	NUMnny.a32 = temp32;	
 		
@@ -164,10 +190,11 @@ for(i=0;i<DigNmb-3;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 
 	NUMnny.byte4[3]  =  ~LedSegTab [  DispBufnny[i] ] ;// 第4个字节
 	
-	Process_One_Numb1();
+	Process_One_Numb1(LastNum);
 	
 	//NUMnny.byte4[3]  =  0;   //第四字节是A32的最高位
 
+  LastNum = temp32;
   temp32 <<=1;
 	NUMnny.a32 = temp32;
 	
@@ -181,6 +208,7 @@ void Process_N_NUMBnnz(void)
 
 unsigned char  i;
 unsigned long temp32;
+unsigned long LastNum;   //键盘采样用
 	
 	temp32 = ( 0x000001 << ( DigMax - DigNmb ) );   //不用的位先移掉
 	
@@ -194,21 +222,24 @@ unsigned long temp32;
 	   }
 
 	NUMnnz.byte4[3]  =  0xff; 
-	Process_One_Numbnnz();
+	Process_One_Numbnnz(LastNum);
 	
-	
+	LastNum = temp32;
 	temp32 <<=1;
 	NUMnnz.a32 = temp32;
 	
+	
+	
 	NUMnnz.byte4[3]  =   ~led8[2];
-	Process_One_Numbnnz();
+	Process_One_Numbnnz(LastNum);
+	LastNum = temp32;
 	temp32 <<=1;
 	NUMnnz.a32 = temp32;
 	
 		
 	NUMnnz.byte4[3]  =   ~led8[3];
-	Process_One_Numbnnz();
-	
+	Process_One_Numbnnz(LastNum);
+	LastNum = temp32;
 	temp32 <<=1;
 	NUMnnz.a32 = temp32;	
 		
@@ -217,9 +248,11 @@ for(i=0;i<DigNmb-3;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 
 	NUMnnz.byte4[3]  =  ~LedSegTab [  DispBufnnz[i] ] ;// 第4个字节
 	
-	Process_One_Numbnnz();
+	Process_One_Numbnnz(LastNum);
 	
 	//NUMnnz.byte4[3]  =  0;   //第四字节是A32的最高位
+
+  LastNum = temp32;
 
   temp32 <<=1;
 	NUMnnz.a32 = temp32;
@@ -229,35 +262,13 @@ for(i=0;i<DigNmb-3;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
 	
 }
 
-void Process_N_NUMBnnzxxxxxxxxxxxxxxxx(void)
-{
 
-unsigned char  i;
-	
-NUMnnz.a32 = 0x000001;
-
-NUMnnz.a32	<<= ( DigMax - DigNmb  );   //不用的位先移掉	
-	
-for(i=0;i<DigNmb;i++)  //16数码管，2-3排指示灯，一个键盘，19-24
-	{
-	
-	NUMnnz.byte4[3]  = ~LedSegTab [  DispBufnnz[i] ] ;// 第4个字节
-	
-	Process_One_Numbnnz();
-	
-	NUMnnz.byte4[3]  =  0;
-	
-	NUMnnz.a32 <<= 1 ;
-		
-	}
-	
-}
 
 
 /////////////////////////////////////
 
 
-void Process_One_Numb1(void)
+void Process_One_Numb1(unsigned char LastNum)
 {
 	unsigned char i;
 	
@@ -268,36 +279,23 @@ void Process_One_Numb1(void)
 		
 	}
 	
-
-	
-	//SPI_STR_Highy;
 	SPI_STR_Lowy;
-	
 
   //OSTimeDly(OS_TICKS_PER_SEC/500);	    //延时0.002秒
-	
-	//SpiSend8ByteY( 0x55);//SPInny_Buffer_Tx[0] );
-  
+
   SpiSendDMAnny( SPI_DMA_BufferSize4  );   //SPIBufferSize4
-
-
 	
 //  if(!DMA_GetFlagStatus(SPI1_MASTER_Tx_DMA_FLAG))
-//	  {
 
-//	  }	
-
-  
   OSTimeDly(OS_TICKS_PER_SEC/1000);	    //延时0.002秒.等4字节传送完成
     
 	  if(SPI_Kiny)
   	{//读
-  		
+  		//LastNum
   	}	
-		
 
 //更新
-  //SPI_STR_Lowy;
+ 
   SPI_STR_Highy;    //激活输出
   
 	//OSTimeDly(OS_TICKS_PER_SEC/500);	    //延时0.01秒
@@ -309,7 +307,7 @@ void Process_One_Numb1(void)
 /////////////////////////////////////
 
 
-void Process_One_Numbnnz(void)
+void Process_One_Numbnnz(unsigned char LastNum)
 {
 	unsigned char i;
 	
@@ -321,44 +319,29 @@ void Process_One_Numbnnz(void)
 	}
 	
 
-	
-	//SPI_STR_HighnnZ;
 	SPI_STR_LownnZ;
 	
 
   //OSTimeDly(OS_TICKS_PER_SEC/500);	    //延时0.002秒
-	
-	//SpiSend8ByteZ( 0x55);//SPInnZ_Buffer_Tx[0] );
-  
+
   SpiSendDMAnnz( SPI_DMA_BufferSize4  );   //SPIBufferSize4
 
 
-	
 //  if(!DMA_GetFlagStatus(SPI2_MASTER_Tx_DMA_FLAG))
-//	  {
-//    OSTimeDly(OS_TICKS_PER_SEC/500);	    //延时0.002秒
-//	  }
-//  else {
-//    OSTimeDly(OS_TICKS_PER_SEC/400);	    //延时0.002秒
-//	  }	
 
-  
+
   OSTimeDly(OS_TICKS_PER_SEC/1000);	    //延时0.002秒.等4字节传送完成
   
 	
 	if(SPI_KinnnZ)
   	{//读
-  		
+  		//LastNum
   	}    
 //  while (!DMA_GetFlagStatus(SPI2_MASTER_Tx_DMA_FLAG));
 
 //更新
-  //SPI_STR_LownnZ;
-  SPI_STR_HighnnZ;    //激活输出
-  
-	//OSTimeDly(OS_TICKS_PER_SEC/500);	    //延时0.01秒
-	
 
+  SPI_STR_HighnnZ;    //激活输出
 
 	//OSTimeDly(OS_TICKS_PER_SEC/100);	    //延时0.01秒
 	
