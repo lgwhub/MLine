@@ -87,6 +87,17 @@ void Cap_Configuration_T3(void)
 	
 	TIM_ICInitTypeDef  TIM_ICInitStructure;
 	
+	  TIM_TimeBaseInitTypeDef  		TIM_TimeBaseStructure;
+   	TIM_TimeBaseStructure.TIM_Prescaler     = 72000000/100000-1;			//Ô¤·ÖÅä¼Ä´æÆ÷   100khz    0.5S.<65536
+//    TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;//TIM_CounterMode_Down;//
+//    TIM_TimeBaseStructure.TIM_Period        = 1000;		//  1/1000
+//    TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
+//    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+    TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+	
+	
+	
+	
   TIM_ICInitStructure.TIM_Channel = TIM_Channel_3;
   TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
   TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
@@ -195,7 +206,8 @@ void GPIO_Configuration_T4(void)
 
 
   /* TIM3 channel 2 pin (PD.06 PD.07 PD.08 PD.9) configuration */
-  GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
+    /* TIM4 channel 2 pin (PD.12 PD.13 PD.14 PD.15) configuration */
+  GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   //GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 

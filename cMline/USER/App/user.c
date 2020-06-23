@@ -537,19 +537,19 @@ pdata = pdata;                          	 	// ±‹√‚±‡“ÎæØ∏Ê
 					{
 					LED1_ON;
 					LED2_OFF;
-					LED3_ON;
+					LED4_ON;
 
 					
 					OSTimeDly(OS_TICKS_PER_SEC/20);	    //—” ±0.05√Î
 					LED1_OFF;
 					LED2_ON;
-					LED3_OFF;
+					LED4_OFF;
 
 					OSTimeDly(OS_TICKS_PER_SEC/20);	    //—” ±0.05√Î
 					}
 			LED1_OFF;		
 			LED2_OFF;
-			LED3_OFF;
+			LED4_OFF;
 
 for(;;)
 		{

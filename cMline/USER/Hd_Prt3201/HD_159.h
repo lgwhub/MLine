@@ -35,9 +35,9 @@
 //PC13
 #define LED2_OFF		GPIO_ResetBits(GPIOC,GPIO_Pin_13)
 #define LED2_ON			GPIO_SetBits(GPIOC,GPIO_Pin_13)
-//PD15
-#define LED3_OFF		GPIO_ResetBits(GPIOD,GPIO_Pin_15)
-#define LED3_ON			GPIO_SetBits(GPIOD,GPIO_Pin_15)
+//PD15  TIM4--CH4
+#define LED3_OFF		;//GPIO_ResetBits(GPIOD,GPIO_Pin_15)
+#define LED3_ON			;//GPIO_SetBits(GPIOD,GPIO_Pin_15)
 
 //PC0  ¿ª·¢°åÉÏ
 #define LED4_OFF		GPIO_SetBits(GPIOC,GPIO_Pin_0)
