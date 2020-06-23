@@ -183,7 +183,7 @@ Options 1,0,0  // Target 'STM32_Mode'
  ADSLDIF ()
  ADSLDDW ()
   OPTDL (SARMCM3.DLL)()(DARMSTM.DLL)(-pSTM32F103VE)(SARMCM3.DLL)()(TARMSTM.DLL)(-pSTM32F103VE)
-  OPTDBG 49149,11,()()()()()()()()()() (BIN\CMSIS_AGDI.dll)()()()
+  OPTDBG 49150,14,()()()()()()()()()() (BIN\CMSIS_AGDI.dll)()()()
  FLASH1 { 9,0,0,0,1,0,0,0,9,16,0,0,0,0,0,0,0,0,0,0 }
  FLASH2 (BIN\CMSIS_AGDI.dll)
  FLASH3 ("" ())

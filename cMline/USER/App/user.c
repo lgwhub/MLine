@@ -770,11 +770,11 @@ OSTimeDly(OS_TICKS_PER_SEC/5);	    //—” ±0.2√Î
 						   #if Flag_test_spi_DMA
 						   OSSemPend(OSSemTest2,0,&err);
 						    #endif
-						//Seg8
+	
 						Process_N_NUMBnny();
 
 						   
-						OSTimeDly(OS_TICKS_PER_SEC/200);	    //—” ±0.05√Î	
+					//	OSTimeDly(OS_TICKS_PER_SEC/500);	    //—” ±0.002√Î	
 
 						#else
 						
@@ -816,10 +816,10 @@ OSTimeDly(OS_TICKS_PER_SEC/5);	    //—” ±0.2√Î
 						    #endif
 						//Seg8
 
-						Process_N_NUMBnnZ();   
+						Process_N_NUMBnnz();   
 						//EventTimeLed=2;   
 						   
-						OSTimeDly(OS_TICKS_PER_SEC/200);	    //—” ±0.05√Î	
+						//OSTimeDly(OS_TICKS_PER_SEC/1000);	    //—” ±0.05√Î	
 
 						#else
 						

@@ -71,23 +71,28 @@
 #define  APP_TASK_START_PRIO                               3
 
 
+#define  TaskTimePr_PRIO          	 		(OS_LOWEST_PRIO - 33)
+#define  TaskModbus_PRIO          	 		(OS_LOWEST_PRIO - 32)
+#define  TaskLedy_PRIO          	 		(OS_LOWEST_PRIO - 31)
+#define  TaskLedz_PRIO          	 		(OS_LOWEST_PRIO - 30)
+
+
 #define  TaskSave_PRIO          	 		(OS_LOWEST_PRIO - 24)
 
 #define  TaskRecv_PRIO          	 		(OS_LOWEST_PRIO - 22)
 
 
 #define  TaskVirPwm_PRIO          	 		(OS_LOWEST_PRIO - 18)
-#define  TaskModbus_PRIO          	 		(OS_LOWEST_PRIO - 17)
 #define  TaskStepMotor_PRIO          	 		(OS_LOWEST_PRIO - 16)
-#define  TaskTimePr_PRIO          	 		(OS_LOWEST_PRIO - 15)
+
 #define  TaskHpwm_PRIO          	 		(OS_LOWEST_PRIO - 14)
 #define  TaskStatus_PRIO          	 		(OS_LOWEST_PRIO - 13)
-#define  TaskLedz_PRIO          	 		(OS_LOWEST_PRIO - 32)
+
 
 #define  TaskApm_PRIO          	 		(OS_LOWEST_PRIO - 11)
 
 
-#define  TaskLedy_PRIO          	 		(OS_LOWEST_PRIO - 10)
+
 #define  TaskKey_PRIO          	 		(OS_LOWEST_PRIO - 9)
 
 
