@@ -7,7 +7,10 @@
 //参数已经初始化标记
 #define FlagParamInitnized	0xB0
 
-#define Max_MemBuf  ( 218 )
+extern  unsigned short int Stm32IdSum6;   
+
+
+#define Max_MemBuf  ( 100 )
 
 extern unsigned char cMemBufA[Max_MemBuf+2];
 extern unsigned char cMemBufB[Max_MemBuf+2];

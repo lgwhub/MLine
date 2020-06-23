@@ -30,7 +30,7 @@ OS_EVENT *OSSemProcCmdx;
 
 
 
-unsigned char lAddressKey;  //²¦Âë¿ª¹ØPB12-PB15£¬Öµ£¬×îµÍ4Î»
+unsigned char lAddressKey;  //æ‹¨ç å¼€å…³PB12-PB15ï¼Œå€¼ï¼Œæœ€ä½4ä½
 
 
 unsigned char EventTimeBuz=0;
@@ -42,37 +42,37 @@ unsigned char EventTimeLed=0;
 #define   KEY_BIT_STOP    0x00800000
 #define   KEY_BIT_RUN     0x00400000
 
-unsigned long ShiftKeyCurnny;   //ÏÔÊ¾°å¼üÅÌµ±Ç°Öµ
+unsigned long ShiftKeyCurnny;   //æ˜¾ç¤ºæ¿é”®ç›˜å½“å‰å€¼
 unsigned long ShiftKeyBnny,ShiftKeyCnny;
 unsigned long ShiftKeySavenny;
 
-unsigned long ShiftKeyCurnnz;   //ÏÔÊ¾°å¼üÅÌµ±Ç°Öµ
+unsigned long ShiftKeyCurnnz;   //æ˜¾ç¤ºæ¿é”®ç›˜å½“å‰å€¼
 unsigned long ShiftKeyBnnz,ShiftKeyCnnz;
 unsigned long ShiftKeySavennz;
 
-//unsigned char FlagRuningnny;   //¿ØÖÆ 34 6 BLDCµç»ú   34 ²½½øµç»ú
-//unsigned char FlagRuningnnz;   //¿ØÖÆ 12 5 BLDCµç»ú   12 ²½½øµç»ú
-#define  FlagRuningnny    (Coldw.T_set )              //ÎÂ¶ÈÉèÖÃÖµ
-#define  FlagRuningnnz    (Coldw.TC_sx )                //ÎÂ¶ÈÉÏÏŞÉèÖÃÖµ
+//unsigned char FlagRuningnny;   //æ§åˆ¶ 34 6 BLDCç”µæœº   34 æ­¥è¿›ç”µæœº
+//unsigned char FlagRuningnnz;   //æ§åˆ¶ 12 5 BLDCç”µæœº   12 æ­¥è¿›ç”µæœº
+#define  FlagRuningnny    (Coldw.T_set )              //æ¸©åº¦è®¾ç½®å€¼
+#define  FlagRuningnnz    (Coldw.TC_sx )                //æ¸©åº¦ä¸Šé™è®¾ç½®å€¼
 
 
-unsigned  short int  ApmSetBuf[ MAX_BLDC_CH6 + 1 ];   //ËÙ¶ÈÉè¶¨ÖµÖĞ¼ä±äÁ¿   
-unsigned  short int  ApmSetVal[ MAX_BLDC_CH6 + 1 ];   //ËÙ¶ÈÉè¶¨ÖµµİÔö±äÁ¿  //   ApmSetBuf     --->>>>  ApmSetVal    ..........       
+unsigned  short int  ApmSetBuf[ MAX_BLDC_CH6 + 1 ];   //é€Ÿåº¦è®¾å®šå€¼ä¸­é—´å˜é‡   
+unsigned  short int  ApmSetVal[ MAX_BLDC_CH6 + 1 ];   //é€Ÿåº¦è®¾å®šå€¼é€’å¢å˜é‡  //   ApmSetBuf     --->>>>  ApmSetVal    ..........       
 
 
-unsigned  short int  BLDC_PwmBuf[ MAX_BLDC_CH6 + 1 ];   //pwmËÙ¶ÈÖĞ¼ä±äÁ¿
-unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwmµİÔöËÙ¶È¿ØÖÆÖµ   1000  max 
+unsigned  short int  BLDC_PwmBuf[ MAX_BLDC_CH6 + 1 ];   //pwmé€Ÿåº¦ä¸­é—´å˜é‡
+unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwmé€’å¢é€Ÿåº¦æ§åˆ¶å€¼   1000  max 
 
 unsigned  char Capture_Flag[ MAX_BLDC_CH6 + 1 ] ;
-//unsigned  long int Apm_FREQ2[ MAX_BLDC_CH6 +1 ] ;   //Ç°Ò»¸öËÙ¶È²âÁ¿Öµ
-//unsigned  long int Apm_FREQ1[ MAX_BLDC_CH6 +1 ] ;   //ÉÏÒ»¸öËÙ¶È²âÁ¿Öµ
-unsigned  long int Apm_FREQ[ MAX_BLDC_CH6 +1 ] ;    //ËÙ¶È²âÁ¿Öµ  0.1HZ
-unsigned  long int Apm_ForLed[ MAX_BLDC_CH6 +1 ] ;    //LEDÏÔÊ¾ËÙ¶È²âÁ¿Öµ  apm  or 10APM
-//unsigned  long int Apm_ForPc[ MAX_BLDC_CH6 +1 ] ;    //µçÄÔÏÔÊ¾ËÙ¶È²âÁ¿Öµ  apm
+//unsigned  long int Apm_FREQ2[ MAX_BLDC_CH6 +1 ] ;   //å‰ä¸€ä¸ªé€Ÿåº¦æµ‹é‡å€¼
+//unsigned  long int Apm_FREQ1[ MAX_BLDC_CH6 +1 ] ;   //ä¸Šä¸€ä¸ªé€Ÿåº¦æµ‹é‡å€¼
+unsigned  long int Apm_FREQ[ MAX_BLDC_CH6 +1 ] ;    //é€Ÿåº¦æµ‹é‡å€¼  0.1HZ
+unsigned  long int Apm_ForLed[ MAX_BLDC_CH6 +1 ] ;    //LEDæ˜¾ç¤ºé€Ÿåº¦æµ‹é‡å€¼  apm  or 10APM
+//unsigned  long int Apm_ForPc[ MAX_BLDC_CH6 +1 ] ;    //ç”µè„‘æ˜¾ç¤ºé€Ÿåº¦æµ‹é‡å€¼  apm
 
 unsigned  long int Capture_number[ MAX_BLDC_CH6 + 1 ] ;
 
-//unsigned  long int Capture_number_All32  = 0 ;  //ÓÀÔ¶¼ÆÊıÆ÷¡£Âö³å²âÁ¿ÓÃ
+//unsigned  long int Capture_number_All32  = 0 ;  //æ°¸è¿œè®¡æ•°å™¨ã€‚è„‰å†²æµ‹é‡ç”¨
 
 
 //#if Flag_test_spi_DMA     
@@ -81,7 +81,7 @@ unsigned  long int Capture_number[ MAX_BLDC_CH6 + 1 ] ;
 
 unsigned  long int CaptureValueStart[6+1] ;
 unsigned  long int CaptureValueEnd[6+1];
-//ÒòÎªÊ¹ÓÃ16Î»¶¨Ê±Æ÷£¬ËùÒÔÕâÁ½¸ö±äÁ¿Ò²Ê¹ÓÃ16Î»
+//å› ä¸ºä½¿ç”¨16ä½å®šæ—¶å™¨ï¼Œæ‰€ä»¥è¿™ä¸¤ä¸ªå˜é‡ä¹Ÿä½¿ç”¨16ä½
 //unsigned  short int CaptureValueStart[6+1] ;
 unsigned  long int CaptureValueHigh_T3;
 unsigned  long int CaptureValueHigh_T4;
@@ -110,80 +110,80 @@ void VirtualPwmOutPin(unsigned char ch , unsigned char High)
 	{
 		case 0:
 			if(High != 0)
-			  {//Êä³öÓĞĞ§µçÆ½
+			  {//è¾“å‡ºæœ‰æ•ˆç”µå¹³
 			  	SetHeat1;
 			  }
-			else{//¹Ø±ÕÓĞĞ§µçÆ½
+			else{//å…³é—­æœ‰æ•ˆç”µå¹³
 				  ClrHeat1;
 			  }
 	  break;
 	  
 		case 1:
 			if(High != 0)
-			  {//Êä³öÓĞĞ§µçÆ½
+			  {//è¾“å‡ºæœ‰æ•ˆç”µå¹³
 			  	SetHeat2;
 			  }
-			else{//¹Ø±ÕÓĞĞ§µçÆ½
+			else{//å…³é—­æœ‰æ•ˆç”µå¹³
 				   ClrHeat2;
 			  }
 	  break;	
 	  
 		case 2:
 			if(High != 0)
-			  {//Êä³öÓĞĞ§µçÆ½
+			  {//è¾“å‡ºæœ‰æ•ˆç”µå¹³
 			  	SetHeat3;
 			  }
-			else{//¹Ø±ÕÓĞĞ§µçÆ½
+			else{//å…³é—­æœ‰æ•ˆç”µå¹³
 				  ClrHeat3;
 			  }
 	  break;
 	  
 		case 3:
 			if(High != 0)
-			  {//Êä³öÓĞĞ§µçÆ½
+			  {//è¾“å‡ºæœ‰æ•ˆç”µå¹³
 			  	SetHeat4;
 			  }
-			else{//¹Ø±ÕÓĞĞ§µçÆ½
+			else{//å…³é—­æœ‰æ•ˆç”µå¹³
 				   ClrHeat4;
 			  }
 	  break;	    
 
 		case 4:
 			if(High != 0)
-			  {//Êä³öÓĞĞ§µçÆ½
+			  {//è¾“å‡ºæœ‰æ•ˆç”µå¹³
 			  	SetHeat5;
 			  }
-			else{//¹Ø±ÕÓĞĞ§µçÆ½
+			else{//å…³é—­æœ‰æ•ˆç”µå¹³
 				  ClrHeat5;
 			  }
 	  break;
 	  
 		case 5:
 			if(High != 0)
-			  {//Êä³öÓĞĞ§µçÆ½
+			  {//è¾“å‡ºæœ‰æ•ˆç”µå¹³
 			  	SetHeat6;
 			  }
-			else{//¹Ø±ÕÓĞĞ§µçÆ½
+			else{//å…³é—­æœ‰æ•ˆç”µå¹³
 				   ClrHeat6;
 			  }
 	  break;
 	  
 		case 6:
 			if(High != 0)
-			  {//Êä³öÓĞĞ§µçÆ½
+			  {//è¾“å‡ºæœ‰æ•ˆç”µå¹³
 			  	SetHeat7;
 			  }
-			else{//¹Ø±ÕÓĞĞ§µçÆ½
+			else{//å…³é—­æœ‰æ•ˆç”µå¹³
 				  ClrHeat7;
 			  }
 	  break;
 	  
 		case 7:
 			if(High != 0)
-			  {//Êä³öÓĞĞ§µçÆ½
+			  {//è¾“å‡ºæœ‰æ•ˆç”µå¹³
 			  	SetHeat8;
 			  }
-			else{//¹Ø±ÕÓĞĞ§µçÆ½
+			else{//å…³é—­æœ‰æ•ˆç”µå¹³
 				   ClrHeat8;
 			  }
 	  break;	  		
@@ -194,8 +194,10 @@ void VirtualPwmOutPin(unsigned char ch , unsigned char High)
 void TaskRush(void * pdata)  //Virtual
 {
 INT8U err;
+unsigned short int   temp32;
+unsigned char  i ;
 
-pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ		
+pdata = pdata;                          	 	// é¿å…ç¼–è¯‘è­¦å‘Š		
 
 //#if CONFIG_ADC
 //ADC_Configuration();
@@ -211,21 +213,49 @@ pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ
         PutValToDispBf(2222 , DispBufnnz+4 );
         PutValToDispBf(1111 , DispBufnnz+0 ) ;     
         
-		OSTimeDly(OS_TICKS_PER_SEC*2);	    //ÑÓÊ±10ms 
+		OSTimeDly(OS_TICKS_PER_SEC*2);	    //å»¶æ—¶10ms 
 
 for(;;)
 		{
+			
+			for(  i = 0  ;  i < MAX_BLDC_CH6  ;  i ++  )
+			{
+			 temp32	 = GetAverage( &AvergeBufI[ i ][0]    ,  MaxAvergeList  );  //GetAverSS
+			
+			 switch ( i )
+                 {    
+                  case 0:
+                  case 1:
+                  case 2:
+                  case 3:                  	
+                  	//  max 10000   apm      2x3
+                  Apm_ForLed[ i ]   = temp32 / 20;    // Apm_FREQ[ i ]  / 20;  //é™¤ä»¥20
+                  Coldw.ApmGt[i]  =  (float)temp32 / 2 ;//(float)Apm_FREQ[ i ]/2; //é™¤ä»¥2  	 
+                                
+                                 
+                  break;
+                  
+                  case 4:
+                  case 5: 
+                  	  	//  max 20000   apm      4x3
+                   Apm_ForLed[ i ] =  temp32 / 10;  //Apm_FREQ[ i ]  / 10;  //é™¤ä»¥10    
+                   Coldw.ApmGt[i]  =   (float)temp32;//(float)Apm_FREQ[ i ];	            
+                  break;	  
+                             
+                  }
+			}
+			
         PutValToDispBf(Apm_ForLed[5], DispBufnny+12 );   //Coldw.ApmGt
         PutValToDispBf(  0, DispBufnny+8 );
         PutValToDispBf( Apm_ForLed[3], DispBufnny+4 );
-        PutValToDispBf(Apm_FREQ[2] , DispBufnny+0 );
+        PutValToDispBf(Apm_ForLed[2] , DispBufnny+0 );
         
-        PutValToDispBf(Apm_FREQ[4] , DispBufnnz+12 );
+        PutValToDispBf(Apm_ForLed[4] , DispBufnnz+12 );
         PutValToDispBf( 0, DispBufnnz+8 );
-        PutValToDispBf( Apm_FREQ[1], DispBufnnz+4 );
-        PutValToDispBf(Apm_FREQ[0] , DispBufnnz+0 ) ;      
+        PutValToDispBf( Apm_ForLed[1], DispBufnnz+4 );
+        PutValToDispBf(Apm_ForLed[0] , DispBufnnz+0 ) ;      
         
-		  OSTimeDly(OS_TICKS_PER_SEC);	    //ÑÓÊ±1Ãë
+		  OSTimeDly(OS_TICKS_PER_SEC);	    //å»¶æ—¶1ç§’
 
 		}		
 }
@@ -303,10 +333,10 @@ void ModbusCommand2(void)
 	  
 	  if(Coldw.Moter_step_set == 0)return;
 	  	
-	  if(  Coldw.Moter_direction  == 0 )      //·½Ïò
+	  if(  Coldw.Moter_direction  == 0 )      //æ–¹å‘
 	  	  {
 	  	  	  
-	  	     	if(Coldw.Moter_step_set>10000)       //Ç¿ÖÆ×ß¼¸²½
+	  	     	if(Coldw.Moter_step_set>10000)       //å¼ºåˆ¶èµ°å‡ æ­¥
 	  	     		  {
 	  	     			 steps = 10000;
 	  	     		  }
@@ -316,10 +346,10 @@ void ModbusCommand2(void)
 	  	    	
 
 	  	  }
-	  else if(	 Coldw.Moter_direction  == 1 )      //·½Ïò  
+	  else if(	 Coldw.Moter_direction  == 1 )      //æ–¹å‘  
 	  	 {
 	  	 	     
-	        		if(Coldw.Moter_step_set>10000)       //Ç¿ÖÆ×ß¼¸²½
+	        		if(Coldw.Moter_step_set>10000)       //å¼ºåˆ¶èµ°å‡ æ­¥
 	        			   {
 	        				  steps = -10000;
 	        			   }
@@ -348,15 +378,15 @@ Coldw.one_unit_flag = 0;
 
 }
 ////////////////////////////////////////////////////////////////////
-void CheckAdrressKey(void)  //·Ö»úµØÖ·ÉèÖÃ²¦Âë¿ª¹Ø
+void CheckAdrressKey(void)  //åˆ†æœºåœ°å€è®¾ç½®æ‹¨ç å¼€å…³
 {
 	static unsigned char old1,old2,old3,old4,old5;
 	
 	old1 = GPIO_ReadInputData(GPIOC); //PC0123 ; 
 	
-	if((old2==old1)&&(old3==old2)&&(old4==old3)&&(old5==old4))//ÂË²¨
+	if((old2==old1)&&(old3==old2)&&(old4==old3)&&(old5==old4))//æ»¤æ³¢
 		{
-				lAddressKey=old1;  //²¦Âë¿ª¹ØPB12-PB15£¬Öµ£¬×îµÍ4Î»
+				lAddressKey=old1;  //æ‹¨ç å¼€å…³PB12-PB15ï¼Œå€¼ï¼Œæœ€ä½4ä½
 		}
 	old5=old4;
 	old4=old3;	
@@ -369,23 +399,23 @@ void TaskModbus(void * pdata)
 	CPU_SR          cpu_sr;
 INT8U err;
 
-unsigned long temp32;
+unsigned long temp16;
 
-pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ		
+pdata = pdata;                          	 	// é¿å…ç¼–è¯‘è­¦å‘Š		
 
-lAddressKey=0;  //²¦Âë¿ª¹ØPB12-PB15£¬Öµ£¬×îµÍ4Î»
+lAddressKey=0;  //æ‹¨ç å¼€å…³PB12-PB15ï¼Œå€¼ï¼Œæœ€ä½4ä½
 
 TimeForSaveParam = 0;
 
- Default_ParamInit0();//²»ĞèÒª±£´æµÄ²ÎÊı
- Default_ParamInit1();    ////ĞèÒª±£´æµÄ²ÎÊı
- Default_ParamInit2();    ////Õû¶¨Öµ
+ Default_ParamInit0();//ä¸éœ€è¦ä¿å­˜çš„å‚æ•°
+ Default_ParamInit1();    ////éœ€è¦ä¿å­˜çš„å‚æ•°
+ Default_ParamInit2();    ////æ•´å®šå€¼
  
-// Default_ParamInit();    //?????????ÎÊÌâ
+// Default_ParamInit();    //?????????é—®é¢˜
 
 
 
-  if(Load_Param()==0)		//È¡Éè¶¨Öµ
+  if(Load_Param()==0)		//å–è®¾å®šå€¼
    {
  /*    
     gData[0].AnyError|=8;
@@ -394,25 +424,28 @@ TimeForSaveParam = 0;
     gData[3].AnyError|=8;  
     
       
-    //×Ô¶¯»Ö¸´Ä¬ÈÏÖµ£¬²»ÔÊĞí
+    //è‡ªåŠ¨æ¢å¤é»˜è®¤å€¼ï¼Œä¸å…è®¸
      _Param_SwapMemery(0,cMemBufA);   //parameter ---> cMemBufB
     cMemBufB[Max_MemBuf-2] =  FlagParamInitnized; 
     Write_Param();
 */  
+		 
+		 TimeForSaveParam = 0;
    }
 
 
 
 
 
-
+temp16 =  Stm32IdSum6 ;
 
 #if CONFIG_CHECK_DEVICE_ID
 	
 	InitSTM32DeciceID();
 	
 	
-		if(GetStm32F103_DeviceId_Sum6() == temp32 )  //Pmbuf->Stm32Id )
+	
+		if(GetStm32F103_DeviceId_Sum6() == temp16 )  //Pmbuf->Stm32Id )
 				{
 					STM32DeviceId.Checked=1;
 				}
@@ -421,32 +454,33 @@ TimeForSaveParam = 0;
 				}
 #endif	
 
+//                Stm32IdSum6 
 //  		  	  #if CONFIG_CHECK_DEVICE_ID	
 //  		  	  	
-//  		      Pmbuf->Stm32Id = GetStm32F103_DeviceId_Sum6();  
+//  		     Stm32IdSum6    = GetStm32F103_DeviceId_Sum6();  
 //  		      
 //  		      #endif
 
 
 
-//µÚÒ»¿é   32FFD905564E363131600551
+//ç¬¬ä¸€å—   32FFD905564E363131600551
 
 
 
 
-//µÚ¶ş¿é  0xff31,0x05db,0x5641,0x3636,0x7428,0x5709,    0xc0ff,0xfffc,0x9768,0x00ff,0xc13e,0x7f80,0x5aa5,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff
+//ç¬¬äºŒå—  0xff31,0x05db,0x5641,0x3636,0x7428,0x5709,    0xc0ff,0xfffc,0x9768,0x00ff,0xc13e,0x7f80,0x5aa5,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff,0x00ff
 //0x31,0xFF,0xDB,0x05,0x41,0x56,0x36,0x36,0x28,0x74,0x09,0x57
 /*
-Ğ¾Æ¬ÄÚBootLoader°æ±¾ºÅ£º2.2
-Ğ¾Æ¬PID£º00000414
-Ğ¾Æ¬FLASHÈİÁ¿Îª512KB
-Ğ¾Æ¬SRAMÈİÁ¿Îª65535KB(´ËĞÅÏ¢½ö¹©²Î¿¼,ĞÂ°æ±¾Ğ¾Æ¬ÒÑ²»°üº¬´ËĞÅÏ¢)
-96Î»µÄĞ¾Æ¬Î¨Ò»ĞòÁĞºÅ£º31FFDB054156363628740957
-¶Á³öµÄÑ¡Ïî×Ö½Ú:
+èŠ¯ç‰‡å†…BootLoaderç‰ˆæœ¬å·ï¼š2.2
+èŠ¯ç‰‡PIDï¼š00000414
+èŠ¯ç‰‡FLASHå®¹é‡ä¸º512KB
+èŠ¯ç‰‡SRAMå®¹é‡ä¸º65535KB(æ­¤ä¿¡æ¯ä»…ä¾›å‚è€ƒ,æ–°ç‰ˆæœ¬èŠ¯ç‰‡å·²ä¸åŒ…å«æ­¤ä¿¡æ¯)
+96ä½çš„èŠ¯ç‰‡å”¯ä¸€åºåˆ—å·ï¼š31FFDB054156363628740957
+è¯»å‡ºçš„é€‰é¡¹å­—èŠ‚:
 A55AFF00FF00FF00FF00FF00FF00FF00
 */
 
-OSTimeDly(OS_TICKS_PER_SEC/100);	    //ÑÓÊ±0.01Ãë
+OSTimeDly(OS_TICKS_PER_SEC/100);	    //å»¶æ—¶0.01ç§’
 
 ModbusInit();
 
@@ -455,16 +489,16 @@ ModbusInit();
 // TestModbus();
 //#endif
 
-OSTimeDly(OS_TICKS_PER_SEC/5);	    //ÑÓÊ±0.2Ãë
+OSTimeDly(OS_TICKS_PER_SEC/5);	    //å»¶æ—¶0.2ç§’
 
 for(;;)
 		{
      
 
-    OSTimeDly(OS_TICKS_PER_SEC/500);	    //ÑÓÊ±2ºÁÃë
+    OSTimeDly(OS_TICKS_PER_SEC/500);	    //å»¶æ—¶2æ¯«ç§’
 
-    //CheckAdrressKey();//·Ö»úµØÖ·ÉèÖÃ²¦Âë¿ª¹Ø
-    //Coldw.SubAdr = 80 + ( lAddressKey & 0x0f ) ;//          µØÖ·ÉèÖÃ
+    //CheckAdrressKey();//åˆ†æœºåœ°å€è®¾ç½®æ‹¨ç å¼€å…³
+    //Coldw.SubAdr = 80 + ( lAddressKey & 0x0f ) ;//          åœ°å€è®¾ç½®
 	Coldw.SubAdr = 80;
 	
 	CPU_CRITICAL_ENTER();                                       /* Tell uC/OS-II that we are starting an ISR            */
@@ -479,7 +513,7 @@ for(;;)
 		
 		
 		
-		GetModbusPark();  //ÂıµãÒ²¿ÉÒÔ
+		GetModbusPark();  //æ…¢ç‚¹ä¹Ÿå¯ä»¥
 		
 		}
 }
@@ -490,18 +524,18 @@ void TaskTimePr(void * pdata)
   uchar  i;  
   unsigned short int  timer1,timer2;
 
-  pdata = pdata;                   // ±ÜÃâ±àÒë¾¯¸æ		
-  OSTimeDly(OS_TICKS_PER_SEC/2);	    //ÑÓÊ±0.5Ãë
+  pdata = pdata;                   // é¿å…ç¼–è¯‘è­¦å‘Š		
+  OSTimeDly(OS_TICKS_PER_SEC/2);	    //å»¶æ—¶0.5ç§’
   for(;;)
      {
 
-      OSTimeDly( OS_TICKS_PER_SEC / 100 );	    //ÑÓÊ±0.01Ãë
+      OSTimeDly( OS_TICKS_PER_SEC / 100 );	    //å»¶æ—¶0.01ç§’
       
                timer1++;
                if(  timer1  >=  3 )  //30ms
                     {
                      timer1  = 0 ;
-                     OSSemPost(OSSemTimePid_PWM);   //µç¼ÓÈÈPID¿ØÖÆÖÜÆÚ
+                     OSSemPost(OSSemTimePid_PWM);   //ç”µåŠ çƒ­PIDæ§åˆ¶å‘¨æœŸ
 
                     }
          
@@ -510,7 +544,7 @@ void TaskTimePr(void * pdata)
                 if(timer2 >= 100 ) //1s	
                     {
                      timer2 = 0;
-                     OSSemPost(OSSemTimePid_StepMotor);   //Ë®ÀäPID¿ØÖÆÖÜÆÚ
+                     OSSemPost(OSSemTimePid_StepMotor);   //æ°´å†·PIDæ§åˆ¶å‘¨æœŸ
                     }
 
        }
@@ -525,7 +559,7 @@ INT8U err;
 
 unsigned char i;
 
-pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ		
+pdata = pdata;                          	 	// é¿å…ç¼–è¯‘è­¦å‘Š		
 
     for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )	
               {
@@ -535,14 +569,14 @@ pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ
               }
 
 
-OSTimeDly( OS_TICKS_PER_SEC / 100);	    //ÑÓÊ±0.01Ãë
+OSTimeDly( OS_TICKS_PER_SEC / 100);	    //å»¶æ—¶0.01ç§’
 
 for(;;)
 		{
 			
 			OSSemPend(  OSSemTimePid_PWM , 0 , &err );  //   OSSemTimePid_Heat
 
-		  if( FlagRuningnny  >=  1 )   //¿ØÖÆ 34 6 BLDCµç»ú
+		  if( FlagRuningnny  >=  1 )   //æ§åˆ¶ 34 6 BLDCç”µæœº
 		  	  {
 		  		ApmSetBuf[2] = ( unsigned short int ) Coldw.ApmCt[2]  * 2;  //3
 		  		ApmSetBuf[3] = ( unsigned short int )  Coldw.ApmCt[3]  * 2;  //4
@@ -554,7 +588,7 @@ for(;;)
 		  		ApmSetBuf[5] = 0;		  	
 		      }  
 		      	
-		  if( FlagRuningnnz  >=  1 )  //¿ØÖÆ 12 5 BLDCµç»ú
+		  if( FlagRuningnnz  >=  1 )  //æ§åˆ¶ 12 5 BLDCç”µæœº
 		  	  {
 		  		ApmSetBuf[0] = ( unsigned short int ) Coldw.ApmCt[0]  * 2 ;  //1
 		  		ApmSetBuf[1] = ( unsigned short int ) Coldw.ApmCt[1]  * 2 ;  //2
@@ -566,9 +600,9 @@ for(;;)
 		  		ApmSetBuf[4] = 0;		  	
 		      } 		  	
 		  	
-		  	//ÈíÆô¶¯  Èí¼ÓËÙ  Èí¼õËÙ  ËÙ¶È²½½øÁ¿
-		  	#define APM_SET_ADD25  5
-		  	#define APM_SET_DEC25  5
+		  	//è½¯å¯åŠ¨  è½¯åŠ é€Ÿ  è½¯å‡é€Ÿ  é€Ÿåº¦æ­¥è¿›é‡
+		  	#define APM_SET_ADD25  200
+		  	#define APM_SET_DEC25  200
 
 
                     //   ApmSetBuf     --->>>>  ApmSetVal    ..........
@@ -594,7 +628,7 @@ for(;;)
                       {
                       	ApmSetVal [ i ] = 30000;  
                       } 
-     	        //Coldw.FAN_duty [ i ]   =    ApmSetVal [ i ];    //ÏÔÊ¾
+     	        //Coldw.FAN_duty [ i ]   =    ApmSetVal [ i ];    //æ˜¾ç¤º
      	
               }    
 
@@ -604,13 +638,13 @@ for(;;)
           for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			    {
 
-                 HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] ; //»ù±¾ÉÏ¶àÓà 
-			     PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]                       ); //Ò»°ãÊÇerror = SetPoint - NewPoint ,ÕâÀï·´¹ıÀ´
+                 HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] ; //åŸºæœ¬ä¸Šå¤šä½™ 
+			     PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]                       ); //ä¸€èˆ¬æ˜¯error = SetPoint - NewPoint ,è¿™é‡Œåè¿‡æ¥
 			    
 			     }
-	     		  	//ÈíÆô¶¯  Èí¼ÓËÙ  Èí¼õËÙ  ²½½øÁ¿
-		  	#define DLBC_STEP_ADD25  10
-		  	#define DLBC_STEP_DEC25  10
+	     		  	//è½¯å¯åŠ¨  è½¯åŠ é€Ÿ  è½¯å‡é€Ÿ  æ­¥è¿›é‡
+		  	#define DLBC_STEP_ADD25  (10+190)
+		  	#define DLBC_STEP_DEC25  (10+190)
         for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {
                      if(   (  BLDC_PwmVal[ i ]  +  DLBC_STEP_ADD25   )  < HeatPidBuf[i].Qx    )  // s < a-100
@@ -634,15 +668,15 @@ for(;;)
                       	BLDC_PwmVal[ i ] = 1000;  
                       } 
      	
-     	        Coldw.FAN_duty [ i ]   =    BLDC_PwmVal[ i ];    //ÏÔÊ¾
+     	        Coldw.FAN_duty [ i ]   =    BLDC_PwmVal[ i ];    //æ˜¾ç¤º
      	
               }    
                      
 			     
-//    Coldw.MONI_PX2 = HeatPidBuf[0].Px;  	   
-//    Coldw.MONI_IX2 = HeatPidBuf[0].Ix;  	       
-//    Coldw.MONI_DX2 = HeatPidBuf[0].Dx;  	        
-//    Coldw.MONI_QX2 = HeatPidBuf[0].Qx; //0.14;           
+    Coldw.MONI_PX1 = HeatPidBuf[0].Px;  	   
+    Coldw.MONI_IX1 = HeatPidBuf[0].Ix;  	       
+    Coldw.MONI_DX1 = HeatPidBuf[0].Dx;  	        
+    Coldw.MONI_QX1 = HeatPidBuf[0].Qx; //0.14;           
                      
 	   TIM_SetCompare1(TIM5, BLDC_PwmVal[0]);
        TIM_SetCompare2(TIM5, BLDC_PwmVal[1]);   
@@ -652,7 +686,7 @@ for(;;)
        TIM_SetCompare4(TIM1, BLDC_PwmVal[5]);
 		
 
-		  OSTimeDly(OS_TICKS_PER_SEC/200);	    //ÑÓÊ±0.005Ãë
+		  OSTimeDly(OS_TICKS_PER_SEC/200);	    //å»¶æ—¶0.005ç§’
 
 		}
 }
@@ -661,7 +695,7 @@ void TaskStatus(void * pdata)
 {
 INT8U err;
 uchar i;
-pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ		
+pdata = pdata;                          	 	// é¿å…ç¼–è¯‘è­¦å‘Š		
 
 		for(i=0;i<10;i++)
 					{
@@ -670,12 +704,12 @@ pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ
 					LED4_ON;
 
 					
-					OSTimeDly(OS_TICKS_PER_SEC/20);	    //ÑÓÊ±0.05Ãë
+					OSTimeDly(OS_TICKS_PER_SEC/20);	    //å»¶æ—¶0.05ç§’
 					LED1_OFF;
 					LED2_ON;
 					LED4_OFF;
 
-					OSTimeDly(OS_TICKS_PER_SEC/20);	    //ÑÓÊ±0.05Ãë
+					OSTimeDly(OS_TICKS_PER_SEC/20);	    //å»¶æ—¶0.05ç§’
 					}
 			LED1_OFF;		
 			LED2_OFF;
@@ -686,14 +720,14 @@ for(;;)
 		if(1)
 					{
 					Led_Status_Off;
-					OSTimeDly(OS_TICKS_PER_SEC/4);	    //ÑÓÊ±0.25Ãë
+					OSTimeDly(OS_TICKS_PER_SEC/4);	    //å»¶æ—¶0.25ç§’
 		
 					Led_Status_On;
-					OSTimeDly(OS_TICKS_PER_SEC/4);	    //ÑÓÊ±0.25Ãë
+					OSTimeDly(OS_TICKS_PER_SEC/4);	    //å»¶æ—¶0.25ç§’
 					}
 			else{
 					Led_Status_On;
-					OSTimeDly(OS_TICKS_PER_SEC/2);	    //ÑÓÊ±0.5Ãë
+					OSTimeDly(OS_TICKS_PER_SEC/2);	    //å»¶æ—¶0.5ç§’
 					}	
 
 
@@ -742,12 +776,12 @@ void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
 {
  if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
  	  {
-     	FlagRuningnny = 0 ;   //¿ØÖÆ 34 6 BLDCµç»ú   34 ²½½øµç»ú
+     	FlagRuningnny = 0 ;   //æ§åˆ¶ 34 6 BLDCç”µæœº   34 æ­¥è¿›ç”µæœº
  	  }
  else{
  	   if ( KEY_BIT_RUN ==  (*curl)  )
  	       {
- 	  	    FlagRuningnny = 1 ;   //¿ØÖÆ 34 6 BLDCµç»ú   34 ²½½øµç»ú
+ 	  	    FlagRuningnny = 1 ;   //æ§åˆ¶ 34 6 BLDCç”µæœº   34 æ­¥è¿›ç”µæœº
  	       }
  	    }
 }
@@ -757,12 +791,12 @@ void KeyShiftProcessnnz( unsigned  long int  *curl , unsigned  long int*oldl )
 {
  if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
  	  {
-  	  	FlagRuningnnz = 0 ;   //¿ØÖÆ 12 5 BLDCµç»ú   12 ²½½øµç»ú
+  	  	FlagRuningnnz = 0 ;   //æ§åˆ¶ 12 5 BLDCç”µæœº   12 æ­¥è¿›ç”µæœº
  	  }
  else{
  	   if ( KEY_BIT_RUN ==  (*curl)  )
  	       {
- 	  	    FlagRuningnnz = 1 ;   //¿ØÖÆ 34 6 BLDCµç»ú   34 ²½½øµç»ú
+ 	  	    FlagRuningnnz = 1 ;   //æ§åˆ¶ 34 6 BLDCç”µæœº   34 æ­¥è¿›ç”µæœº
  	       }
  	    }
 }
@@ -789,10 +823,10 @@ INT8U  bufkc[5+1];
 	
 	OSSemTest1   = OSSemCreate(0);
 	OSSemTest2   = OSSemCreate(0);
-	                  	 	// ±ÜÃâ±àÒë¾¯¸æ	   
+	                  	 	// é¿å…ç¼–è¯‘è­¦å‘Š	   
 //#define InPin_K1	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_3))
 //#define InPin_K2	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4))
-////PC1  ¿ª·¢°åÉÏ
+////PC1  å¼€å‘æ¿ä¸Š
 //#define InPin_K3	(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_1))
 
 
@@ -808,7 +842,7 @@ for( i = 0 ; i<5 ; i++ )
 						{
 						//OS_ENTER_CRITICAL();
 						//OS_EXIT_CRITICAL();
-						OSTimeDly(OS_TICKS_PER_SEC/20);	    //ÑÓÊ±0.05Ãë		
+						OSTimeDly(OS_TICKS_PER_SEC/20);	    //å»¶æ—¶0.05ç§’		
 						
 
 						if( InPin_K1 )
@@ -857,7 +891,7 @@ for( i = 0 ; i<5 ; i++ )
             for( i = 0 ; i<5 ; i++ )
                    {
   	                  if ( bufkb[ i ] != bufka[ i ] )
-  		                     {//ÂË²¨
+  		                     {//æ»¤æ³¢
   			                   bufkb[ i ] = bufka[ i ];
   		                    }
   	               else { 
@@ -885,7 +919,7 @@ INT8U err;
  
 
 
-	pdata = pdata;     // ±ÜÃâ±àÒë¾¯¸æ	   
+	pdata = pdata;     // é¿å…ç¼–è¯‘è­¦å‘Š	   
 
 #if CONFIG_SPI_DISP
 
@@ -895,7 +929,7 @@ INT8U err;
   
 
 
-//OSTimeDly(OS_TICKS_PER_SEC/5);	    //ÑÓÊ±0.2Ãë		
+//OSTimeDly(OS_TICKS_PER_SEC/5);	    //å»¶æ—¶0.2ç§’		
 
 		for(;;)
 						{
@@ -910,7 +944,7 @@ INT8U err;
 						ShiftKeyCurnny = Process_N_NUMBnny();
 						
 							if ( ShiftKeyBnny != ShiftKeyCurnny )
-  		                     {//ÂË²¨
+  		                     {//æ»¤æ³¢
   			                   ShiftKeyBnny = ShiftKeyCurnny;
   		                    }
   	               else { 
@@ -920,7 +954,7 @@ INT8U err;
   	         	                
                               ShiftKeyCnny =  ShiftKeyBnny;
                              }
-                          else{//Èı´ÎÏàÍ¬
+                          else{//ä¸‰æ¬¡ç›¸åŒ
 														   if ( ShiftKeyCnny != 0)
 															     {
                           	       KeyShiftProcessnny( &ShiftKeyCnny, &ShiftKeySavenny);
@@ -929,31 +963,31 @@ INT8U err;
   	         	          
   	                     }
 						
-					  if(  FlagRuningnny >=1  )   //¿ØÖÆ 34 6 BLDCµç»ú   34 ²½½øµç»ú	
+					  if(  FlagRuningnny >=1  )   //æ§åˆ¶ 34 6 BLDCç”µæœº   34 æ­¥è¿›ç”µæœº	
 					  	{
-					  		SngnalLed[1]  |=  0x80;      //µ¥¶ÀÖ¸Ê¾µÆ
+					  		SngnalLed[1]  |=  0x80;      //å•ç‹¬æŒ‡ç¤ºç¯
 					  	}
 					  else{
-					  	  SngnalLed[1]  &=  (~0x80);      //µ¥¶ÀÖ¸Ê¾µÆ
+					  	  SngnalLed[1]  &=  (~0x80);      //å•ç‹¬æŒ‡ç¤ºç¯
 					     }	
 					  	
 //            if( ShiftKeyCurnny != 0 )
 //            	{
 //            		Alm_Flag1 = 1;
-//            		SngnalLed[1]=0x0f;      //µ¥¶ÀÖ¸Ê¾µÆ
+//            		SngnalLed[1]=0x0f;      //å•ç‹¬æŒ‡ç¤ºç¯
 //            	}
 //            else {
 //            	    Alm_Flag1 =0;
-//            	    SngnalLed[1]=0;      //µ¥¶ÀÖ¸Ê¾µÆ
+//            	    SngnalLed[1]=0;      //å•ç‹¬æŒ‡ç¤ºç¯
 //                }
 						   
 						   
 						   
-					//	OSTimeDly(OS_TICKS_PER_SEC/500);	    //ÑÓÊ±0.002Ãë	
+					//	OSTimeDly(OS_TICKS_PER_SEC/500);	    //å»¶æ—¶0.002ç§’	
 
 						#else
 						
-						OSTimeDly(OS_TICKS_PER_SEC);	    //ÑÓÊ±1Ãë	
+						OSTimeDly(OS_TICKS_PER_SEC);	    //å»¶æ—¶1ç§’	
 						
 						#endif
 							
@@ -968,7 +1002,7 @@ INT8U err;
  
 
 
-	pdata = pdata;     // ±ÜÃâ±àÒë¾¯¸æ	   
+	pdata = pdata;     // é¿å…ç¼–è¯‘è­¦å‘Š	   
 
 #if CONFIG_SPI_DISP
 
@@ -978,7 +1012,7 @@ INT8U err;
   
 
 
-//OSTimeDly(OS_TICKS_PER_SEC/5);	    //ÑÓÊ±0.2Ãë		
+//OSTimeDly(OS_TICKS_PER_SEC/5);	    //å»¶æ—¶0.2ç§’		
 
 		for(;;)
 						{
@@ -994,7 +1028,7 @@ INT8U err;
 						ShiftKeyCurnnz = Process_N_NUMBnnz();  
 						
 						if ( ShiftKeyBnnz != ShiftKeyCurnnz )
-  		                     {//ÂË²¨
+  		                     {//æ»¤æ³¢
   			                   ShiftKeyBnnz = ShiftKeyCurnnz;
   		                    }
   	               else { 
@@ -1004,7 +1038,7 @@ INT8U err;
   	         	                
                               ShiftKeyCnnz =  ShiftKeyBnnz;
                              }
-                          else{//Èı´ÎÏàÍ¬
+                          else{//ä¸‰æ¬¡ç›¸åŒ
 														   if ( ShiftKeyCnnz != 0)
 															     {
                           	        KeyShiftProcessnnz( &ShiftKeyCnnz, &ShiftKeySavennz);
@@ -1013,32 +1047,32 @@ INT8U err;
   	         	          
   	                     }
 						
-						if(FlagRuningnnz >= 1)   //¿ØÖÆ 12 5 BLDCµç»ú   12 ²½½øµç»ú	
+						if(FlagRuningnnz >= 1)   //æ§åˆ¶ 12 5 BLDCç”µæœº   12 æ­¥è¿›ç”µæœº	
 					  	{
-					  		SngnalLed[3]  |=  0x80;      //µ¥¶ÀÖ¸Ê¾µÆ
+					  		SngnalLed[3]  |=  0x80;      //å•ç‹¬æŒ‡ç¤ºç¯
 					  	}
 					  else{
-					  	  SngnalLed[3]  &=  (~0x80);      //µ¥¶ÀÖ¸Ê¾µÆ
+					  	  SngnalLed[3]  &=  (~0x80);      //å•ç‹¬æŒ‡ç¤ºç¯
 					     }	
 						
 //						if( ShiftKeyCurnnz != 0 )
 //            	{
 //            		Alm_Flag2 = 1;
-//            		SngnalLed[3]=0x03;      //µ¥¶ÀÖ¸Ê¾µÆ
+//            		SngnalLed[3]=0x03;      //å•ç‹¬æŒ‡ç¤ºç¯
 //            	}
 //            else {
 //            	    Alm_Flag2 =0;
-//            	    SngnalLed[3]=0;      //µ¥¶ÀÖ¸Ê¾µÆ
+//            	    SngnalLed[3]=0;      //å•ç‹¬æŒ‡ç¤ºç¯
 //                }
 						
 						 
 						//EventTimeLed=2;   
 						   
-						//OSTimeDly(OS_TICKS_PER_SEC/1000);	    //ÑÓÊ±0.05Ãë	
+						//OSTimeDly(OS_TICKS_PER_SEC/1000);	    //å»¶æ—¶0.05ç§’	
 
 						#else
 						
-						OSTimeDly(OS_TICKS_PER_SEC);	    //ÑÓÊ±1Ãë	
+						OSTimeDly(OS_TICKS_PER_SEC);	    //å»¶æ—¶1ç§’	
 						
 						#endif
 							
@@ -1050,8 +1084,8 @@ INT8U err;
 
 ////////////////////////////////////////////////
 
-//  1234ºÅ¸ßÑ¹µç¶¯»ú12000×ª  £¬  2400HZÂö³å  £¬4*3¼«  * 0.5
-//  56ºÅµÍÑ¹µç¶¯»ú24000×ª  £¬    2400HZÂö³å  £¬2*3¼«
+//  1234å·é«˜å‹ç”µåŠ¨æœº12000è½¬  ï¼Œ  2400HZè„‰å†²  ï¼Œ4*3æ  * 0.5
+//  56å·ä½å‹ç”µåŠ¨æœº24000è½¬  ï¼Œ    2400HZè„‰å†²  ï¼Œ2*3æ
 
 void TaskApm(void * pdata) //TaskTs
 {
@@ -1061,9 +1095,9 @@ uchar i;
 
 unsigned  long  int    temp32T ,temp32N;
 
-	pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ	
+	pdata = pdata;                          	 	// é¿å…ç¼–è¯‘è­¦å‘Š	
 	   
-Coldw. T_bias_set = 0; //ÓÀÔ¶¼ÆÊıÆ÷¡£Âö³å²âÁ¿ÓÃ
+Coldw. T_bias_set = 0; //æ°¸è¿œè®¡æ•°å™¨ã€‚è„‰å†²æµ‹é‡ç”¨
       
 //#if Flag_test_spi_DMA     
 //  for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
@@ -1074,7 +1108,7 @@ Coldw. T_bias_set = 0; //ÓÀÔ¶¼ÆÊıÆ÷¡£Âö³å²âÁ¿ÓÃ
 //#endif               
         
 
-OSTimeDly(OS_TICKS_PER_SEC/10);	    //ÑÓÊ±0.5Ãë
+OSTimeDly(OS_TICKS_PER_SEC/10);	    //å»¶æ—¶0.5ç§’
 
 //////
 	for(;;)
@@ -1092,7 +1126,7 @@ Led_Test_Adc_On1;
       
       for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {
-              Capture_Flag[i] = 0;   //ÔİÍ£
+              Capture_Flag[i] = 0;   //æš‚åœ
 
                }	
 
@@ -1100,7 +1134,7 @@ Led_Test_Adc_On1;
 
 
       for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
-			        {//¶ÁËÙ¶È
+			        {//è¯»é€Ÿåº¦
 			        	
                      OS_ENTER_CRITICAL();
                       temp32N = Capture_number[i];
@@ -1135,28 +1169,10 @@ Led_Test_Adc_On1;
               //Coldw.ApmGt[i]=(float)Capture_testSPI_number[ i ];
               // else
                    
-               switch ( i )
-                 {    
-                  case 0:
-                  case 1:
-                  case 2:
-                  case 3:                  	
-                  	//  max 10000   apm      2x3
-                  Apm_ForLed[ i ]   =  Apm_FREQ[ i ]  / 20;  //³ıÒÔ20
-                 // Apm_ForPc[ i ]     =  Apm_FREQ[ i ]  / 2;  //³ıÒÔ2  
-                  Coldw.ApmGt[i]  =  (float)Apm_FREQ[ i ]/2; //³ıÒÔ2  	                
-                  break;
-                  
-                  case 4:
-                  case 5: 
-                  	  	//  max 20000   apm      4x3
-                   Apm_ForLed[ i ] =  Apm_FREQ[ i ]  / 10;  //³ıÒÔ10    
-                   Coldw.ApmGt[i]  =  (float)Apm_FREQ[ i ];	            
-                  break;	             
-                  }
-   
-
-                 
+                   
+                AddAverage( &AvergeBufI[ i ][0]  ,  &AvergeOffsetI1[ i ]  , Apm_FREQ[ i ]  , MaxAvergeList  );     
+                   
+                            
 
                }	
                
@@ -1185,14 +1201,14 @@ CaptureValueHigh_T4 = 0;
 			        	CaptureValueEnd[i] =0;
 			        	
 			        	Capture_number[i] = 0;
-               Capture_Flag[i] = 1; //ÔÙ¿ªÊ¼
+               Capture_Flag[i] = 1; //å†å¼€å§‹
               }
               
 			 OS_EXIT_CRITICAL();			
                
 
 							
-				OSTimeDly( OS_TICKS_PER_SEC  /100 );	    //ÑÓÊ±10ms  
+				OSTimeDly( OS_TICKS_PER_SEC  /100 );	    //å»¶æ—¶10ms  
 										
 
 					}
@@ -1200,7 +1216,7 @@ CaptureValueHigh_T4 = 0;
 /////////////////////////////
 
 
-//uint32 NumberHexStringToInt32(uchar *p)	//×î¶à8Î»HEXÂëµÄÊı×Ö×Ö·û´®×ª»»Îª32Î»ÎŞ·ûºÅÕûĞÍ
+//uint32 NumberHexStringToInt32(uchar *p)	//æœ€å¤š8ä½HEXç çš„æ•°å­—å­—ç¬¦ä¸²è½¬æ¢ä¸º32ä½æ— ç¬¦å·æ•´å‹
 //{
 //uint32 word2;
 //uchar i;
@@ -1226,21 +1242,21 @@ void ReceivedPowerOut(uchar type1,uchar *p)
 		  INT8U err;
 	uint16 temp16;
 	uchar buf[MAX_BLDC_CH6+1][8];
-	uchar 	num=0; 		//ÏîÄ¿×Ö·û´®¼ÇÊı¡£
-	uchar 	j=0;    	//¶ººÅ¸öÊı
-	uchar 	i=0;			//Õû¸ö×Ö·û´®Î»ÖÃ¼ÆÊı
+	uchar 	num=0; 		//é¡¹ç›®å­—ç¬¦ä¸²è®°æ•°ã€‚
+	uchar 	j=0;    	//é€—å·ä¸ªæ•°
+	uchar 	i=0;			//æ•´ä¸ªå­—ç¬¦ä¸²ä½ç½®è®¡æ•°
 	
 	
-	num=0; 		//ÏîÄ¿×Ö·û´®¼ÇÊı¡£
-	j=0;    	//¶ººÅ¸öÊı
-	i=0;			//Õû¸ö×Ö·û´®Î»ÖÃ¼ÆÊı
+	num=0; 		//é¡¹ç›®å­—ç¬¦ä¸²è®°æ•°ã€‚
+	j=0;    	//é€—å·ä¸ªæ•°
+	i=0;			//æ•´ä¸ªå­—ç¬¦ä¸²ä½ç½®è®¡æ•°
 	while((*(p+i))&&(i<250)&&(j<MAX_BLDC_CH6))
 		{
 
 		if(*(p+i)==',' )
 			{
-			num=0;  //ÏîÄ¿×Ö·û´®¿ªÊ¼¼ÇÊı¡£
-			j++;    //¶ººÅ¸öÊı
+			num=0;  //é¡¹ç›®å­—ç¬¦ä¸²å¼€å§‹è®°æ•°ã€‚
+			j++;    //é€—å·ä¸ªæ•°
 			}
 			
 
@@ -1248,7 +1264,7 @@ void ReceivedPowerOut(uchar type1,uchar *p)
 				{
 				if(num<6)
 					{
-					buf[j][num]=*(p+i);  // ²»°üÀ¨£¬ºÅ
+					buf[j][num]=*(p+i);  // ä¸åŒ…æ‹¬ï¼Œå·
 					buf[j][num+1]=0;
 					num++;
 					}
@@ -1304,9 +1320,9 @@ for(j=0;j<MAX_BLDC_CH6;j++)
 //					{
 //						temp16=0;
 //          }
-//				else temp16=(uint16)( 10* wAdcResoult[ i ] );//µ¥Î»0.1¶È
+//				else temp16=(uint16)( 10* wAdcResoult[ i ] );//å•ä½0.1åº¦
 //					
-//				n+=MakeValAsc16("",temp16,",",&buf[n]);//µ¥Î»0.1¶È
+//				n+=MakeValAsc16("",temp16,",",&buf[n]);//å•ä½0.1åº¦
 //
 //				}
 //	n+=PutString("\r\n",&buf[n],5);
@@ -1344,10 +1360,10 @@ for(j=0;j<MAX_BLDC_CH6;j++)
 //	
 //}
 
-//µçÄÔÏÂ´«µÄ¿ØÖÆÁ¿¾ø¶ÔÎ»ÖÃ   %P32,33,89,....\r\n
-//µçÄÔÏÂ´«µÄ×ß¼¸²½					%D655,32,77,...\r\n
-//ÇëÇó²éÑ¯ÎÂ¶È  		%RTA\r\n
-//µ¥Æ¬»úÉÏ´«µÄÎÂ¶ÈÖµ   ^T1234,1235,1236,1058,....\r\n
+//ç”µè„‘ä¸‹ä¼ çš„æ§åˆ¶é‡ç»å¯¹ä½ç½®   %P32,33,89,....\r\n
+//ç”µè„‘ä¸‹ä¼ çš„èµ°å‡ æ­¥					%D655,32,77,...\r\n
+//è¯·æ±‚æŸ¥è¯¢æ¸©åº¦  		%RTA\r\n
+//å•ç‰‡æœºä¸Šä¼ çš„æ¸©åº¦å€¼   ^T1234,1235,1236,1058,....\r\n
 
 ////////////////////
 //void ProcessRecvUser(uchar *p,uchar len)
@@ -1368,27 +1384,27 @@ for(j=0;j<MAX_BLDC_CH6;j++)
 //	
 //switch (*(p+1))
 //		{
-//		case 'R':	//ÇëÇó²éÑ¯ÎÂ¶È
+//		case 'R':	//è¯·æ±‚æŸ¥è¯¢æ¸©åº¦
 //
-//		//wAdcResoult[MAX_BLDC_CH6];    //ÓÃÀ´´æ·ÅÇóÆ½¾ùÖµÖ®ºóµÄ½á¹û
+//		//wAdcResoult[MAX_BLDC_CH6];    //ç”¨æ¥å­˜æ”¾æ±‚å¹³å‡å€¼ä¹‹åçš„ç»“æœ
 //	
 //		
 //		ResponeTempratur();
 //		break;	
 //			
-//		case 'P':  //¿ØÖÆÖµ
+//		case 'P':  //æ§åˆ¶å€¼
 //			ReceivedPowerOut(*(p+1),p+2);
 //			ResponePower();
 //
 //		break;	
 //		
-//		case 'D':  //²âÊÔÖµ£¬Ç°ºó×ß¼¸²½£¬ÓĞ¸ºÊı
+//		case 'D':  //æµ‹è¯•å€¼ï¼Œå‰åèµ°å‡ æ­¥ï¼Œæœ‰è´Ÿæ•°
 //			ReceivedPowerOut(*(p+1),p+2);
 //			ResponePower();
 //
 //		break;			
 //		
-//		case 'F':  //¶ÁFLASH	
+//		case 'F':  //è¯»FLASH	
 //		adress=NumberHexStringToInt32(p+2);
 //		flash=(uchar *)adress;
 //
@@ -1437,7 +1453,7 @@ for(j=0;j<MAX_BLDC_CH6;j++)
 //			
 //			case '\r':
 //			BufFromUser[LenFromUser]=0;
-//			//´¦Àí
+//			//å¤„ç†
 //			ProcessRecvUser(BufFromUser,LenFromUser);
 //			break;
 //			
@@ -1463,10 +1479,10 @@ void TaskRecv(void * pdata)
 //	uchar timeout,temp;
 //	uchar flag_recv=0;
 	
- 	pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ	   
+ 	pdata = pdata;                          	 	// é¿å…ç¼–è¯‘è­¦å‘Š	   
 
 
-OSTimeDly(OS_TICKS_PER_SEC/10);	    //ÑÓÊ±0.1Ãë
+OSTimeDly(OS_TICKS_PER_SEC/10);	    //å»¶æ—¶0.1ç§’
 
 /*
 //ProcessRecvUser(":R08020000\r\n",8);
@@ -1479,15 +1495,15 @@ ProcessRecvUser(":R08010000\r\n",8);
 
 
 
-//²úÆ·Î¨Ò»Éí·İ±êÊ¶¼Ä´æÆ÷£¨96Î»£©
-//»ùµØÖ·0X1FFF F7E8
-//Î»15:0
-//µØÖ·Æ«ÒÆ0x02
-//Î»31:16
-//µØÖ·Æ«ÒÆ0x04
-//Î»63:32
-//µØÖ·Æ«ÒÆ0x06
-//Î»95:64
+//äº§å“å”¯ä¸€èº«ä»½æ ‡è¯†å¯„å­˜å™¨ï¼ˆ96ä½ï¼‰
+//åŸºåœ°å€0X1FFF F7E8
+//ä½15:0
+//åœ°å€åç§»0x02
+//ä½31:16
+//åœ°å€åç§»0x04
+//ä½63:32
+//åœ°å€åç§»0x06
+//ä½95:64
 
 
 OSSemPend(OSSemUart1,0,&err);
@@ -1533,10 +1549,10 @@ ProcessRecvUser(":R1FFFF7E8\r\n",8);
 
 */
 
-    //Coldw.Moter_step_set;       //Ç¿ÖÆ×ß¼¸²½
-    //Coldw.Moter_direction;      //·½Ïò
+    //Coldw.Moter_step_set;       //å¼ºåˆ¶èµ°å‡ æ­¥
+    //Coldw.Moter_direction;      //æ–¹å‘
 
-	OSTimeDly(OS_TICKS_PER_SEC/10);	    //ÑÓÊ±0.01Ãë
+	OSTimeDly(OS_TICKS_PER_SEC/10);	    //å»¶æ—¶0.01ç§’
 
 					}
 }
@@ -1555,20 +1571,20 @@ float MaxVal( float a, float b, float c)
 {
 	if(a<b)
 		{
-			a = b ;   //Áô´ó
+			a = b ;   //ç•™å¤§
 		if(a<c)
-			{//c×î´ó
+			{//cæœ€å¤§
 				a = c  ;
 			}
-		//else b×î´ó	
+		//else bæœ€å¤§	
 			
 		}
 else{		
 	  if(a < c )
-	  	{//c×î´ó
-				a = c  ;  //Áô´ó
+	  	{//cæœ€å¤§
+				a = c  ;  //ç•™å¤§
 			}
-	  //else a×î´ó	
+	  //else aæœ€å¤§	
     }
 
 return a;
@@ -1581,11 +1597,11 @@ INT8U err;
 
 uchar i;
 
-pdata = pdata;    // ±ÜÃâ±àÒë¾¯¸æ		
+pdata = pdata;    // é¿å…ç¼–è¯‘è­¦å‘Š		
 
  OSSemMotors = OSSemCreate(1);
 
- OSTimeDly(OS_TICKS_PER_SEC/10);	    //ÑÓÊ±0.1Ãë
+ OSTimeDly(OS_TICKS_PER_SEC/10);	    //å»¶æ—¶0.1ç§’
 
 						
 
@@ -1600,48 +1616,52 @@ for(;;)
      //OSSemPost(OSSemMotors);
      
 
+
       OSSemPend(OSSemMotors,0,&err);
      
-     	if(  FlagRuningnny >=1  )   //¿ØÖÆ 34 ²½½øµç»ú
+     	if(  FlagRuningnny >=1  )   //æ§åˆ¶ 34 æ­¥è¿›ç”µæœº
 		  	  {
-		  	  	 //3 #²½½øµç»ú
+		  	  	 //3 #æ­¥è¿›ç”µæœº
 		  		StepMot[2].PulseCircleSet = 20  +  Coldw.ApmCt[6];  //fast
 		  		StepMotRun(  2  ,  20000  );
 		  		
-		  			 //4 #²½½øµç»ú
+		  			 //4 #æ­¥è¿›ç”µæœº
 		  		StepMot[3].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
 		  		StepMotRun(  3 , 200 );
 		  	  }
 		  else{
-		  		StepMotStop(2);  	 //3 #²½½øµç»ú
-		  		StepMotStop(3);  	 //4 #²½½øµç»ú
+		  		StepMotStop(2);  	 //3 #æ­¥è¿›ç”µæœº
+		  		StepMotStop(3);  	 //4 #æ­¥è¿›ç”µæœº
 		      }  
 		      	
-		  if(FlagRuningnnz >= 1 )  //¿ØÖÆ 12  ²½½øµç»ú
+		      	
+		      	
+		      	
+		  if(FlagRuningnnz >= 1 )  //æ§åˆ¶ 12  æ­¥è¿›ç”µæœº
 		  	  {
-		  	  	  //1 #²½½øµç»ú
+		  	  	  //1 #æ­¥è¿›ç”µæœº
 		  	  StepMot[0].PulseCircleSet = 20 +  Coldw.ApmCt[6];  //fast
 		  		StepMotRun(  0 , 20000 );
 		  		
-		  		 //2 #²½½øµç»ú	  	
+		  		 //2 #æ­¥è¿›ç”µæœº	  	
 		  		StepMot[1].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
 		  		StepMotRun(  1 , 200  );
 		  	  }
 		  else{
-		  		StepMotStop( 0 );  //1 #²½½øµç»ú
-		  		StepMotStop( 1 );	  //2 #²½½øµç»ú	  	
+		  		StepMotStop( 0 );  //1 #æ­¥è¿›ç”µæœº
+		  		StepMotStop( 1 );	  //2 #æ­¥è¿›ç”µæœº	  	
 		      } 
      OSSemPost(OSSemMotors);
-   
+
 
                   
-                  Coldw.ApmGt[ 6 ]         =    StepMot[0].PulseCircleSet;    //ÏÔÊ¾
-                  Coldw.ApmGt[ 7 ]         =    StepMot[1].PulseCircleSet;    //ÏÔÊ¾
-                  Coldw.FAN_duty [ 6 ]   =    StepMot[2].PulseCircleSet;    //ÏÔÊ¾
-                  Coldw.FAN_duty [ 7 ]   =    StepMot[3].PulseCircleSet;    //ÏÔÊ¾
+                  Coldw.ApmGt[ 6 ]         =    StepMot[0].PulseCircleSet;    //æ˜¾ç¤º
+                  Coldw.ApmGt[ 7 ]         =    StepMot[1].PulseCircleSet;    //æ˜¾ç¤º
+                  Coldw.FAN_duty [ 6 ]   =    StepMot[2].PulseCircleSet;    //æ˜¾ç¤º
+                  Coldw.FAN_duty [ 7 ]   =    StepMot[3].PulseCircleSet;    //æ˜¾ç¤º
      
                    
-    OSTimeDly(OS_TICKS_PER_SEC/50);  //²¹³äÑÓÊ±
+    OSTimeDly(OS_TICKS_PER_SEC/50);  //è¡¥å……å»¶æ—¶
 
 		}
 }
@@ -1659,7 +1679,7 @@ INT8U err;
 CPU_SR         cpu_sr;
 
  
-	pdata = pdata;                          	 	// ±ÜÃâ±àÒë¾¯¸æ	   
+	pdata = pdata;                          	 	// é¿å…ç¼–è¯‘è­¦å‘Š	   
 
 
 
@@ -1676,44 +1696,44 @@ CPU_SR         cpu_sr;
         	   	if(3 == FlagSetAllDefault)
 				 	      {
          
-                Default_ParamInit1();    ////ĞèÒª±£´æµÄ²ÎÊı
-                Default_ParamInit2();    ////Õû¶¨Öµ
+                Default_ParamInit1();    ////éœ€è¦ä¿å­˜çš„å‚æ•°
+                Default_ParamInit2();    ////æ•´å®šå€¼
                 }
         	   	else if(2 == FlagSetAllDefault)
 				 	      {
          
-                Default_ParamInit1();    ////ĞèÒª±£´æµÄ²ÎÊı
+                Default_ParamInit1();    ////éœ€è¦ä¿å­˜çš„å‚æ•°
 
                 }
         	   	
-        	   	Default_ParamInit0();//²»ĞèÒª±£´æµÄ²ÎÊı
+        	   	Default_ParamInit0();//ä¸éœ€è¦ä¿å­˜çš„å‚æ•°
         	   	
         	   	FlagSetAllDefault = 0 ;
         	   	
         	   	
-             //×Ô¶¯»Ö¸´Ä¬ÈÏÖµ
+             //è‡ªåŠ¨æ¢å¤é»˜è®¤å€¼
              cMemBufA[Max_MemBuf-2] =  FlagParamInitnized; 
              
              OS_ENTER_CRITICAL();   //CPU_SR         cpu_sr;
-             _Param_SwapMemery(0,cMemBufA);   //parameter ---> cMemBufB
+             _Param_SwapMemery(0,cMemBufA);   // parameter ---> cMemBufA
               OS_EXIT_CRITICAL();
               
-             Write_Param();
+             Write_Param();  // cMemBufA ---> cMemBufB   --->  memory
              
              }
           
           
           
           
-          if(TimeForSaveParam==1)  //ÑÓÊ±±£´æ
+          if(TimeForSaveParam==1)  //å»¶æ—¶ä¿å­˜
           	{
 							//////
 						
 						 OS_ENTER_CRITICAL();   //CPU_SR         cpu_sr;
-	            _Param_SwapMemery(0,cMemBufA);   //parameter ---> cMemBufB
+	            _Param_SwapMemery(0,cMemBufA);   //parameter ---> cMemBufA
 	            TimeForSaveParam = 0;
              OS_EXIT_CRITICAL();
-             Write_Param();
+             Write_Param();   //cMemBufB  ---> eeprom
             
 						}
 						
@@ -1723,7 +1743,7 @@ CPU_SR         cpu_sr;
 						}
 				
 				
-				OSTimeDly(OS_TICKS_PER_SEC);	    //ÑÓÊ±1Ãë		
+				OSTimeDly(OS_TICKS_PER_SEC);	    //å»¶æ—¶1ç§’		
 			}		
 }
 

@@ -70,6 +70,9 @@
 	
 	
 #include "StepMotor.h"	
+
+#include	"GetAverage.h"
+
 	
 //#include "ADS8328.h"
 #include "AT24C1024.H"

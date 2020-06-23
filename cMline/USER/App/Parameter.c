@@ -408,20 +408,48 @@ unsigned short int _Param_SwapMemery(unsigned char type,unsigned char *p)  //typ
     _copy_4byte(type,(unsigned char *)&Coldw.device_type         , p , 4);         //设备型号
     p+=4;len+=4;
     
+      _copy_4byte(type,(unsigned char *)&Stm32IdSum6                   , p , 2);                                                   //2字节
+     p+=2;len+=2;  
+    
+    
+    
     _copy_4byte(type,(unsigned char *)&Coldw.Ts1_AMP             , p , 4);         //温度采样放大倍数1
     p+=4;len+=4;
     _copy_4byte(type,(unsigned char *)&Coldw.Ts1_BIAS            , p , 4);         //温度采样偏移系数1
     p+=4;len+=4;
 
+//ApmCt[8]; 
+    _copy_4byte(type,(unsigned char *)&Coldw.ApmCt[0]            , p , 4);         //温度采样偏移系数1
+    p+=4;len+=4;
+
+    _copy_4byte(type,(unsigned char *)&Coldw.ApmCt[1]            , p , 4);         //温度采样偏移系数1
+    p+=4;len+=4;
+
+    _copy_4byte(type,(unsigned char *)&Coldw.ApmCt[2]            , p , 4);         //温度采样偏移系数1
+    p+=4;len+=4;
+
+    _copy_4byte(type,(unsigned char *)&Coldw.ApmCt[3]            , p , 4);         //温度采样偏移系数1
+    p+=4;len+=4;
+    
+    _copy_4byte(type,(unsigned char *)&Coldw.ApmCt[4]            , p , 4);         //温度采样偏移系数1
+    p+=4;len+=4;
+
+    _copy_4byte(type,(unsigned char *)&Coldw.ApmCt[5]            , p , 4);         //温度采样偏移系数1
+    p+=4;len+=4;
+    
+    _copy_4byte(type,(unsigned char *)&Coldw.ApmCt[6]            , p , 4);         //温度采样偏移系数1
+    p+=4;len+=4;
+
+    _copy_4byte(type,(unsigned char *)&Coldw.ApmCt[7]            , p , 4);         //温度采样偏移系数1
+    p+=4;len+=4;
 
 
-//
 
     _copy_4byte(type,(unsigned char *)&Coldw.Pidx[0].Proportion            , p , 4);         //比例常数
     p+=4;len+=4;
+    
     _copy_4byte(type,(unsigned char *)&Coldw.Pidx[0].Integral            , p , 4);         //
     p+=4;len+=4;    
-    
 
     _copy_4byte(type,(unsigned char *)&Coldw.Pidx[0].Derivative            , p , 4);         //微分常数
     p+=4;len+=4;
@@ -432,8 +460,7 @@ unsigned short int _Param_SwapMemery(unsigned char type,unsigned char *p)  //typ
 
 
 
-//  _copy_4byte(type,(unsigned char *)&Stm32IdSum6                   , p , 2);                                                   //2字节
-//  p+=2;len+=2;  
+
 
 return len;	
 	
@@ -452,6 +479,67 @@ void InitSaveParam(void)
 
 //////////////////////////
 unsigned char Write_Param(void)
+{
+	
+  unsigned short int i;
+  unsigned char numb,flag,sucess;	
+  unsigned char 	checksum;
+  
+	sucess = 1;
+	
+
+	//check
+	if( cMemBufA[Max_MemBuf-2] ==  FlagParamInitnized)
+          {
+           checksum = _GetParamCheck( cMemBufA , Max_MemBuf-1);  //产生校验码
+           cMemBufA[ Max_MemBuf-1] = (~checksum)+1;
+          }
+  else {
+  	    sucess = 0;  //初始化标记不对
+  	    return 0;
+  	   } 
+  	   
+  	   
+  	         
+  for(i=0;i<Max_MemBuf;i++)
+    {
+    
+    flag = 0 ;
+    for(numb=0;numb<3;numb++)
+    			{	
+    				 
+    				
+           //if(ReadByteEE(AT24C16_ADR+i) != cMemBufB[i])
+            if(cMemBufA[i] != cMemBufB[i])	
+    	         {
+    	         	cMemBufB[i] = cMemBufA[i];
+                
+                SaveEE(AT24C16_ADR+i, cMemBufB[i]);
+                
+               // if(ReadByteEE(AT24C16_ADR+i) == cMemBufB[i])  //old error
+                cMemBufB[i]	 =   ReadByteEE(AT24C16_ADR+i) ;  //new
+                if(  cMemBufA[i]  ==   cMemBufB[i] ) 	 //new
+                	{
+                		flag = 1; //sucess
+            	      break;
+                	}
+               }
+            else{ 
+            	   flag = 1; //sucess
+            	   break;
+            	  }
+    			}
+    
+    if(flag == 0)
+    			{
+    				sucess = 0; //写入错误
+    			}	
+    }
+
+return sucess;
+}
+//////////////////////////
+unsigned char Write_Param_error(void)
 {
 	
   unsigned short int i;
@@ -509,7 +597,6 @@ unsigned char Write_Param(void)
 return sucess;
 }
 //////////////////////////
-
 unsigned char Load_Param(void)
 {
   unsigned short int i;

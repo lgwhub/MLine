@@ -7,7 +7,7 @@
 
 
 //STM32的ID 16位检验和
-#define CONFIG_CHECK_DEVICE_ID  0
+#define CONFIG_CHECK_DEVICE_ID  1
 //////////////////////////////////////////////////////														
 												
 struct	struct_stm32_id{

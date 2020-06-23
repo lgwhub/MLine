@@ -38,6 +38,7 @@ File 1,1,<..\TimCap\TimCap.c><TimCap.c>
 File 1,1,<..\SPI\spi.c><spi.c>
 File 1,1,<..\USER\App\LedDisp.c><LedDisp.c>
 File 1,1,<..\USER\App\STM32_DeviceId.c><STM32_DeviceId.c>
+File 1,1,<..\USER\App\GetAverage.c><GetAverage.c>
 File 2,1,<..\Libraries\STM32F10x_StdPeriph_Driver\src\misc.c><misc.c>
 File 2,1,<..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c><stm32f10x_flash.c>
 File 2,1,<..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c><stm32f10x_gpio.c>

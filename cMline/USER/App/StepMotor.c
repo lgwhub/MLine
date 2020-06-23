@@ -252,6 +252,7 @@ for(i=0;i<NUMBofSTEPs;i++)
 	  
 		if(( StepMot[i].Enable ) && ( StepMot[i].PulseCount > 0 ))
 			  {
+			  	SwitchBitEN(i,1);
 				if( StepMot[i].PulseCircleCount > 0 )//   脉冲输出速度控制
 					{
 						StepMot[i].PulseCircleCount --;
@@ -282,6 +283,9 @@ for(i=0;i<NUMBofSTEPs;i++)
 						
 						}
 			 }
+		else{
+			SwitchBitEN(i,0);
+		     }
     }
 
 }
@@ -317,7 +321,7 @@ void StepMotRun( unsigned char chs , signed int step_count)
 	unsigned  int  step16;
 	
   StepMot[chs].Enable=0;
-  //-- SwitchBitEN(chs,0);//ClrBitEN1;
+  SwitchBitEN(chs,1);//ClrBitEN1;  ????
   SwitchBitCLK(chs,0);//ClrBitCLK1;
 
 	if(step_count>0)//cw==MOTOR_STATUS_FORWORD)		//前

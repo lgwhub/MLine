@@ -148,13 +148,17 @@
 
 
 //I2C
-#define bSDA					(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_9))
-#define SetbSDDA			GPIO_SetBits(GPIOB,GPIO_Pin_9)
-#define Clr_SDDA			GPIO_ResetBits(GPIOB,GPIO_Pin_9)
-#define SetbSCCL			GPIO_SetBits(GPIOB,GPIO_Pin_8)
-#define Clr_SCCL			GPIO_ResetBits(GPIOB,GPIO_Pin_8)
+//#define bSDA					(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_9))
+//#define SetbSDDA			GPIO_SetBits(GPIOB,GPIO_Pin_9)
+//#define Clr_SDDA			GPIO_ResetBits(GPIOB,GPIO_Pin_9)
+//#define SetbSCCL			GPIO_SetBits(GPIOB,GPIO_Pin_8)
+//#define Clr_SCCL			GPIO_ResetBits(GPIOB,GPIO_Pin_8)
 
-
+#define bSDA					(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7))
+#define SetbSDDA			GPIO_SetBits(GPIOB,GPIO_Pin_7)
+#define Clr_SDDA			GPIO_ResetBits(GPIOB,GPIO_Pin_7)
+#define SetbSCCL			GPIO_SetBits(GPIOB,GPIO_Pin_6)
+#define Clr_SCCL			GPIO_ResetBits(GPIOB,GPIO_Pin_6)
 
 
 

@@ -183,7 +183,9 @@ GPIO_Init(GPIOB,&GPIO_InitStructure);
 // 步进电机控制  输出
  GPIO_InitStructure.GPIO_Pin =   GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_10 | GPIO_Pin_12 | GPIO_Pin_15;
  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
- GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+ //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+ 
  GPIO_Init(GPIOE,&GPIO_InitStructure);
   
   //定时器输出

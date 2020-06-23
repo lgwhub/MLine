@@ -10,7 +10,7 @@
 
 
 
-#define EEPROM_BIG  1
+#define EEPROM_BIG  0
  
 #define AT24C16_ADR					0X04
 
