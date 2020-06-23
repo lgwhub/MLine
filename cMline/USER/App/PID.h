@@ -2,20 +2,14 @@
 #define    _PID_INC_H
 
 
-//水冷
-//#define MAX_PID_INTEGRAL_1   (250)
-//#define MIN_PID_INTEGRAL_1   (-(250))
+#define MAX_PID_INTEGRAL_1     (1000)
+#define MIN_PID_INTEGRAL_1      (0)
 
+//#define MAX_PID_INTEGRAL_2     200
+//#define MIN_PID_INTEGRAL_2      (0)
 
-#define MAX_PID_INTEGRAL_1   (50)
-#define MIN_PID_INTEGRAL_1   (-(50))
-
-
-#define MAX_PID_INTEGRAL_2   200
-#define MIN_PID_INTEGRAL_2   (0)
-
-#define MAX_PID_RESOULT_2  MAX_PID_INTEGRAL_2
-#define MIN_PID_RESOULT_2  MIN_PID_INTEGRAL_2
+//#define MAX_PID_RESOULT_2     MAX_PID_INTEGRAL_2
+//#define MIN_PID_RESOULT_2       MIN_PID_INTEGRAL_2
 
 /********************************************************
 * PID控制结构体声明
@@ -54,7 +48,7 @@ typedef struct
 }PidBufStruct;  //临时变量
 
 extern PidBufStruct HeatPidBuf[MAX_BLDC_CH6];
-extern PidBufStruct StepPidBuf[MAX_BLDC_CH6];
+//extern PidBufStruct StepPidBuf[MAX_BLDC_CH6];
 
 
 /********************************************************
@@ -73,8 +67,8 @@ void PID_BufInit(PidBufStruct *pidch);
 void PID_ParaInit(void);//PID_ParaStruct *types,float p, float i, float d);
 
 
-//void PID_Calc(PID_ParaStruct *types, PidBufStruct *pidch, float NowPoint);
-void PID_Calc(PID_ParaStruct *types, PidBufStruct *pidch, float Error ,unsigned char typeflag);
+void PID_Calc(PID_ParaStruct *types, PidBufStruct *pidch, float NowPoint);
+//void PID_Calc(PID_ParaStruct *types, PidBufStruct *pidch, float Error ,unsigned char typeflag);
 
 
 #endif

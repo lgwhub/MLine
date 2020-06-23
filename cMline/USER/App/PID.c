@@ -16,7 +16,7 @@
 //PID_ParaStruct      PidParam[2];
 
 PidBufStruct HeatPidBuf[MAX_BLDC_CH6];
-PidBufStruct StepPidBuf[MAX_BLDC_CH6];
+//PidBufStruct StepPidBuf[MAX_BLDC_CH6];
 
 
 
@@ -27,24 +27,19 @@ void PID_ParaInit(void)
 {
 
 
-		//水冷
-	// Coldw.Pidx[0].Proportion  =    5;//25;//20;//6;//2;          //比例常数
-	// Coldw.Pidx[0].Integral    =    0.3;//0.2;//0.5;//;0.2;//0.025;          //
 	 
-	 Coldw.Pidx[0].Proportion  =    35;//20;//3;          //比例常数
-	 Coldw.Pidx[0].Integral    =    0.015001;//0.02001;          //	 
-	 
-	 Coldw.Pidx[0].Derivative  =    2;//22;//55;//50;//2;//1;
-	 Coldw.Pidx[0].QMax        =    MAX_PID_INTEGRAL_1;
-   Coldw.Pidx[0].QMin        =    MIN_PID_INTEGRAL_1;  
+	 Coldw.Pidx[0].Proportion     =       35;//20;//3;          //比例常数
+	 Coldw.Pidx[0].Integral         =       0.015001;//0.02001;          //	 
+	 Coldw.Pidx[0].Derivative     =       2;//22;//55;//50;//2;//1;
+	 Coldw.Pidx[0].QMax           =       MAX_PID_INTEGRAL_1;
+   Coldw.Pidx[0].QMin             =        MIN_PID_INTEGRAL_1;  
 		
 		
-		//电加热
-	 Coldw.Pidx[1].Proportion  =   60;//150;          //比例常数
-	 Coldw.Pidx[1].Integral    =   2;          //
-	 Coldw.Pidx[1].Derivative  =   12;
-	 Coldw.Pidx[1]. QMax       =   MAX_PID_INTEGRAL_2;
-   Coldw.Pidx[1]. QMin       =   MIN_PID_INTEGRAL_2;  
+//	 Coldw.Pidx[1].Proportion  =   60;//150;          //比例常数
+//	 Coldw.Pidx[1].Integral    =   2;          //
+//	 Coldw.Pidx[1].Derivative  =   12;
+//	 Coldw.Pidx[1]. QMax       =   MAX_PID_INTEGRAL_2;
+//   Coldw.Pidx[1]. QMin       =   MIN_PID_INTEGRAL_2;  
 
 
 }
@@ -76,7 +71,76 @@ void PID_BufInit(PidBufStruct *pidch)
 * Called by:   CtrlTemp
 * Others:
 *********************************************************/
-void PID_Calc(PID_ParaStruct *types, PidBufStruct *pidch, float Error ,unsigned char typeflag)
+void PID_Calc(  PID_ParaStruct  *types  ,  PidBufStruct  *pidch  ,  float NowPoint )
+{
+    float   dError , Error ;
+    
+    float   total  ,  temp ;
+    
+
+    
+    Error                           =    pidch->SetPoint   -   NowPoint   ;              //计算偏差  e0
+    pidch  ->  SumError    +=   Error;                      							//积分累加  e0++
+    dError                        =    pidch->LastError  -  pidch->PreError;     		//当前微分  e1-e2
+    
+    //更新
+    pidch  ->  PreError       =     pidch->LastError;              							//上次偏差赋给上上次偏差  e2=e1
+    pidch  ->  LastError      =     Error;                 										//当前偏差赋给上次偏差    e1=e0
+    
+    
+    
+    //////////抗饱和////////////////////////////////////////////////////MAX_PID_INTEGRAL
+
+		 
+		    
+		    
+			if(   types  ->  Integral   ==   0   )
+			           {
+		                pidch  ->  SumError =  0;
+                        }
+		       else{
+
+                       temp =      types -> Integral    *    pidch -> SumError  ;
+        
+                        if(   temp     >     types -> QMax   )
+		                            {
+		                               pidch -> SumError     =     types -> QMax   /   (types->Integral);
+		                              }
+                    else if (     temp    <      types  -> QMin   )
+                                 {
+		                        pidch -> SumError    =     types -> QMin  /  (  types -> Integral  );
+		                      }
+                    }		    
+		    
+		    
+		    
+		//////////////////////    
+
+
+    
+    pidch -> Px       =           types -> Proportion   *    Error    ;	          //P部分
+    pidch -> Ix        =           types -> Integral       *    pidch -> SumError;	//I部分  
+    pidch->Dx         =          types -> Derivative    *    dError;	        //D部分
+   
+    total                  =           pidch -> Px    +     pidch -> Ix    +    pidch -> Dx;
+
+    if(  total     <     types -> QMin  )
+    	   {       pidch -> Qx      =      (signed long int) types -> QMin;
+    	   }
+    else if(    total     >    types -> QMax )
+    	  {
+    		pidch -> Qx       =    (signed long int) types -> QMax;
+    	  }
+    else {
+    	    pidch->Qx   = (signed long int)total;
+           }
+         
+        
+}
+
+
+
+void PID_Calcxxxxx(PID_ParaStruct *types, PidBufStruct *pidch, float Error ,unsigned char typeflag)
 {
     float dError;
     

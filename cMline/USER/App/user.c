@@ -55,11 +55,21 @@ unsigned long ShiftKeySavennz;
 #define  FlagRuningnny    (Coldw.T_set )              //温度设置值
 #define  FlagRuningnnz    (Coldw.TC_sx )                //温度上限设置值
 
+
+unsigned  short int  ApmSetBuf[ MAX_BLDC_CH6 + 1 ];   //速度设定值中间变量   
+unsigned  short int  ApmSetVal[ MAX_BLDC_CH6 + 1 ];   //速度设定值递增变量  //   ApmSetBuf     --->>>>  ApmSetVal    ..........       
+
+
 unsigned  short int  BLDC_PwmBuf[ MAX_BLDC_CH6 + 1 ];   //pwm速度中间变量
-unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwm速度控制值   1000  max 
+unsigned  short int  BLDC_PwmVal[ MAX_BLDC_CH6 + 1 ];   //pwm递增速度控制值   1000  max 
 
 unsigned  char Capture_Flag[ MAX_BLDC_CH6 + 1 ] ;
-unsigned  long int Apm_FREQ[ MAX_BLDC_CH6 +1 ] ; 
+//unsigned  long int Apm_FREQ2[ MAX_BLDC_CH6 +1 ] ;   //前一个速度测量值
+//unsigned  long int Apm_FREQ1[ MAX_BLDC_CH6 +1 ] ;   //上一个速度测量值
+unsigned  long int Apm_FREQ[ MAX_BLDC_CH6 +1 ] ;    //速度测量值  0.1HZ
+unsigned  long int Apm_ForLed[ MAX_BLDC_CH6 +1 ] ;    //LED显示速度测量值  apm  or 10APM
+//unsigned  long int Apm_ForPc[ MAX_BLDC_CH6 +1 ] ;    //电脑显示速度测量值  apm
+
 unsigned  long int Capture_number[ MAX_BLDC_CH6 + 1 ] ;
 
 //unsigned  long int Capture_number_All32  = 0 ;  //永远计数器。脉冲测量用
@@ -205,9 +215,9 @@ pdata = pdata;                          	 	// 避免编译警告
 
 for(;;)
 		{
-        PutValToDispBf(Apm_FREQ[5], DispBufnny+12 );   //Coldw.ApmGt
+        PutValToDispBf(Apm_ForLed[5], DispBufnny+12 );   //Coldw.ApmGt
         PutValToDispBf(  0, DispBufnny+8 );
-        PutValToDispBf( Apm_FREQ[3], DispBufnny+4 );
+        PutValToDispBf( Apm_ForLed[3], DispBufnny+4 );
         PutValToDispBf(Apm_FREQ[2] , DispBufnny+0 );
         
         PutValToDispBf(Apm_FREQ[4] , DispBufnnz+12 );
@@ -485,10 +495,10 @@ void TaskTimePr(void * pdata)
   for(;;)
      {
 
-      OSTimeDly(OS_TICKS_PER_SEC/100);	    //延时0.01秒
+      OSTimeDly( OS_TICKS_PER_SEC / 100 );	    //延时0.01秒
       
                timer1++;
-               if(timer1 >= 20)  //200ms
+               if(  timer1  >=  3 )  //30ms
                     {
                      timer1  = 0 ;
                      OSSemPost(OSSemTimePid_PWM);   //电加热PID控制周期
@@ -517,63 +527,107 @@ unsigned char i;
 
 pdata = pdata;                          	 	// 避免编译警告		
 
+    for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )	
+              {
+              	ApmSetBuf [ i ] =  0 ; //   ApmSetBuf     --->>>>  ApmSetVal    ..........       
+              	ApmSetVal [ i ] =  0 ;
+                          	
+              }
 
-OSTimeDly(OS_TICKS_PER_SEC/100);	    //延时0.01秒
 
+OSTimeDly( OS_TICKS_PER_SEC / 100);	    //延时0.01秒
 
 for(;;)
 		{
 			
-			OSSemPend(OSSemTimePid_PWM,0,&err);  //   OSSemTimePid_Heat
+			OSSemPend(  OSSemTimePid_PWM , 0 , &err );  //   OSSemTimePid_Heat
 
-
-    
-		
-		  if( FlagRuningnny >=1 )   //控制 34 6 BLDC电机
+		  if( FlagRuningnny  >=  1 )   //控制 34 6 BLDC电机
 		  	  {
-		  		BLDC_PwmBuf[2] = Coldw.ApmCt[2];  //3
-		  		BLDC_PwmBuf[3] = Coldw.ApmCt[3];  //4
-		  		BLDC_PwmBuf[5] = Coldw.ApmCt[5];  //6
+		  		ApmSetBuf[2] = ( unsigned short int ) Coldw.ApmCt[2]  * 2;  //3
+		  		ApmSetBuf[3] = ( unsigned short int )  Coldw.ApmCt[3]  * 2;  //4
+		  		ApmSetBuf[5] = ( unsigned short int ) Coldw.ApmCt[5];  //6
 		  	  }
 		  else{
-		  		BLDC_PwmBuf[2] = 0;
-		  		BLDC_PwmBuf[3] = 0;
-		  		BLDC_PwmBuf[5] = 0;		  	
+		  		ApmSetBuf[2] = 0; //   ApmSetBuf     --->>>>  ApmSetVal    ..........       
+		  		ApmSetBuf[3] = 0;
+		  		ApmSetBuf[5] = 0;		  	
 		      }  
 		      	
-		  if( FlagRuningnnz >= 1 )  //控制 12 5 BLDC电机
+		  if( FlagRuningnnz  >=  1 )  //控制 12 5 BLDC电机
 		  	  {
-		  		BLDC_PwmBuf[0] = Coldw.ApmCt[0];  //1
-		  		BLDC_PwmBuf[1] = Coldw.ApmCt[1];  //2
-		  		BLDC_PwmBuf[4] = Coldw.ApmCt[4];  //5
+		  		ApmSetBuf[0] = ( unsigned short int ) Coldw.ApmCt[0]  * 2 ;  //1
+		  		ApmSetBuf[1] = ( unsigned short int ) Coldw.ApmCt[1]  * 2 ;  //2
+		  		ApmSetBuf[4] = ( unsigned short int ) Coldw.ApmCt[4];  //5
 		  	  }
 		  else{
-		  		BLDC_PwmBuf[0] = 0;
-		  		BLDC_PwmBuf[1] = 0;
-		  		BLDC_PwmBuf[4] = 0;		  	
+		  		ApmSetBuf[0] = 0;
+		  		ApmSetBuf[1] = 0;
+		  		ApmSetBuf[4] = 0;		  	
 		      } 		  	
 		  	
-		  	
-		  	#define DLBC_STEP_ADD25  10
-		  	#define DLBC_STEP_DEC25  10
+		  	//软启动  软加速  软减速  速度步进量
+		  	#define APM_SET_ADD25  5
+		  	#define APM_SET_DEC25  5
 
+
+                    //   ApmSetBuf     --->>>>  ApmSetVal    ..........
         for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {
-                 if( ( BLDC_PwmVal[ i ] + DLBC_STEP_ADD25 ) < BLDC_PwmBuf[i] )  // s < a-100
-                 	   { 
-                 	   	BLDC_PwmVal[ i ] += DLBC_STEP_ADD25;                      // +100
-                 	   }
-                 else if ( BLDC_PwmVal[ i ]  < BLDC_PwmBuf[i] )     // +++++
-                 	   {
-                     BLDC_PwmVal[ i ] =   BLDC_PwmBuf[i] ;          //970
-                     }
-                 else if (  BLDC_PwmVal[ i ] > ( BLDC_PwmBuf[i] + DLBC_STEP_DEC25 ) )
+                     if(   (  ApmSetVal [ i ]     +    APM_SET_ADD25   )        <            ApmSetBuf [i]    )  // s < a-100
+                 	      { 
+                 	   	   ApmSetVal [ i ]        +=   APM_SET_ADD25 ;                      // +100
+                 	      }
+                 else if ( ApmSetVal [ i ]       <      ApmSetBuf[i]    )     // +++++
+                 	       {
+                           ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
+                           }
+                 else if (  ApmSetVal [ i ]            >             (  ApmSetBuf[i]  +  APM_SET_DEC25  )     )
+     	                  {
+                 	   	   ApmSetVal [ i ]        -=      APM_SET_DEC25;
+                 	      }
+                 else{
+                             ApmSetVal [ i ]       =      ApmSetBuf[i] ;
+                          }
+                 
+                  if( ApmSetVal [ i ] > 30000 )        
+                      {
+                      	ApmSetVal [ i ] = 30000;  
+                      } 
+     	        //Coldw.FAN_duty [ i ]   =    ApmSetVal [ i ];    //显示
+     	
+              }    
+
+
+
+                     
+          for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
+			    {
+
+                 HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] ; //基本上多余 
+			     PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]                       ); //一般是error = SetPoint - NewPoint ,这里反过来
+			    
+			     }
+	     		  	//软启动  软加速  软减速  步进量
+		  	#define DLBC_STEP_ADD25  10
+		  	#define DLBC_STEP_DEC25  10
+        for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
+			        {
+                     if(   (  BLDC_PwmVal[ i ]  +  DLBC_STEP_ADD25   )  < HeatPidBuf[i].Qx    )  // s < a-100
+                 	      { 
+                 	   	   BLDC_PwmVal[ i ]  +=   DLBC_STEP_ADD25 ;                      // +100
+                 	      }
+                 else if ( BLDC_PwmVal[ i ]  < HeatPidBuf[i].Qx   )     // +++++
+                 	    {
+                        BLDC_PwmVal[ i ] =   HeatPidBuf[i].Qx   ;          //970
+                        }
+                 else if (  BLDC_PwmVal[ i ] > ( HeatPidBuf[i].Qx   + DLBC_STEP_DEC25 ) )
      	               {
                  	   	BLDC_PwmVal[ i ] -= DLBC_STEP_DEC25;
                  	   }
                  else{
-                     BLDC_PwmVal[ i ] =   BLDC_PwmBuf[i] ;
-                     }
+                      BLDC_PwmVal[ i ] =   HeatPidBuf[i].Qx   ;
+                      }
                  
                   if( BLDC_PwmVal[ i ] > 1000 )        
                       {
@@ -584,22 +638,13 @@ for(;;)
      	
               }    
                      
-                     
-          for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
-			    {
-
-          //HeatPidBuf[i].SetPoint = TempratureSet; //Coldw.T_set; //基本上多余 
-			    //PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i], ( HeatPidBuf[i].SetPoint - TempratureCurrent [ i ] ),0); //一般是error = SetPoint - NewPoint ,这里反过来
-			    
-			     }
-	     
 			     
 //    Coldw.MONI_PX2 = HeatPidBuf[0].Px;  	   
 //    Coldw.MONI_IX2 = HeatPidBuf[0].Ix;  	       
 //    Coldw.MONI_DX2 = HeatPidBuf[0].Dx;  	        
 //    Coldw.MONI_QX2 = HeatPidBuf[0].Qx; //0.14;           
                      
-		   TIM_SetCompare1(TIM5, BLDC_PwmVal[0]);
+	   TIM_SetCompare1(TIM5, BLDC_PwmVal[0]);
        TIM_SetCompare2(TIM5, BLDC_PwmVal[1]);   
        TIM_SetCompare1(TIM1, BLDC_PwmVal[2]);
        TIM_SetCompare2(TIM1, BLDC_PwmVal[3]);
@@ -607,7 +652,7 @@ for(;;)
        TIM_SetCompare4(TIM1, BLDC_PwmVal[5]);
 		
 
-		  OSTimeDly(OS_TICKS_PER_SEC/20);	    //延时0.1秒
+		  OSTimeDly(OS_TICKS_PER_SEC/200);	    //延时0.005秒
 
 		}
 }
@@ -1071,8 +1116,8 @@ Led_Test_Adc_On1;
               				
               				if( temp32T != 0)
               					  {
-              				      Apm_FREQ[ i ] = ( long )(  (  temp32N -1 )  * ( float ) 72000000 / temp32T );   //hz
-              				     // Apm_FREQ[ i ] = ( long )(  (  temp32N -1 )  * ( float ) 720000000 / temp32T );   //0.1hz
+              				      //Apm_FREQ[ i ] = ( long )(  (  temp32N -1 )  * ( float ) 72000000 / temp32T );   //hz
+              				      Apm_FREQ[ i ] = ( long )(  (  temp32N -1 )  * ( float ) 720000000 / temp32T );   //0.1hz
               			          }
               			     else{
               			     	  // Apm_FREQ[ i ] = ( long )   (  temp32N -1 )  * 100;  //10ms
@@ -1096,18 +1141,22 @@ Led_Test_Adc_On1;
                   case 1:
                   case 2:
                   case 3:                  	
-                  	Apm_FREQ[ i ] >>= 1;  //除以2
-                  
+                  	//  max 10000   apm      2x3
+                  Apm_ForLed[ i ]   =  Apm_FREQ[ i ]  / 20;  //除以20
+                 // Apm_ForPc[ i ]     =  Apm_FREQ[ i ]  / 2;  //除以2  
+                  Coldw.ApmGt[i]  =  (float)Apm_FREQ[ i ]/2; //除以2  	                
                   break;
                   
                   case 4:
                   case 5: 
-                  
+                  	  	//  max 20000   apm      4x3
+                   Apm_ForLed[ i ] =  Apm_FREQ[ i ]  / 10;  //除以10    
+                   Coldw.ApmGt[i]  =  (float)Apm_FREQ[ i ];	            
                   break;	             
                   }
    
 
-                 Coldw.ApmGt[i]=(float)Apm_FREQ[ i ];	
+                 
 
                }	
                

@@ -227,10 +227,10 @@ FlagSetAllDefault = 0;
     Coldw.MONI_DX1 = 0.13;
     Coldw.MONI_QX1 = 0.14;
     
-    Coldw.MONI_PX2 = 0.21;                //
-    Coldw.MONI_IX2 = 0.22;
-    Coldw.MONI_DX2 = 0.23;
-    Coldw.MONI_QX2 = 0.24;    
+//    Coldw.MONI_PX2 = 0.21;                //
+//    Coldw.MONI_IX2 = 0.22;
+//    Coldw.MONI_DX2 = 0.23;
+//    Coldw.MONI_QX2 = 0.24;    
 
 
     
@@ -294,11 +294,7 @@ FlagSetAllDefault = 0;
     
        }
        
-    for(i=0;i<MAX_BLDC_CH6;i++)
-    {
-     Coldw.Counter_MaxOpen[i]=0;				//温度超过设定值15度以上，不使用PID,强制打开水冷，开n次后暂停，然后等温度到正常范围
-     Coldw.Counter_MaxClose[i]=0;				//温度低于设定值15度以上，不使用PID,强制关闭水冷，关n次后暂停，然后等温度到正常范围
-    }
+
  
  
  
@@ -307,7 +303,7 @@ FlagSetAllDefault = 0;
  for(i=0;i<MAX_BLDC_CH6;i++)
     {
      PID_BufInit(&HeatPidBuf[i]);//电加热控制
-     PID_BufInit(&StepPidBuf[i]);//水冷增量PID
+    // PID_BufInit(&StepPidBuf[i]);//水冷增量PID
     }
  
  
