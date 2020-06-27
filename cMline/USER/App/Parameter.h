@@ -70,14 +70,14 @@ PID_ParaStruct      Pidx[2];   // 5 X 4 X 2 字节  pid参数
    //0x70  112x2 byte
     unsigned long  int  Burnin_type;          //老化类型
 
-    float               T_set;                //温度设置值
+    float               Flag_Runingnny;                     //T_set;                //温度设置值
     float               T_bias_set;           //温度偏差设置值
     float               T_upper_set;          //
     float               T_down_set;           //
 
     unsigned long  int  Cycle_times_set;      //
     
-    float               TC_sx;                //温度上限设置值
+    float               Flag_Runingnnz;   //TC_sx;                //温度上限设置值
     
     unsigned long  int  unit_onof_flag[8];    //
 
@@ -91,13 +91,13 @@ PID_ParaStruct      Pidx[2];   // 5 X 4 X 2 字节  pid参数
     unsigned long  int  limit_recode[8];      //
 
 
-  //  198x2 byte
+ 
    // float               Ts[8];                //
-float   ApmGt[8];    //  速度测量值    
+    float   ApmGt[8];    //  速度测量值    
 
-    unsigned long  int  ApmCt[8];    //  速度设定值        TC_duty[8];           //占空比
+    unsigned long  int  ApmCt[8];    //  速度设定值         //TC_duty[8];           //占空比
     
-    signed long  int  FAN_duty[8];          //步进电机
+    signed long  int  ApmDuty[8];      //控制量显示                    //FAN_duty[8];            //步进电机
     
     unsigned long  int  Clcle_times;          //
     
@@ -122,12 +122,7 @@ float   ApmGt[8];    //  速度测量值
     unsigned long  int   PcbType;  //
     unsigned long  int   xx1UpSpeed;  //渐进设定值速度 //2度每秒  1      0.2度每秒  2       0.05度每秒    3    直接 0，或者其它
 
-//    unsigned long  int   xx2;  //保留
 
-//  unsigned long  int   Counter_MaxOpen[8];				//温度超过设定值15度以上，不使用PID,强制打开水冷，开n次后暂停，然后等温度到正常范围
-//  unsigned long  int   Counter_MaxClose[8];				//温度低于设定值15度以上，不使用PID,强制关闭水冷，关n次后暂停，然后等温度到正常范围
-  
- //   unsigned long  int   temp32[16]; 
    
 
 }  _param_water8;    //  字节

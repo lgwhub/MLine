@@ -52,8 +52,8 @@ unsigned long ShiftKeySavennz;
 
 //unsigned char FlagRuningnny;   //控制 34 6 BLDC电机   34 步进电机
 //unsigned char FlagRuningnnz;   //控制 12 5 BLDC电机   12 步进电机
-#define  FlagRuningnny    (Coldw.T_set )              //温度设置值
-#define  FlagRuningnnz    (Coldw.TC_sx )                //温度上限设置值
+#define  FlagRuningnny   (   Coldw.Flag_Runingnny  ) //控制 34 6 BLDC电机   34 步进电机    (Coldw.T_set )              //温度设置值
+#define  FlagRuningnnz   (    Coldw.Flag_Runingnnz )    //控制 12 5 BLDC电机   12 步进电机  // (Coldw.TC_sx )                //温度上限设置值
 
 
 unsigned  short int  ApmSetBuf[ MAX_BLDC_CH6 + 1 ];   //速度设定值中间变量   
@@ -628,7 +628,7 @@ for(;;)
                       {
                       	ApmSetVal [ i ] = 30000;  
                       } 
-     	        //Coldw.FAN_duty [ i ]   =    ApmSetVal [ i ];    //显示
+     	        //Coldw.ApmDuty [ i ]   =    ApmSetVal [ i ];    //显示
      	
               }    
 
@@ -637,10 +637,15 @@ for(;;)
                      
           for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			    {
-
-                 HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] ; //基本上多余 
-			     PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]                       ); //一般是error = SetPoint - NewPoint ,这里反过来
-			    
+                        if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
+                        	            {
+                                         HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] ; //基本上多余 
+			                                   PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]      ); //一般是error = SetPoint - NewPoint ,这里反过来
+			                                 }
+			          else        {//设定值太小了，或者关闭
+			          	                  HeatPidBuf[i].Qx   =  0;
+			          	                  HeatPidBuf[i].Ix     =  0;
+				                           }      
 			     }
 	     		  	//软启动  软加速  软减速  步进量
 		  	#define DLBC_STEP_ADD25  (10+190)
@@ -668,7 +673,7 @@ for(;;)
                       	BLDC_PwmVal[ i ] = 1000;  
                       } 
      	
-     	        Coldw.FAN_duty [ i ]   =    BLDC_PwmVal[ i ];    //显示
+     	        Coldw.ApmDuty [ i ]   =    BLDC_PwmVal[ i ];    //显示
      	
               }    
                      
@@ -1596,8 +1601,12 @@ void TaskStepMotor(void * pdata)
 INT8U err;
 
 uchar i;
-
+unsigned short int TempUs;
+	
+	
 pdata = pdata;    // 避免编译警告		
+
+
 
  OSSemMotors = OSSemCreate(1);
 
@@ -1619,15 +1628,30 @@ for(;;)
 
       OSSemPend(OSSemMotors,0,&err);
      
+     		  	  // 200步   2细分  apm  0.1
+		  	  	 //  T (us)= 1x1000x1000 /  ( apm/10 / 60 * 200 *2 )   = 6*1000*1000/40 /apm  = 150 *1000 /apm  
+		  	  	 if( Coldw.ApmCt[6]  > 3 )
+		  	  	 	{
+		  	  	                 TempUs =  150000 /  Coldw.ApmCt[6];
+		  	  	               }
+		  	  	else{
+		  	  		            TempUs = 5000 ;  //0.1hz
+		  	  	      }
+		  	  	if (  TempUs < 5 )    TempUs  = 5;
+     
+     
      	if(  FlagRuningnny >=1  )   //控制 34 步进电机
 		  	  {
-		  	  	 //3 #步进电机
-		  		StepMot[2].PulseCircleSet = 20  +  Coldw.ApmCt[6];  //fast
-		  		StepMotRun(  2  ,  20000  );
+		  	  	 //3 #步进电机     PulseCircleSet=20;//20;		//20*50us  = 0.001s
+		  	  	 
+
+		  	  	  
+		  		StepMot[2].PulseCircleSet =  TempUs ;  //fast
+		  		StepMotRun(  2  , 6000  );
 		  		
 		  			 //4 #步进电机
 		  		StepMot[3].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
-		  		StepMotRun(  3 , 200 );
+		  		StepMotRun(  3 ,8 );
 		  	  }
 		  else{
 		  		StepMotStop(2);  	 //3 #步进电机
@@ -1640,12 +1664,12 @@ for(;;)
 		  if(FlagRuningnnz >= 1 )  //控制 12  步进电机
 		  	  {
 		  	  	  //1 #步进电机
-		  	  StepMot[0].PulseCircleSet = 20 +  Coldw.ApmCt[6];  //fast
-		  		StepMotRun(  0 , 20000 );
+		  	  StepMot[0].PulseCircleSet =  TempUs;  //fast
+		  		StepMotRun(  0 , 6000 );
 		  		
 		  		 //2 #步进电机	  	
 		  		StepMot[1].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
-		  		StepMotRun(  1 , 200  );
+		  		StepMotRun(  1 , 8  );
 		  	  }
 		  else{
 		  		StepMotStop( 0 );  //1 #步进电机
@@ -1657,8 +1681,8 @@ for(;;)
                   
                   Coldw.ApmGt[ 6 ]         =    StepMot[0].PulseCircleSet;    //显示
                   Coldw.ApmGt[ 7 ]         =    StepMot[1].PulseCircleSet;    //显示
-                  Coldw.FAN_duty [ 6 ]   =    StepMot[2].PulseCircleSet;    //显示
-                  Coldw.FAN_duty [ 7 ]   =    StepMot[3].PulseCircleSet;    //显示
+                  Coldw.ApmDuty [ 6 ]   =    StepMot[2].PulseCircleSet;    //显示
+                  Coldw.ApmDuty [ 7 ]   =    StepMot[3].PulseCircleSet;    //显示
      
                    
     OSTimeDly(OS_TICKS_PER_SEC/50);  //补充延时

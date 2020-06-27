@@ -240,7 +240,8 @@ FlagSetAllDefault = 0;
     
     
     
-    Coldw.T_set = 0; // 38;                //温度设置值
+    Coldw.Flag_Runingnny = 0; // 38;                //温度设置值
+
 
 
     Coldw.Cycle_times_set = 0;      //
@@ -266,7 +267,7 @@ FlagSetAllDefault = 0;
     Coldw.limit_recode[i] = 0xF0;//0;
 //    Coldw.Ts[i] = (0.1)*i;                //
     Coldw.ApmCt[i] = 0;//223;//Coldw.TC_duty[i] = 0;           //
-    Coldw.ApmGt[i] = 0 ;//Coldw.FAN_duty[i] = 0 ;          //
+    Coldw.ApmGt[i] = 0 ;
     }
      
 
