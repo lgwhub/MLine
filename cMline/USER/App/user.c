@@ -244,14 +244,31 @@ for(;;)
                              
                   }
 			}
-			
+		
+		        //第1组显示	
         PutValToDispBf(Apm_ForLed[5], DispBufnny+12 );   //Coldw.ApmGt
-        PutValToDispBf(  0, DispBufnny+8 );
+        if(  FlagRuningnny >=1  )   //控制 34 步进电机
+        	    {//显示步进电机速度
+                  PutValToDispBf(  Coldw.ApmCt[6], DispBufnny+8 ); 
+               }
+        else{
+        	     PutValToDispBf(  0, DispBufnny+8 ); 
+             }       
         PutValToDispBf( Apm_ForLed[3], DispBufnny+4 );
         PutValToDispBf(Apm_ForLed[2] , DispBufnny+0 );
         
+        
+        //第2组显示
+        
         PutValToDispBf(Apm_ForLed[4] , DispBufnnz+12 );
-        PutValToDispBf( 0, DispBufnnz+8 );
+         if(FlagRuningnnz >= 1 )  //控制 12  步进电机
+         	{
+         		PutValToDispBf( Coldw.ApmCt[6], DispBufnnz+8 );
+         	}
+        else
+        	{
+        		PutValToDispBf( 0, DispBufnnz+8 );
+        	}
         PutValToDispBf( Apm_ForLed[1], DispBufnnz+4 );
         PutValToDispBf(Apm_ForLed[0] , DispBufnnz+0 ) ;      
         
@@ -1628,26 +1645,40 @@ for(;;)
 
       OSSemPend(OSSemMotors,0,&err);
      
-     		  	  // 200步   2细分  apm  0.1
-		  	  	 //  T (us)= 1x1000x1000 /  ( apm/10 / 60 * 200 *2 )   = 6*1000*1000/40 /apm  = 150 *1000 /apm  
-		  	  	 if( Coldw.ApmCt[6]  > 3 )
+     		  	  // 200步   2细分  apm  0.1     x*50us
+		  	  	 //  T (us)= 1x1000x1000 /  ( apm/10 / 60 * 200 *2 ) /50   = 600*1000*1000/400/50/apm  = 30000 /apm  
+	     		 
+	     		  // 400步   2细分  apm       x*50us
+		  	  	 //  T (us)= 1x1000x1000 /  ( apm/ 60 * 400 *2 ) /50   = 60*1000*1000/800/50/apm  = 1500 /apm  	  	  	 
+		  	  	 
+//		  	  	 if( Coldw.ApmCt[6]  > 3 )  //0.3apm
+//		  	  	 	{
+//		  	  	                 TempUs =  30000 /  Coldw.ApmCt[6];
+//		  	  	               }
+//		  	  	else{
+//		  	  		            TempUs = 10000 ;  //500ms 脉冲     2/200/2   * 60  = 0.3    apm
+//		  	  	      }
+//		  	  	if (  TempUs < 5 )    TempUs  = 5;   //250us      4000/200/2 *60  =  600.0  apm
+ 		  	  	
+ 		  	  	 if( Coldw.ApmCt[6]  >=1 )  // 1apm
 		  	  	 	{
-		  	  	                 TempUs =  150000 /  Coldw.ApmCt[6];
+		  	  	                 TempUs =  1500 /  Coldw.ApmCt[6];
 		  	  	               }
 		  	  	else{
-		  	  		            TempUs = 5000 ;  //0.1hz
+		  	  		            TempUs = 1500 ;  //1500ms 脉冲     66/400/2   * 60  = 0.5    apm
 		  	  	      }
-		  	  	if (  TempUs < 5 )    TempUs  = 5;
-     
+		  	  	if (  TempUs < 5 )    TempUs  = 5;   //250us      4000/400/2 *60  =  300  apm    
      
      	if(  FlagRuningnny >=1  )   //控制 34 步进电机
 		  	  {
 		  	  	 //3 #步进电机     PulseCircleSet=20;//20;		//20*50us  = 0.001s
 		  	  	 
 
-		  	  	  
-		  		StepMot[2].PulseCircleSet =  TempUs ;  //fast
-		  		StepMotRun(  2  , 6000  );
+		  	  	  if( Coldw.ApmCt[6]  >=1 ) 
+		  	  	  	{
+		  		       StepMot[2].PulseCircleSet =  TempUs ;  //fast
+		  		      StepMotRun(  2  , 6000  );
+		  	         }
 		  		
 		  			 //4 #步进电机
 		  		StepMot[3].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
@@ -1664,8 +1695,11 @@ for(;;)
 		  if(FlagRuningnnz >= 1 )  //控制 12  步进电机
 		  	  {
 		  	  	  //1 #步进电机
-		  	  StepMot[0].PulseCircleSet =  TempUs;  //fast
-		  		StepMotRun(  0 , 6000 );
+		  	  	  if( Coldw.ApmCt[6]  >=1 ) 
+		  	  	  	{
+		  	        StepMot[0].PulseCircleSet =  TempUs;  //fast
+		  		    StepMotRun(  0 , 6000 );
+		  	     }
 		  		
 		  		 //2 #步进电机	  	
 		  		StepMot[1].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
