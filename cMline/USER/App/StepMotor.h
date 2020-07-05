@@ -22,10 +22,10 @@
 //步进电机
 struct step_motor{
 
-signed   int   Position16;        //步进电机脉冲表示绝对位置，带符号
+signed  long  int   Position16;        //步进电机脉冲表示绝对位置，带符号
 unsigned int   PulseCircleSet;		//2000*50us  = 0.1s   脉冲输出速度控制 设置值
 unsigned int   PulseCircleCount;  //StepMot1.PulseCircleSet;   脉冲输出速度控制
-unsigned int   PulseCount;
+unsigned long int   PulseCount;
 unsigned char  Enable;
 unsigned char  ClkStatus;
 
@@ -45,7 +45,7 @@ void StepMoterPulseHandler(void);
 //step_count>0  --->  向前 MOTOR_STATUS_FORWORD   
 //step_count<0  --->  向后 MOTOR_STATUS_BACKWORD 
 
-void StepMotRun( unsigned char chs , signed int step_count);
+void StepMotRun( unsigned char chs , signed long int step_count);
 
 void StepMotStop(unsigned char chs);
 

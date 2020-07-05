@@ -39,8 +39,13 @@ unsigned char EventTimeLed=0;
 
 
 ////////////////////////////////////////////
-#define   KEY_BIT_STOP    0x00800000
-#define   KEY_BIT_RUN     0x00400000
+#define   KEY_BIT_STOP                0x00800000
+#define   KEY_BIT_RUN                 0x00400000
+#define   KEY_BIT_xxx                   0x00200000
+#define   KEY_BIT_AUTO_BAK   0x00100000
+#define   KEY_BIT_SLOW              0x00080000
+
+
 
 unsigned long ShiftKeyCurnny;   //显示板键盘当前值
 unsigned long ShiftKeyBnny,ShiftKeyCnny;
@@ -472,11 +477,11 @@ temp16 =  Stm32IdSum6 ;
 #endif	
 
 //                Stm32IdSum6 
-//  		  	  #if CONFIG_CHECK_DEVICE_ID	
-//  		  	  	
-//  		     Stm32IdSum6    = GetStm32F103_DeviceId_Sum6();  
-//  		      
-//  		      #endif
+  		  	  #if CONFIG_CHECK_DEVICE_ID	
+  		  	  	
+  		     Stm32IdSum6    = GetStm32F103_DeviceId_Sum6();  
+  		      
+  		      #endif
 
 
 
@@ -796,9 +801,17 @@ void KeyProcess( uchar *curk,uchar *old)
 
 void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
 {
+	INT8U err;
+	
  if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
  	  {
      	FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
+     	OSSemPend(OSSemMotors,0,&err);
+     	//3 #步进电机   
+     	 //StepMotStop( 2 ) ;
+     	//4 #步进电机  
+     	StepMotStop( 3 ) ;
+     	OSSemPost(OSSemMotors);		
  	  }
  else{
  	   if ( KEY_BIT_RUN ==  (*curl)  )
@@ -806,14 +819,42 @@ void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
  	  	    FlagRuningnny = 1 ;   //控制 34 6 BLDC电机   34 步进电机
  	       }
  	    }
+ 
+ OSSemPend(OSSemMotors,0,&err);
+ //4 步进电机  动作  一键退刀
+  if (  KEY_BIT_AUTO_BAK ==  (*curl)  )	
+  	   {
+  		 //4 #步进电机
+         if (  KEY_BIT_AUTO_BAK!=  (*oldl)  )	
+         	{
+		  		StepMot[3].PulseCircleSet = 20;  //fast
+		  		StepMotRun(  3 ,16*400 );  
+		  		}
+  	    }
+  
+  //点动进刀	    
+   if (  KEY_BIT_SLOW ==  (*curl)  )		    
+ 	    {
+  		 //4 #步进电机   StepMotStop( 3 ) ;
+
+		  		StepMot[3].PulseCircleSet = 20;  //slow
+		  		StepMotRun(  3 ,-60 ); 	    	
+ 	    }
+OSSemPost(OSSemMotors);	    
+ 	    
 }
 
 
 void KeyShiftProcessnnz( unsigned  long int  *curl , unsigned  long int*oldl )
 {
+	INT8U err;
+	
  if ( ( KEY_BIT_STOP & (*curl) ) != 0 )
  	  {
   	  	FlagRuningnnz = 0 ;   //控制 12 5 BLDC电机   12 步进电机
+  	  	OSSemPend(OSSemMotors,0,&err);
+  	  	StepMotStop( 1 );	  //2 #步进电机	 
+  	  	OSSemPost(OSSemMotors);		
  	  }
  else{
  	   if ( KEY_BIT_RUN ==  (*curl)  )
@@ -821,6 +862,29 @@ void KeyShiftProcessnnz( unsigned  long int  *curl , unsigned  long int*oldl )
  	  	    FlagRuningnnz = 1 ;   //控制 34 6 BLDC电机   34 步进电机
  	       }
  	    }
+			
+ OSSemPend(OSSemMotors,0,&err);
+ //2 步进电机  动作  一键退刀
+  if (  KEY_BIT_AUTO_BAK ==  (*curl)  )	
+  	   {
+  		 //2 #步进电机
+            if (  KEY_BIT_AUTO_BAK  !=  (*oldl)  )	
+         	      {
+		  		   StepMot[1].PulseCircleSet = 20;  //fast
+		  		   StepMotRun(  1 ,16*400 );
+		  		  }
+  	    }
+  
+  //点动进刀	    
+   if (  KEY_BIT_SLOW ==  (*curl)  )		    
+ 	    {
+  		 //2 #步进电机   StepMotStop( 1 ) ;
+
+		  		StepMot[1].PulseCircleSet = 20;  //slow
+		  		StepMotRun(  1 ,-60 ); 	    	
+ 	    }
+OSSemPost(OSSemMotors);			
+			
 }
 
 
@@ -1686,7 +1750,7 @@ for(;;)
 		  	  }
 		  else{
 		  		StepMotStop(2);  	 //3 #步进电机
-		  		StepMotStop(3);  	 //4 #步进电机
+		  		//StepMotStop(3);  	 //4 #步进电机
 		      }  
 		      	
 		      	
@@ -1707,7 +1771,7 @@ for(;;)
 		  	  }
 		  else{
 		  		StepMotStop( 0 );  //1 #步进电机
-		  		StepMotStop( 1 );	  //2 #步进电机	  	
+		  		//StepMotStop( 1 );	  //2 #步进电机	  	
 		      } 
      OSSemPost(OSSemMotors);
 

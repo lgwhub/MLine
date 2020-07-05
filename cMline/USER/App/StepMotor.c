@@ -316,9 +316,9 @@ void StepMotStop(unsigned char chs)
 //step_count>0  --->  向前 MOTOR_STATUS_FORWORD   
 //step_count<0  --->  向后 MOTOR_STATUS_BACKWORD  
 
-void StepMotRun( unsigned char chs , signed int step_count)
+void StepMotRun( unsigned char chs , signed  long int step_count)
 {
-	unsigned  int  step16;
+	unsigned   long int  step16;
 	
   StepMot[chs].Enable=0;
   SwitchBitEN(chs,1);//ClrBitEN1;  ????
@@ -328,12 +328,12 @@ void StepMotRun( unsigned char chs , signed int step_count)
 		{
 			StepMot[chs].Direction=MOTOR_STATUS_FORWORD;  //方向
 		  SwitchBitCW(chs,0);//ClrBitCW1;
-		  step16=(unsigned int)step_count;
+		  step16=(unsigned  long int)step_count;
 		}
 	else{
 		  StepMot[chs].Direction=MOTOR_STATUS_BACKWORD;
 			SwitchBitCW(chs,1);//SetBitCW1;
-			step16=(unsigned int)(-step_count);
+			step16=(unsigned  long int)(-step_count);
 			}
 			
 //OSTimeDly(OS_TICKS_PER_SEC/20);	    //延时0.05秒
