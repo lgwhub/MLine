@@ -827,8 +827,8 @@ void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
   		 //4 #步进电机
          if (  KEY_BIT_AUTO_BAK!=  (*oldl)  )	
          	{
-		  		StepMot[3].PulseCircleSet = 20;  //fast
-		  		StepMotRun(  3 ,16*400 );  
+		  		StepMot[3].PulseCircleSet = 5;  //fast
+		  		StepMotRun(  3 ,18*400 );  
 		  		}
   	    }
   
@@ -837,7 +837,7 @@ void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
  	    {
   		 //4 #步进电机   StepMotStop( 3 ) ;
 
-		  		StepMot[3].PulseCircleSet = 20;  //slow
+		  		StepMot[3].PulseCircleSet = 5;  //slow
 		  		StepMotRun(  3 ,-60 ); 	    	
  	    }
 OSSemPost(OSSemMotors);	    
@@ -870,8 +870,8 @@ void KeyShiftProcessnnz( unsigned  long int  *curl , unsigned  long int*oldl )
   		 //2 #步进电机
             if (  KEY_BIT_AUTO_BAK  !=  (*oldl)  )	
          	      {
-		  		   StepMot[1].PulseCircleSet = 20;  //fast
-		  		   StepMotRun(  1 ,16*400 );
+		  		   StepMot[1].PulseCircleSet = 5;  //fast
+		  		   StepMotRun(  1 ,18*400 );
 		  		  }
   	    }
   
@@ -880,7 +880,7 @@ void KeyShiftProcessnnz( unsigned  long int  *curl , unsigned  long int*oldl )
  	    {
   		 //2 #步进电机   StepMotStop( 1 ) ;
 
-		  		StepMot[1].PulseCircleSet = 20;  //slow
+		  		StepMot[1].PulseCircleSet = 5;  //slow
 		  		StepMotRun(  1 ,-60 ); 	    	
  	    }
 OSSemPost(OSSemMotors);			
