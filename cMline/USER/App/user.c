@@ -623,24 +623,31 @@ for(;;)
 		      } 		  	
 		  	
 		  	//软启动  软加速  软减速  速度步进量
-		  	#define APM_SET_ADD25  200
-		  	#define APM_SET_DEC25  200
-
-
+		  	
+		  	 #define  SOFT_START   1
+		  	 
+		  	 //1234电机
+		  	#define APM_SET_ADD1234  ( 200 )
+		  	#define APM_SET_DEC1234  200
+            
+            
+           
+            #if  SOFT_START
                     //   ApmSetBuf     --->>>>  ApmSetVal    ..........
-        for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
+    
+        for ( i = 0 ; i <4 ; i++ )			
 			        {
-                     if(   (  ApmSetVal [ i ]     +    APM_SET_ADD25   )        <            ApmSetBuf [i]    )  // s < a-100
+                     if(   (  ApmSetVal [ i ]     +    APM_SET_ADD1234   )        <            ApmSetBuf [i]    )  // s < a-100
                  	      { 
-                 	   	   ApmSetVal [ i ]        +=   APM_SET_ADD25 ;                      // +100
+                 	   	   ApmSetVal [ i ]        +=   APM_SET_ADD1234 ;                      // +100
                  	      }
                  else if ( ApmSetVal [ i ]       <      ApmSetBuf[i]    )     // +++++
                  	       {
                            ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
                            }
-                 else if (  ApmSetVal [ i ]            >             (  ApmSetBuf[i]  +  APM_SET_DEC25  )     )
+                 else if (  ApmSetVal [ i ]            >             (  ApmSetBuf[i]  +  APM_SET_DEC1234  )     )
      	                  {
-                 	   	   ApmSetVal [ i ]        -=      APM_SET_DEC25;
+                 	   	   ApmSetVal [ i ]        -=      APM_SET_DEC1234;
                  	      }
                  else{
                              ApmSetVal [ i ]       =      ApmSetBuf[i] ;
@@ -653,11 +660,17 @@ for(;;)
      	        //Coldw.ApmDuty [ i ]   =    ApmSetVal [ i ];    //显示
      	
               }    
-
+   #else
+            for ( i = 0 ; i < 4 ; i++ )			
+			        {
+                 
+                           ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
+                      }
+   #endif
 
 
                      
-          for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
+          for ( i = 0 ; i < 4 ; i++ )			
 			    {
                         if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
                         	            {
@@ -666,9 +679,86 @@ for(;;)
 			                                 }
 			          else        {//设定值太小了，或者关闭
 			          	                  HeatPidBuf[i].Qx   =  0;
-			          	                  HeatPidBuf[i].Ix     =  0;
+			          	                  //HeatPidBuf[i].Ix     =  0;
+			          	                  //HeatPidBuf[i].SumError  = 0;               
+				                           if(   Coldw.Pidx[0].Integral   ==   0   )
+			                                        {
+		                                             HeatPidBuf[i].  SumError =  0;
+                                                      }
+		                                  else{
+		                                           HeatPidBuf[i]. SumError     =    100   /   (Coldw.Pidx[0].Integral  );  //100初始化电压
+                                                     }		 		          	                              
 				                           }      
 			     }
+			     
+			     //5656565656
+			     	  	 //56电机
+		  	#define APM_SET_ADD56  ( 13 )
+		  	#define APM_SET_DEC56  200
+            
+            
+           
+            #if  SOFT_START
+                    //   ApmSetBuf     --->>>>  ApmSetVal    ..........
+    
+        for ( i = 4 ; i <6 ; i++ )			
+			        {
+                     if(   (  ApmSetVal [ i ]     +    APM_SET_ADD56   )        <            ApmSetBuf [i]    )  // s < a-100
+                 	      { 
+                 	   	   ApmSetVal [ i ]        +=   APM_SET_ADD56 ;                      // +100
+                 	      }
+                 else if ( ApmSetVal [ i ]       <      ApmSetBuf[i]    )     // +++++
+                 	       {
+                           ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
+                           }
+                 else if (  ApmSetVal [ i ]            >             (  ApmSetBuf[i]  +  APM_SET_DEC56  )     )
+     	                  {
+                 	   	   ApmSetVal [ i ]        -=      APM_SET_DEC56;
+                 	      }
+                 else{
+                             ApmSetVal [ i ]       =      ApmSetBuf[i] ;
+                          }
+                 
+                  if( ApmSetVal [ i ] > 30000 )        
+                      {
+                      	ApmSetVal [ i ] = 30000;  
+                      } 
+     	        //Coldw.ApmDuty [ i ]   =    ApmSetVal [ i ];    //显示
+     	
+              }    
+   #else
+            for ( i = 4 ; i <6 ; i++ )			
+			        {
+                 
+                           ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
+                      }
+   #endif
+
+
+                     
+          for ( i = 4 ; i <6 ; i++ )			
+			    {
+                        if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
+                        	            {
+                                         HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] ; //基本上多余 
+			                                   PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]      ); //一般是error = SetPoint - NewPoint ,这里反过来
+			                                 }
+			          else        {//设定值太小了，或者关闭
+			          	                  HeatPidBuf[i].Qx   =  0;
+			          	                  //HeatPidBuf[i].Ix     =  0;
+			          	                  //HeatPidBuf[i].SumError  = 0;               
+				                           if(   Coldw.Pidx[0].Integral   ==   0   )
+			                                        {
+		                                             HeatPidBuf[i].  SumError =  0;
+                                                      }
+		                                  else{
+		                                           HeatPidBuf[i]. SumError     =  0; //  100   /   (Coldw.Pidx[0].Integral  );  //100初始化电压
+                                                     }		 		          	                              
+				                           }      
+			     }
+			     //5656565656			     
+			     
+			     
 	     		  	//软启动  软加速  软减速  步进量
 		  	#define DLBC_STEP_ADD25  (10+190)
 		  	#define DLBC_STEP_DEC25  (10+190)
@@ -701,8 +791,10 @@ for(;;)
                      
 			     
     Coldw.MONI_PX1 = HeatPidBuf[0].Px;  	   
-    Coldw.MONI_IX1 = HeatPidBuf[0].Ix;  	       
-    Coldw.MONI_DX1 = HeatPidBuf[0].Dx;  	        
+    Coldw.MONI_IX1 = HeatPidBuf[0].Ix;  	
+    //Coldw.MONI_IX1 = HeatPidBuf[0].SumError ;
+    Coldw.MONI_DX1 = HeatPidBuf[0].SumError ;   
+    //Coldw.MONI_DX1 = HeatPidBuf[0].Dx;  	        
     Coldw.MONI_QX1 = HeatPidBuf[0].Qx; //0.14;           
                      
 	   TIM_SetCompare1(TIM5, BLDC_PwmVal[0]);
@@ -1784,6 +1876,10 @@ for(;;)
 	     		 
 	     		  // 400步   2细分  apm       x*50us
 		  	  	 //  T (us)= 1x1000x1000 /  ( apm/ 60 * 400 *2 ) /50   = 60*1000*1000/800/50/apm  = 1500 /apm  	  	  	 
+	
+		     		  // 400步   8细分  apm       x*50us
+		  	  	 //  T (us)= 1x1000x1000 /  ( apm/ 60 * 400 *8 ) /50   = 60*1000*1000/3200/50/apm  = 375 /apm  	 
+	
 		  	  	 
 //		  	  	 if( Coldw.ApmCt[6]  > 3 )  //0.3apm
 //		  	  	 	{
@@ -1796,10 +1892,10 @@ for(;;)
  		  	  	
  		  	  	 if( Coldw.ApmCt[6]  >=1 )  // 1apm
 		  	  	 	{
-		  	  	                 TempUs =  1500 /  Coldw.ApmCt[6];
+		  	  	                 TempUs =  375 /  Coldw.ApmCt[6];
 		  	  	               }
 		  	  	else{
-		  	  		            TempUs = 1500 ;  //1500ms 脉冲     66/400/2   * 60  = 0.5    apm
+		  	  		            TempUs = 375 ;  //1500ms 脉冲     66/400/2   * 60  = 0.5    apm
 		  	  	      }
 		  	  	if (  TempUs < 5 )    TempUs  = 5;   //250us      4000/400/2 *60  =  300  apm    
      
