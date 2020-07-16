@@ -807,10 +807,10 @@ void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
  	  {
      	FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
      	OSSemPend(OSSemMotors,0,&err);
-     	//3 #步进电机   
-     	 //StepMotStop( 2 ) ;
-     	//4 #步进电机  
-     	StepMotStop( 3 ) ;
+ 
+     	 //StepMotStop( 2 ) ;     	//3 #步进电机  
+
+     	StepMotStop( 3 ) ;     	//4 #步进电机  
      	OSSemPost(OSSemMotors);		
  	  }
  else{
@@ -821,23 +821,21 @@ void KeyShiftProcessnny( unsigned  long int  *curl , unsigned  long int*oldl )
  	    }
  
  OSSemPend(OSSemMotors,0,&err);
- //4 步进电机  动作  一键退刀
+ 
   if (  KEY_BIT_AUTO_BAK ==  (*curl)  )	
   	   {
-  		 //4 #步进电机
-         if (  KEY_BIT_AUTO_BAK!=  (*oldl)  )	
+  
+         if (  KEY_BIT_AUTO_BAK!=  (*oldl)  )			 //4 #步进电机
          	{
-		  		StepMot[3].PulseCircleSet = 5;  //fast
+		  		StepMot[3].PulseCircleSet = 20;  //fast   //4 步进电机  动作  一键退刀
 		  		StepMotRun(  3 ,18*400 );  
 		  		}
   	    }
   
-  //点动进刀	    
+    
    if (  KEY_BIT_SLOW ==  (*curl)  )		    
  	    {
-  		 //4 #步进电机   StepMotStop( 3 ) ;
-
-		  		StepMot[3].PulseCircleSet = 5;  //slow
+		  		StepMot[3].PulseCircleSet = 20;  //slow  	  //点动进刀		 //4 #步进电机   StepMotStop( 3 ) ;
 		  		StepMotRun(  3 ,-60 ); 	    	
  	    }
 OSSemPost(OSSemMotors);	    
@@ -864,23 +862,22 @@ void KeyShiftProcessnnz( unsigned  long int  *curl , unsigned  long int*oldl )
  	    }
 			
  OSSemPend(OSSemMotors,0,&err);
- //2 步进电机  动作  一键退刀
+
   if (  KEY_BIT_AUTO_BAK ==  (*curl)  )	
   	   {
-  		 //2 #步进电机
+ 
             if (  KEY_BIT_AUTO_BAK  !=  (*oldl)  )	
          	      {
-		  		   StepMot[1].PulseCircleSet = 5;  //fast
+		  		   StepMot[1].PulseCircleSet = 20;  //fast    //2 步进电机  动作  一键退刀
 		  		   StepMotRun(  1 ,18*400 );
 		  		  }
   	    }
   
-  //点动进刀	    
+
    if (  KEY_BIT_SLOW ==  (*curl)  )		    
  	    {
-  		 //2 #步进电机   StepMotStop( 1 ) ;
 
-		  		StepMot[1].PulseCircleSet = 5;  //slow
+		  		StepMot[1].PulseCircleSet = 20;  //slow     //点动进刀	    
 		  		StepMotRun(  1 ,-60 ); 	    	
  	    }
 OSSemPost(OSSemMotors);			
@@ -1166,7 +1163,80 @@ INT8U err;
 				    }	
 }
 
+////////////////////////////////////////////////
 
+void  Task_Stk_Check(void *pdata)
+{
+	/*
+INT8U	err;
+OS_STK_DATA data;
+
+uchar buf[28];
+uint32 time32;
+pdata = pdata;                          	 	// 避免编译警告
+
+	for(;;)
+		{
+		 OSTimeDly(OS_TICKS_PER_SEC*30);	     //延时30秒
+		if(g_sUartFormat.current==UART_USER_FORMAT_TEST)	//测试方式	
+			{
+			if(FlagStkCheck)
+				{
+			OSSemPend(OSSemUartUSER,0,&err);
+				SendText_USER("StkChk:\r\n");
+
+			err	=	OSTaskStkChk(PRIO_TaskTCP,&data);
+			_SendOSStkCheck("TaskTCP",data);			
+			err	=	OSTaskStkChk(PRIO_TaskAlmSend,&data);
+			_SendOSStkCheck("TaskAlmSend",data);
+			
+			err	=	OSTaskStkChk(PRIO_Task_ModemProcess,&data);
+			_SendOSStkCheck("ModemProcess",data);
+	
+
+	
+	
+			err	=	OSTaskStkChk(PRIO_TaskAutoSend,&data);
+			_SendOSStkCheck("TaskAutoSend",data);
+			err	=	OSTaskStkChk(PRIO_TaskPollSec,&data);
+			_SendOSStkCheck("TaskPollSec",data);
+			
+			err	=	OSTaskStkChk(PRIO_TaskAdc,&data);
+			_SendOSStkCheck("TaskAdc",data);		
+					
+			err	=	OSTaskStkChk(PRIO_TaskInput,&data);
+			_SendOSStkCheck("TaskInput",data);
+	
+			err	=	OSTaskStkChk(PRIO_TaskRingCheck,&data);
+			_SendOSStkCheck("RingCheck",data);
+			
+			err	=	OSTaskStkChk(PRIO_TaskStopRingStep,&data);
+			_SendOSStkCheck("StopRingStep",data);
+	
+			err	=	OSTaskStkChk(PRIO_TaskUartUserProcess,&data);
+			_SendOSStkCheck("Uart0Process",data);
+	
+			err	=	OSTaskStkChk(PRIO_TaskLED_Statu1,&data);
+			_SendOSStkCheck("LED_Statu1",data);
+	
+			err	=	OSTaskStkChk(PRIO_TaskLED_Event1,&data);
+			_SendOSStkCheck("LED_Event1",data);
+			
+			err	=	OSTaskStkChk(PRIO_TaskTimeOut,&data);
+			_SendOSStkCheck("TaskTimeOut",data);
+	
+	
+			time32=OSTimeGet();
+			MakeValAsc32("OSTime:",time32/200,"\r\n\0",buf);
+			SendText_USER(buf);
+			OSSemPost(OSSemUartUSER);
+			}
+		}
+				
+		
+		}	
+*/	
+}
 
 ////////////////////////////////////////////////
 

@@ -544,6 +544,33 @@ void DMA1_Channel5_IRQHandler(void)
 }
 
 
+
+
+
+
+
+#if	CONFIG_EXTI
+
+//#define KEY_BUTTON_EXTI_LINE        EXTI_Line8
+//#define KEY_BUTTON_PORT_SOURCE      GPIO_PortSourceGPIOG
+//#define KEY_BUTTON_PIN_SOURCE       GPIO_PinSource8
+//#define KEY_BUTTON_IRQn             EXTI9_5_IRQn
+
+void EXTI9_5_IRQHandler(void)
+{
+  if(EXTI_GetITStatus(KEY_BUTTON_EXTI_LINE) != RESET)
+  {
+    /* Toggle LED1 */
+  //   STM_EVAL_LEDToggle(LED1);
+
+    /* Clear the Key Button EXTI line pending bit */
+    EXTI_ClearITPendingBit(KEY_BUTTON_EXTI_LINE);
+  }
+}
+#endif
+
+
+
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

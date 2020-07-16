@@ -172,7 +172,7 @@ GPIO_Init(GPIOB,&GPIO_InitStructure);
  GPIO_Init(GPIOD,&GPIO_InitStructure);  
  
 //  ‰»Î
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11;
  GPIO_InitStructure.GPIO_Mode =  GPIO_Mode_IPU;
  GPIO_Init(GPIOD,&GPIO_InitStructure);   
   
