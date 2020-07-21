@@ -234,9 +234,14 @@ for(;;)
                   case 2:
                   case 3:                  	
                   	//  max 10000   apm      2x3
-                  Apm_ForLed[ i ]   = temp32 / 20;    // Apm_FREQ[ i ]  / 20;  //除以20
-                  Coldw.ApmGt[i]  =  (float)temp32 / 2 ;//(float)Apm_FREQ[ i ]/2; //除以2  	 
-                                
+//                  Apm_ForLed[ i ]   = temp32 / 20;    // Apm_FREQ[ i ]  / 20;  //除以20
+//                  Coldw.ApmGt[i]  =  (float)temp32 / 2 ;//(float)Apm_FREQ[ i ]/2; //除以2  	 
+
+//                  1、2、3、4号电机换成这样的了，输入6000转，
+//                 电机转速快了一倍 (10000  + 2000   )  转，显示也是6000转，需要改成同步
+//               改成243 244 610 611 625 626 行
+                  Apm_ForLed[ i ]   = temp32 / 10;    // Apm_FREQ[ i ]  / 20;  //除以20
+                  Coldw.ApmGt[i]  =  (float)temp32  ;//(float)Apm_FREQ[ i ]/2; //除以2  	                            
                                  
                   break;
                   
@@ -600,8 +605,11 @@ for(;;)
 
 		  if( FlagRuningnny  >=  1 )   //控制 34 6 BLDC电机
 		  	  {
-		  		ApmSetBuf[2] = ( unsigned short int ) Coldw.ApmCt[2]  * 2;  //3
-		  		ApmSetBuf[3] = ( unsigned short int )  Coldw.ApmCt[3]  * 2;  //4
+//		  		ApmSetBuf[2] = ( unsigned short int ) Coldw.ApmCt[2]  * 2;  //3
+//		  		ApmSetBuf[3] = ( unsigned short int )  Coldw.ApmCt[3]  * 2;  //4
+		  		ApmSetBuf[2] = ( unsigned short int ) Coldw.ApmCt[2]  ;  //3
+		  		ApmSetBuf[3] = ( unsigned short int )  Coldw.ApmCt[3]  ;  //4		  		
+		  		
 		  		ApmSetBuf[5] = ( unsigned short int ) Coldw.ApmCt[5];  //6
 		  	  }
 		  else{
@@ -612,8 +620,11 @@ for(;;)
 		      	
 		  if( FlagRuningnnz  >=  1 )  //控制 12 5 BLDC电机
 		  	  {
-		  		ApmSetBuf[0] = ( unsigned short int ) Coldw.ApmCt[0]  * 2 ;  //1
-		  		ApmSetBuf[1] = ( unsigned short int ) Coldw.ApmCt[1]  * 2 ;  //2
+//		  		ApmSetBuf[0] = ( unsigned short int ) Coldw.ApmCt[0]  * 2 ;  //1
+//		  		ApmSetBuf[1] = ( unsigned short int ) Coldw.ApmCt[1]  * 2 ;  //2
+		  		ApmSetBuf[0] = ( unsigned short int ) Coldw.ApmCt[0]  ;  //1
+		  		ApmSetBuf[1] = ( unsigned short int ) Coldw.ApmCt[1]  ;  //2		
+		  		  		
 		  		ApmSetBuf[4] = ( unsigned short int ) Coldw.ApmCt[4];  //5
 		  	  }
 		  else{
