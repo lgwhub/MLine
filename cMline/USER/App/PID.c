@@ -28,12 +28,18 @@ void PID_ParaInit(void)
 
 
 	 
-	 Coldw.Pidx[0].Proportion     =       0.00031001;//20;//3;          //比例常数
-	 Coldw.Pidx[0].Integral         =       0.00031001;//0.02001;          //	 
-	 Coldw.Pidx[0].Derivative     =       0.00002;//22;//55;//50;//2;//1;
+//	 Coldw.Pidx[0].Proportion     =       0.00031001;//20;//3;          //比例常数
+//	 Coldw.Pidx[0].Integral         =       0.00031001;//0.02001;          //	 
+//	 Coldw.Pidx[0].Derivative     =       0.00002;//22;//55;//50;//2;//1;
+//	 Coldw.Pidx[0].QMax           =       MAX_PID_INTEGRAL_1;
+//   Coldw.Pidx[0].QMin             =        MIN_PID_INTEGRAL_1;  
+   
+   
+	 Coldw.Pidx[0].Proportion     =       0.301;//20;//3;          //比例常数
+	 Coldw.Pidx[0].Integral         =       0.00701;//0.02001;          //	 
+	 Coldw.Pidx[0].Derivative     =       0.000;//22;//55;//50;//2;//1;
 	 Coldw.Pidx[0].QMax           =       MAX_PID_INTEGRAL_1;
-   Coldw.Pidx[0].QMin             =        MIN_PID_INTEGRAL_1;  
-		
+   Coldw.Pidx[0].QMin             =        MIN_PID_INTEGRAL_1;  		
 		
 //	 Coldw.Pidx[1].Proportion  =   60;//150;          //比例常数
 //	 Coldw.Pidx[1].Integral    =   2;          //
@@ -102,13 +108,13 @@ void PID_Calc(  PID_ParaStruct  *types  ,  PidBufStruct  *pidch  ,  float NowPoi
 
                        temp =      types -> Integral    *    pidch -> SumError  ;
         
-                        if(   temp     >     types -> QMax   )
+                        if(   temp     >    MAX_PID_INTEGRAL_1   )
 		                            {
-		                               pidch -> SumError     =     types -> QMax   /   (types->Integral);
+		                               pidch -> SumError     =     MAX_PID_INTEGRAL_1  /   (types->Integral);
 		                              }
-                    else if (     temp    <      types  -> QMin   )
+                    else if (     temp    <     MIN_PID_INTEGRAL_1   )
                                  {
-		                        pidch -> SumError    =     types -> QMin  /  (  types -> Integral  );
+		                        pidch -> SumError    =     MIN_PID_INTEGRAL_1  /  (  types -> Integral  );
 		                      }
                     }		    
 		    
@@ -124,12 +130,12 @@ void PID_Calc(  PID_ParaStruct  *types  ,  PidBufStruct  *pidch  ,  float NowPoi
    
     total                  =           pidch -> Px    +     pidch -> Ix    +    pidch -> Dx;
 
-    if(  total     <     types -> QMin  )
-    	   {       pidch -> Qx      =      (signed long int) types -> QMin;
+    if(  total     <     MIN_PID_RESOULT_1  )
+    	   {       pidch -> Qx      =      (signed long int) MIN_PID_RESOULT_1;
     	   }
-    else if(    total     >    types -> QMax )
+    else if(    total     >   MAX_PID_RESOULT_1 )
     	  {
-    		pidch -> Qx       =    (signed long int) types -> QMax;
+    		pidch -> Qx       =    (signed long int) MAX_PID_RESOULT_1;
     	  }
     else {
     	    pidch->Qx   = (signed long int)total;

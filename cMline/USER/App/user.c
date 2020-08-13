@@ -26,8 +26,9 @@ OS_EVENT *OSSemProcCmdx;
 
 
 
-
-
+//56高速电机
+#define  MaxRpm_Motor1234     12505
+#define  MaxRpm_Motor56         25005
 
 
 unsigned char lAddressKey;  //拨码开关PB12-PB15，值，最低4位
@@ -635,15 +636,29 @@ for(;;)
 		  	
 		  	//软启动  软加速  软减速  速度步进量
 		  	
-		  	 #define  SOFT_START   1
+		  	 #define  SOFT_START1   0
 		  	 
 		  	 //1234电机
 		  	#define APM_SET_ADD1234  ( 200 )
 		  	#define APM_SET_DEC1234  200
-            
-            
            
-            #if  SOFT_START
+             #define   Per_Set_Add1234     ( 0.005 )
+             for ( i = 0 ; i <4 ; i++ )			
+			        {
+                     if(    ApmSetVal [ i ]              <            ( ApmSetBuf [i]  *( 1 -  Per_Set_Add1234  )   )  ) //
+                 	           { 
+                 	   	       ApmSetVal [ i ]        +=   ApmSetBuf [i]  *( Per_Set_Add1234  )  ;                      // 
+                 	          }
+                 else
+                 	       {
+                               ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
+                           }
+                           
+                          }
+             
+             
+           
+            #if  SOFT_START1
                     //   ApmSetBuf     --->>>>  ApmSetVal    ..........
     
         for ( i = 0 ; i <4 ; i++ )			
@@ -685,8 +700,8 @@ for(;;)
 			    {
                         if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
                         	            {
-                                         HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] ; //基本上多余 
-			                                   PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]      ); //一般是error = SetPoint - NewPoint ,这里反过来
+                                         HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] * 1000 / MaxRpm_Motor1234  ; //基本上多余 
+			                                   PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 1000 / MaxRpm_Motor1234      ); //一般是error = SetPoint - NewPoint ,这里反过来
 			                                 }
 			          else        {//设定值太小了，或者关闭
 			          	                  HeatPidBuf[i].Qx   =  0;
@@ -707,9 +722,21 @@ for(;;)
 		  	#define APM_SET_ADD56  ( 13 )
 		  	#define APM_SET_DEC56  200
             
-            
+                         #define   Per_Set_Add56    ( 0.005 )
+             for ( i = 4 ; i <6 ; i++ )			
+			        {
+                     if(    ApmSetVal [ i ]              <            ( ApmSetBuf [i]  *( 1 -  Per_Set_Add56  )   )  ) //
+                 	           { 
+                 	   	       ApmSetVal [ i ]        +=   ApmSetBuf [i]  *( Per_Set_Add56  )  ;                      // 
+                 	          }
+                 else
+                 	       {
+                               ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
+                           }
+                           
+                          }
            
-            #if  SOFT_START
+            #if  SOFT_START1
                     //   ApmSetBuf     --->>>>  ApmSetVal    ..........
     
         for ( i = 4 ; i <6 ; i++ )			
@@ -751,8 +778,8 @@ for(;;)
 			    {
                         if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
                         	            {
-                                         HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] ; //基本上多余 
-			                                   PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i]      ); //一般是error = SetPoint - NewPoint ,这里反过来
+                                         HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] * 1000 / MaxRpm_Motor56 ; //基本上多余 
+			                                   PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 1000 / MaxRpm_Motor56      ); //一般是error = SetPoint - NewPoint ,这里反过来
 			                                 }
 			          else        {//设定值太小了，或者关闭
 			          	                  HeatPidBuf[i].Qx   =  0;
@@ -769,12 +796,19 @@ for(;;)
 			     }
 			     //5656565656			     
 			     
-			     
+			      #define  SOFT_START2  1
 	     		  	//软启动  软加速  软减速  步进量
-		  	#define DLBC_STEP_ADD25  (10+190)
-		  	#define DLBC_STEP_DEC25  (10+190)
+		  	#define DLBC_STEP_ADD25  (100)
+		  	#define DLBC_STEP_DEC25  (100)
+		  	
+		
         for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
 			        {
+			        	
+			        	if(  HeatPidBuf[i].Qx  < 0 )  HeatPidBuf[i].Qx = 0;
+			        	
+			        	  #if  SOFT_START2
+			        	
                      if(   (  BLDC_PwmVal[ i ]  +  DLBC_STEP_ADD25   )  < HeatPidBuf[i].Qx    )  // s < a-100
                  	      { 
                  	   	   BLDC_PwmVal[ i ]  +=   DLBC_STEP_ADD25 ;                      // +100
@@ -790,7 +824,11 @@ for(;;)
                  else{
                       BLDC_PwmVal[ i ] =   HeatPidBuf[i].Qx   ;
                       }
-                 
+                      
+                  #else           
+                         BLDC_PwmVal[ i ] =   HeatPidBuf[i].Qx   ;
+                  #endif
+                  
                   if( BLDC_PwmVal[ i ] > 1000 )        
                       {
                       	BLDC_PwmVal[ i ] = 1000;  
@@ -799,7 +837,10 @@ for(;;)
      	        Coldw.ApmDuty [ i ]   =    BLDC_PwmVal[ i ];    //显示
      	
               }    
-                     
+
+          
+          
+          
 			     
     Coldw.MONI_PX1 = HeatPidBuf[0].Px;  	   
     Coldw.MONI_IX1 = HeatPidBuf[0].Ix;  	

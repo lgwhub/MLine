@@ -1,9 +1,11 @@
 #ifndef    _PID_INC_H   
 #define    _PID_INC_H
 
+#define MAX_PID_RESOULT_1      (1000)
+#define MIN_PID_RESOULT_1       (0)
 
-#define MAX_PID_INTEGRAL_1     (1000)
-#define MIN_PID_INTEGRAL_1      (0)
+#define MAX_PID_INTEGRAL_1     (900)
+#define MIN_PID_INTEGRAL_1      (-50)
 
 //#define MAX_PID_INTEGRAL_2     200
 //#define MIN_PID_INTEGRAL_2      (0)
