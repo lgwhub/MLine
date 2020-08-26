@@ -639,11 +639,14 @@ for(;;)
 		  	 #define  SOFT_START1   0
 		  	 
 		  	 //1234电机
-		  	#define APM_SET_ADD1234  ( 200 )
-		  	#define APM_SET_DEC1234  200
+
            
-             #define   Per_Set_Add1234     ( 0.005 )
-             for ( i = 0 ; i <4 ; i++ )			
+             #define   Per_Set_Add1234     ( 0.003 )
+
+           
+            #if  SOFT_START1
+                    //   ApmSetBuf     --->>>>  ApmSetVal    ..........
+                 for ( i = 0 ; i <4 ; i++ )			
 			        {
                      if(    ApmSetVal [ i ]              <            ( ApmSetBuf [i]  *( 1 -  Per_Set_Add1234  )   )  ) //
                  	           { 
@@ -653,31 +656,7 @@ for(;;)
                  	       {
                                ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
                            }
-                           
-                          }
-             
-             
-           
-            #if  SOFT_START1
-                    //   ApmSetBuf     --->>>>  ApmSetVal    ..........
-    
-        for ( i = 0 ; i <4 ; i++ )			
-			        {
-                     if(   (  ApmSetVal [ i ]     +    APM_SET_ADD1234   )        <            ApmSetBuf [i]    )  // s < a-100
-                 	      { 
-                 	   	   ApmSetVal [ i ]        +=   APM_SET_ADD1234 ;                      // +100
-                 	      }
-                 else if ( ApmSetVal [ i ]       <      ApmSetBuf[i]    )     // +++++
-                 	       {
-                           ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
-                           }
-                 else if (  ApmSetVal [ i ]            >             (  ApmSetBuf[i]  +  APM_SET_DEC1234  )     )
-     	                  {
-                 	   	   ApmSetVal [ i ]        -=      APM_SET_DEC1234;
-                 	      }
-                 else{
-                             ApmSetVal [ i ]       =      ApmSetBuf[i] ;
-                          }
+  
                  
                   if( ApmSetVal [ i ] > 30000 )        
                       {
@@ -719,57 +698,39 @@ for(;;)
 			     
 			     //5656565656
 			     	  	 //56电机
-		  	#define APM_SET_ADD56  ( 13 )
-		  	#define APM_SET_DEC56  200
+
             
-                         #define   Per_Set_Add56    ( 0.005 )
-             for ( i = 4 ; i <6 ; i++ )			
-			        {
-                     if(    ApmSetVal [ i ]              <            ( ApmSetBuf [i]  *( 1 -  Per_Set_Add56  )   )  ) //
-                 	           { 
-                 	   	       ApmSetVal [ i ]        +=   ApmSetBuf [i]  *( Per_Set_Add56  )  ;                      // 
-                 	          }
-                 else
-                 	       {
-                               ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
-                           }
-                           
-                          }
-           
-            #if  SOFT_START1
+                         #define   Per_Set_Add56    ( 0.003 )
+                     #if  SOFT_START1
                     //   ApmSetBuf     --->>>>  ApmSetVal    ..........
     
-        for ( i = 4 ; i <6 ; i++ )			
-			        {
-                     if(   (  ApmSetVal [ i ]     +    APM_SET_ADD56   )        <            ApmSetBuf [i]    )  // s < a-100
-                 	      { 
-                 	   	   ApmSetVal [ i ]        +=   APM_SET_ADD56 ;                      // +100
-                 	      }
-                 else if ( ApmSetVal [ i ]       <      ApmSetBuf[i]    )     // +++++
-                 	       {
-                           ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
-                           }
-                 else if (  ApmSetVal [ i ]            >             (  ApmSetBuf[i]  +  APM_SET_DEC56  )     )
-     	                  {
-                 	   	   ApmSetVal [ i ]        -=      APM_SET_DEC56;
-                 	      }
-                 else{
-                             ApmSetVal [ i ]       =      ApmSetBuf[i] ;
-                          }
+                      for ( i = 4 ; i <6 ; i++ )			
+			                      {              
+                         
+                                 
+                                        if(    ApmSetVal [ i ]              <            ( ApmSetBuf [i]  *( 1 -  Per_Set_Add56  )   )  ) //
+                 	                                       { 
+                 	   	                                    ApmSetVal [ i ]        +=   ApmSetBuf [i]  *( Per_Set_Add56  )  ;                      // 
+                 	                                         }
+                                          else
+                 	                                       {
+                                                             ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
+                                                          }
+                                                 
                  
-                  if( ApmSetVal [ i ] > 30000 )        
-                      {
-                      	ApmSetVal [ i ] = 30000;  
-                      } 
-     	        //Coldw.ApmDuty [ i ]   =    ApmSetVal [ i ];    //显示
+                                   if( ApmSetVal [ i ] > 30000 )        
+                                        {
+                                          	ApmSetVal [ i ] = 30000;  
+                                         } 
+     	                 //Coldw.ApmDuty [ i ]   =    ApmSetVal [ i ];    //显示
      	
-              }    
-   #else
-            for ( i = 4 ; i <6 ; i++ )			
-			        {
+                              }    
+      #else
+                 for ( i = 4 ; i <6 ; i++ )			
+			                    {
                  
                            ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
-                      }
+                               }
    #endif
 
 
@@ -779,7 +740,9 @@ for(;;)
                         if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
                         	            {
                                          HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] * 1000 / MaxRpm_Motor56 ; //基本上多余 
-			                                   PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 1000 / MaxRpm_Motor56      ); //一般是error = SetPoint - NewPoint ,这里反过来
+			                                   PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 1000 / MaxRpm_Motor56      ); //一般是error = SetPoint - NewPoint ,这里反过来
+			                                 
+			                                 
 			                                 }
 			          else        {//设定值太小了，或者关闭
 			          	                  HeatPidBuf[i].Qx   =  0;
@@ -798,8 +761,8 @@ for(;;)
 			     
 			      #define  SOFT_START2  1
 	     		  	//软启动  软加速  软减速  步进量
-		  	#define DLBC_STEP_ADD25  (100)
-		  	#define DLBC_STEP_DEC25  (100)
+		  	#define DLBC_STEP_ADD25  (50)
+		  	#define DLBC_STEP_DEC25  (50)
 		  	
 		
         for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
