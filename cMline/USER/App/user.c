@@ -569,7 +569,7 @@ void TaskTimePr(void * pdata)
          
                 timer2++;
 
-                if(timer2 >= 100 ) //1s	
+               if(timer2 >= 10 ) //0.1s	     if(timer2 >= 30 ) //0.3s	
                     {
                      timer2 = 0;
                      OSSemPost(OSSemTimePid_StepMotor);   //水冷PID控制周期
@@ -1861,6 +1861,16 @@ INT8U err;
 uchar i;
 unsigned short int TempUs;
 	
+float  StepTim1 , StepTim2  ;	
+
+#define     StepRateAdd    25
+#define     StepRateDec    (1.2)
+	
+	StepTim1 = 375  ;
+	StepTim2  = 375 ;
+	
+	
+	
 	
 pdata = pdata;    // 避免编译警告		
 
@@ -1919,10 +1929,34 @@ for(;;)
 		  	  	 //3 #步进电机     PulseCircleSet=20;//20;		//20*50us  = 0.001s
 		  	  	 
 
+
+
+
+//#define     StepRateAdd    3
+//#define     StepRateDec    10
+//	
+//	StepTim1 = 0  ;
+//	StepTim2  = 0 ;
+               
+
+
+
 		  	  	  if( Coldw.ApmCt[6]  >=1 ) 
 		  	  	  	{
-		  		       StepMot[2].PulseCircleSet =  TempUs ;  //fast
-		  		      StepMotRun(  2  , 6000  );
+		  	  	  		
+		  	  	  		//软启动
+//		  	  	  		if (  ( StepTim1 / StepRateAdd  )  >   TempUs  )
+//		  	  	  			    {
+//		  	  	  			    StepTim1 /=  StepRateAdd		;
+//		  	  	  			    }
+//		  	  	  		else{
+//		  	  	  			   StepTim1 =   TempUs ;
+//		  	  	  		      }
+                           
+                            StepTim1 =   TempUs ;
+		  	  	  		
+		  		       StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
+		  		      StepMotRun(  2  , 1800  );
 		  	         }
 		  		
 		  			 //4 #步进电机
@@ -1930,7 +1964,21 @@ for(;;)
 		  		StepMotRun(  3 ,8 );
 		  	  }
 		  else{
-		  		StepMotStop(2);  	 //3 #步进电机
+		  	   	//软停止
+		  	   	if (  ( StepTim1 * StepRateDec  ) < 374  )
+		  	  	  			    {
+		  	  	  			    StepTim1 *=  StepRateDec		;
+		  	  	  			     StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
+		  		                  StepMotRun(  2  , 1800  );
+		  	  	  			    
+		  	  	  			    }
+		  	  	  		else{
+		  	  	  			   StepTim1 =   375 ;
+		  	  	  			   StepMotStop(2);  	 //3 #步进电机
+		  	  	  			   
+		  	  	  		      }
+		  	
+		  		
 		  		//StepMotStop(3);  	 //4 #步进电机
 		      }  
 		      	
@@ -1942,8 +1990,18 @@ for(;;)
 		  	  	  //1 #步进电机
 		  	  	  if( Coldw.ApmCt[6]  >=1 ) 
 		  	  	  	{
-		  	        StepMot[0].PulseCircleSet =  TempUs;  //fast
-		  		    StepMotRun(  0 , 6000 );
+		  	  	  		
+		  	  	  				  	  	  		//软启动
+//		  	  	  		if (  ( StepTim2 / StepRateAdd  )  >   TempUs  )
+//		  	  	  			    {
+//		  	  	  			    StepTim2 /=  StepRateAdd		;
+//		  	  	  			    }
+//		  	  	  		else{
+//		  	  	  			   StepTim2 =   TempUs ;
+//		  	  	  		      }
+		  	  	  		StepTim2 =   TempUs ;
+		  	        StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;  //fast
+		  		    StepMotRun(  0 , 1800 );
 		  	     }
 		  		
 		  		 //2 #步进电机	  	
@@ -1951,7 +2009,20 @@ for(;;)
 		  		StepMotRun(  1 , 8  );
 		  	  }
 		  else{
-		  		StepMotStop( 0 );  //1 #步进电机
+
+		  		 	//软停止
+		  	   	if (  ( StepTim2 * StepRateDec  ) < 374  )
+		  	  	  			    {
+		  	  	  			    StepTim2 *=  StepRateDec		;
+		  	  	  			     StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;//TempUs ;  //fast
+		  		                  StepMotRun(  0  , 1800  );
+		  	  	  			    
+		  	  	  			    }
+		  	  	  		else{
+		  	  	  			   StepTim2 =   375 ;
+		  	  	  			   StepMotStop(0);  	 //1 #步进电机
+		  	  	  			   
+		  	  	  		      }
 		  		//StepMotStop( 1 );	  //2 #步进电机	  	
 		      } 
      OSSemPost(OSSemMotors);
