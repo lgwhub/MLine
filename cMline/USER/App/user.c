@@ -527,7 +527,8 @@ for(;;)
 
     //CheckAdrressKey();//分机地址设置拨码开关
     //Coldw.SubAdr = 80 + ( lAddressKey & 0x0f ) ;//          地址设置
-	Coldw.SubAdr = 80;
+	//Coldw.SubAdr = 80;
+	Coldw.SubAdr = MODBUS_SUB_ADR_DEFAULT;	
 	
 	CPU_CRITICAL_ENTER();                                       /* Tell uC/OS-II that we are starting an ISR            */
  

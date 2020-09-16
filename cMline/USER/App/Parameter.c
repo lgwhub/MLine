@@ -276,7 +276,7 @@ FlagSetAllDefault = 0;
 
     
     Coldw.lBackupRestore =  GetDate();
-    Coldw.SubAdr = 247;
+    Coldw.SubAdr = MODBUS_SUB_ADR_DEFAULT  ;  //247;
     
     Coldw.lSysSwitch_reserve =0;          //默认开机 系统开关
     Coldw.lstats=0;  //统计信息  

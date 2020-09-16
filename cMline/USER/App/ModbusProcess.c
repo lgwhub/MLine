@@ -197,8 +197,16 @@ void ModbusReadWord(unsigned char Channl, unsigned char *p, unsigned short int l
       
 			ffp = byte_position_ref + (unsigned char *)& Coldw;  //数据地址开始值
 
+		
+         if(   ( MODBUS_SUB_ADR_QUIET0  ==  *p  )  ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )   ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )  )
+         	{  //  不回应的广播接收地址
+         		return;
+         	}
+		  
 		  *pr= *p;  //分机地址
 			*(pr+1)= *(p+1); //功能
+
+
 
 		  _MakeReadRegRespone(ffp,ParaNumb*2,pr+2);//读寄存器 回复
 		  
@@ -299,7 +307,11 @@ void ModbusWriteWord(unsigned char Channl,unsigned char *p,unsigned short int le
 			_PlaceModbusFloat(p+7,ffp,ParaNumb);
 
 
-
+         if(   ( MODBUS_SUB_ADR_QUIET0  ==  *p  )  ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )   ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )  )
+         	{  //  不回应的广播接收地址
+         		return;
+         	}
+         	
 		  *pr= *p;  //分机地址
 			*(pr+1)= *(p+1); //功能
 
@@ -457,7 +469,7 @@ void ModbusRecvProcess(unsigned char *p,unsigned short int len)
   unsigned short Checksum;
   
 
-      if( (Coldw.SubAdr & 0x00ff) != (*p & 0x00ff ) )  //
+      if(   (  (Coldw.SubAdr & 0x00ff) != (*p & 0x00ff )  )   &&   (  MODBUS_SUB_ADR_QUIET0 != (*p & 0x00ff )    )     &&   (  MODBUS_SUB_ADR_QUIET1 != (*p & 0x00ff )    )    &&   (  MODBUS_SUB_ADR_QUIET2 != (*p & 0x00ff )    )  )    //
 	       {                                
 		      return;
 	       }

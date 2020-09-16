@@ -2,6 +2,18 @@
 #ifndef _MODBUS_PROCESS_H
 #define _MODBUS_PROCESS_H
 //#include "ModbusProcess.h"
+
+
+//  modbus  子地址                      Coldw.SubAdr
+//默认的
+#define MODBUS_SUB_ADR_DEFAULT                  1
+//  不回应的广播接收地址
+#define MODBUS_SUB_ADR_QUIET0                 255
+#define MODBUS_SUB_ADR_QUIET1                 254
+#define MODBUS_SUB_ADR_QUIET2                 80
+
+
+
 //调整高位在前
 #define MODBUS_FLOAT_HIGHBYTE_FORWORD  0
 #define MODBUS_HIGHBYTE_FORWORD_2X2    1
