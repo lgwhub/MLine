@@ -892,17 +892,43 @@ for(;;)
 
 void KeyProcess( uchar *curk,uchar *old)
 {
+		INT8U err;
+	 //    OSSemPost(OSSemTest1);
+     //     OSSemPost(OSSemTest2);
+	
+	
 	if( * ( curk + 2  )  != 0 )
 		{
-			if( * ( curk + 2  )  !=  * ( old + 2  ) ) //key3
+			if( * ( curk + 2  )  !=  * ( old + 2  ) ) //xxkey3
 				{
-					
+			    //        KEY_BIT_STOP		
+     	          FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
+     	
+     	  	  	 FlagRuningnnz = 0 ;   //控制 12 5 BLDC电机   12 步进电机
 
-         OSSemPost(OSSemTest1);
-          OSSemPost(OSSemTest2);
-					
+  	  	         OSSemPend(OSSemMotors,0,&err);
+//44444444444
+     	         StepMotStop( 3 ) ;     	//4 #步进电机  
+     	        
+     	         StepMotStop( 1 );	  //2 #步进电机	 
+     	
+     	         OSSemPost(OSSemMotors);		
 				}
 		}
+		
+		if( * ( curk + 3  )  != 0 )
+		{
+			if( * ( curk + 3  )  !=  * ( old + 3  ) ) //xxkey4
+				{  //   KEY_BIT_RUN
+					
+					FlagRuningnny = 1 ;   //控制 34 6 BLDC电机   34 步进电机
+					
+                       FlagRuningnnz = 1 ;   //控制 34 6 BLDC电机   34 步进电机
+                       
+				}
+		}	
+		
+		
 }
 
 
@@ -1007,17 +1033,16 @@ INT8U  bufka[5+1];
 INT8U  bufkb[5+1];
 INT8U  bufkc[5+1];
 
+INT8U  bufxxka[5+1];
+INT8U  bufxxkb[5+1];
+INT8U  bufxxkc[5+1];
 
+	pdata = pdata;        	                  	 	// 避免编译警告	   
 
-	pdata = pdata;        
 	
 	OSSemTest1   = OSSemCreate(0);
 	OSSemTest2   = OSSemCreate(0);
-	                  	 	// 避免编译警告	   
-//#define InPin_K1	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_3))
-//#define InPin_K2	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4))
-////PC1  开发板上
-//#define InPin_K3	(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_1))
+
 
 
 for( i = 0 ; i<5 ; i++ )
@@ -1025,6 +1050,11 @@ for( i = 0 ; i<5 ; i++ )
   	bufka[ i ] = 0;
   	bufkb[ i ] = 0;
   	bufkc[ i ] = 0;	
+  	
+    	bufxxka[ i ] = 0;
+  	bufxxkb[ i ] = 0;
+  	bufxxkc[ i ] = 0;		
+  	
   }
 
 
@@ -1088,7 +1118,7 @@ for( i = 0 ; i<5 ; i++ )
   	               	
   	               	     if ( bufkc[ i ]  !=  bufkb[ i ] )
   	               	     	   {
-  	         	                KeyProcess( bufkc, bufkb);
+  	         	                KeyProcess( bufkb, bufkc);
                               bufkc[ i ] =  bufkb[ i ];
                              }
   	         	          
@@ -1096,6 +1126,74 @@ for( i = 0 ; i<5 ; i++ )
   	                 
   	                
                   }
+//////////////////  M3.PCB   4个输入口  ////////////////////									
+//
+//#define InPin_X1
+
+
+						if( InPin_X1 )
+							{
+								bufxxka[ 0 ] = 0;
+							}								
+	          else{
+	          	  bufxxka[ 0 ] = 1;
+	              }
+
+						if( InPin_X2 )
+							{
+								bufxxka[ 1 ] = 0;
+							}								
+	          else{
+	          	  bufxxka[ 1 ] = 1;
+	              }
+
+						if( InPin_X3 )
+							{
+								bufxxka[ 2 ] = 0;
+							}								
+	          else{
+	          	  bufxxka[ 2 ] = 1;
+	              }
+
+						if( InPin_X4 )
+							{
+								bufxxka[ 3 ] = 0;
+							}								
+	          else{
+	          	  bufxxka[ 3 ] = 1;
+	              }
+										
+						if( InPin_X5 )
+							{
+								bufxxka[ 4 ] = 0;
+							}								
+	          else{
+	          	  bufxxka[ 4 ] = 1;
+	              }
+
+
+	
+
+            for( i = 0 ; i<5 ; i++ )
+                   {
+  	                  if ( bufxxkb[ i ] != bufxxka[ i ] )
+  		                     {//滤波
+  			                   bufxxkb[ i ] = bufxxka[ i ];
+  		                    }
+  	               else { 
+  	               	
+  	               	     if ( bufxxkc[ i ]  !=  bufxxkb[ i ] )
+  	               	     	   {
+  	         	                KeyProcess( bufxxkb, bufxxkc);
+                              bufxxkc[ i ] =  bufxxkb[ i ];
+                             }
+  	         	          
+  	                     }
+  	                 
+  	                
+                  }									
+									
+//////////////////////////////////////									
 										
 				}	
 }
@@ -1954,7 +2052,7 @@ for(;;)
 //		  	  	  		      }
                            
                             StepTim1 =   TempUs ;
-		  	  	  		
+		  	  	  		//44444444444
 		  		       StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
 		  		      StepMotRun(  2  , 1800  );
 		  	         }

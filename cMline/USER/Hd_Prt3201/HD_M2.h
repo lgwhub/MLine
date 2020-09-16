@@ -36,6 +36,14 @@
 #define InPin_K4	1
 #define InPin_K5	1
 
+//M3.PCB   4¸öÊäÈë¿Ú
+#define InPin_X1	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_9))
+#define InPin_X2	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_8))
+#define InPin_X3	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11))
+#define InPin_X4	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_10))
+#define InPin_X5   1
+
+
 //PC5  
 #define LED1_OFF		GPIO_ResetBits(GPIOC,GPIO_Pin_5)
 #define LED1_ON			GPIO_SetBits(GPIOC,GPIO_Pin_5)

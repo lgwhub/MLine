@@ -50,8 +50,9 @@
 #include "Test.h" 
 
 #include "user.h"
-//#include "HD_Prt3201.h"
-#include "HD_159.h"
+
+//#include "HD_159.h"
+#include "HD_M2.h"
 
 	#if CONFIG_ADC
 			#include "adc.h"

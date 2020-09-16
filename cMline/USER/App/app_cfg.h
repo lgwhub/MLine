@@ -43,9 +43,11 @@
 #define  CONFIG_HD_TIM		1
 #define  CONFIG_CAP_TIM   1
 
-#define  CONFIG_SPI_DISP		1
 
-#define SOFT_VER   01
+//m3线路板不用显示板
+#define  CONFIG_SPI_DISP		0
+
+#define SOFT_VER   02
 
 
 //#define CONFIG_CHECK_DEVICE_ID  1

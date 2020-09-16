@@ -258,7 +258,7 @@ for(i=0;i<NUMBofSTEPs;i++)
 						StepMot[i].PulseCircleCount --;
 					}
 				else{
-						 StepMot[i].PulseCircleCount =  StepMot[i].PulseCircleSet;//   脉冲输出速度控制
+						 StepMot[i].PulseCircleCount =  StepMot[i].PulseCircleSet;//   脉冲输出速度控制    重置
 						
 						 if( StepMot[i].ClkStatus == 0)
 							  {
@@ -271,13 +271,14 @@ for(i=0;i<NUMBofSTEPs;i++)
 								
 								StepMot[i].PulseCount--;
 								
-								if(StepMot[i].Direction == MOTOR_STATUS_FORWORD)		//前
-											{
-												StepMot[i].Position16++;
-											}
-								else{
-											StepMot[i].Position16--;
-											}
+//                                  //记录行程								
+//								if(StepMot[i].Direction == MOTOR_STATUS_FORWORD)		//前
+//											{
+//												StepMot[i].Position16++;
+//											}
+//								else{
+//											StepMot[i].Position16--;
+//											}
 								}	
 							
 						
