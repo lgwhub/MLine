@@ -121,7 +121,7 @@
 #define  TaskApmStk_SIZE                          (250+2u)
 
 #define  TaskLedyStk_SIZE                         90
-#define  TaskKeyStk_SIZE                         90
+#define  TaskKeyStk_SIZE                         (124+2u)
 #define  TaskLedzStk_SIZE                          (96+2u)
 
 #define  TaskRecvStk_SIZE                          (76+2u)

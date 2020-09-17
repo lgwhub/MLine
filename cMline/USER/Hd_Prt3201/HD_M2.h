@@ -37,10 +37,10 @@
 #define InPin_K5	1
 
 //M3.PCB   4个输入口
-#define InPin_X1	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_9))
-#define InPin_X2	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_8))
-#define InPin_X3	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11))
-#define InPin_X4	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_10))
+#define InPin_X1	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11))
+#define InPin_X2	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_10))
+#define InPin_X3	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_9))
+#define InPin_X4	(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_8))
 #define InPin_X5   1
 
 
@@ -50,9 +50,9 @@
 //PC13     FK103M5开发板上
 #define LED2_OFF		GPIO_ResetBits(GPIOC,GPIO_Pin_13)
 #define LED2_ON			GPIO_SetBits(GPIOC,GPIO_Pin_13)
-//PD15  TIM4--CH4
-#define LED3_OFF		;//GPIO_ResetBits(GPIOD,GPIO_Pin_15)
-#define LED3_ON			;//GPIO_SetBits(GPIOD,GPIO_Pin_15)
+//PD7  TIM4--CH47
+#define LED3_OFF		GPIO_ResetBits(GPIOD,GPIO_Pin_7)
+#define LED3_ON			GPIO_SetBits(GPIOD,GPIO_Pin_7)
 
 //PC0  FK103M3开发板上
 #define LED4_OFF		GPIO_SetBits(GPIOC,GPIO_Pin_0)

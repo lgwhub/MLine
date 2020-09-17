@@ -83,8 +83,8 @@ extern unsigned char EventTimeLed;
 #define Led_Status_Off		LED1_OFF
 
 //EventTimeLed
-#define Led_Event_On		LED4_ON
-#define Led_Event_Off		LED4_OFF
+#define Led_Event_On		LED3_ON
+#define Led_Event_Off		LED3_OFF
 
 
 //void MotorsRun(unsigned char ch, signed short int steps);

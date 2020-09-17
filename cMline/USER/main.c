@@ -121,7 +121,7 @@ InitGpio();
 
 
 
-#if CONFIG_CAP_TIM
+#if CONFIG_CAP_TIM   
 Init_Capture_T3();
 Init_Capture_T4();
 #endif
@@ -132,7 +132,7 @@ StepMotInit();
 //	Init_Tim3 ();		//步进电机脉冲输出用
 //#endif
 
-#if CONFIG_PWM
+#if CONFIG_PWM   
 GPIO_Configuration_PWM_T1();
 PWM_T1_Configuration();  
 GPIO_Configuration_PWM_T5();

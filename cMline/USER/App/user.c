@@ -46,6 +46,12 @@ unsigned char EventTimeLed=0;
 #define   KEY_BIT_AUTO_BAK   0x00100000
 #define   KEY_BIT_SLOW              0x00080000
 
+//   InPin_X1         M3.PCB   4个输入口
+
+#define   KEY_XX_RUN         InPin_X3
+#define   KEY_XX_STOP        InPin_X4
+
+
 
 
 unsigned long ShiftKeyCurnny;   //显示板键盘当前值
@@ -676,7 +682,7 @@ for(;;)
 
 
                      
-          for ( i = 0 ; i < 4 ; i++ )			
+          for ( i = 0 ; i < 4 ; i++ )		
 			    {
                         if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
                         	            {
@@ -896,11 +902,21 @@ void KeyProcess( uchar *curk,uchar *old)
 		INT8U err;
 	 //    OSSemPost(OSSemTest1);
      //     OSSemPost(OSSemTest2);
-	
-	
 	if( * ( curk + 2  )  != 0 )
 		{
 			if( * ( curk + 2  )  !=  * ( old + 2  ) ) //xxkey3
+				{  //   KEY_BIT_RUN
+					
+					FlagRuningnny = 1 ;   //控制 34 6 BLDC电机   34 步进电机
+					
+                       FlagRuningnnz = 1 ;   //控制 34 6 BLDC电机   34 步进电机
+                       
+				}
+		}	
+	
+	if( * ( curk + 3  )  == 0 )
+		{  //常闭
+			//if( * ( curk + 3  )  !=  * ( old + 3  ) ) //xxkey4
 				{
 			    //        KEY_BIT_STOP		
      	          FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
@@ -917,17 +933,7 @@ void KeyProcess( uchar *curk,uchar *old)
 				}
 		}
 		
-		if( * ( curk + 3  )  != 0 )
-		{
-			if( * ( curk + 3  )  !=  * ( old + 3  ) ) //xxkey4
-				{  //   KEY_BIT_RUN
-					
-					FlagRuningnny = 1 ;   //控制 34 6 BLDC电机   34 步进电机
-					
-                       FlagRuningnnz = 1 ;   //控制 34 6 BLDC电机   34 步进电机
-                       
-				}
-		}	
+
 		
 		
 }
@@ -1119,7 +1125,7 @@ for( i = 0 ; i<5 ; i++ )
   	               	
   	               	     if ( bufkc[ i ]  !=  bufkb[ i ] )
   	               	     	   {
-  	         	                KeyProcess( bufkb, bufkc);
+  	         	              //  KeyProcess( bufkb, bufkc);
                               bufkc[ i ] =  bufkb[ i ];
                              }
   	         	          
@@ -1148,15 +1154,15 @@ for( i = 0 ; i<5 ; i++ )
 	          	  bufxxka[ 1 ] = 1;
 	              }
 
-						if( InPin_X3 )
+						if( KEY_XX_RUN  )
 							{
-								bufxxka[ 2 ] = 0;
+								bufxxka[ 2 ] = 0;           Led_Test_Key_Off1;
 							}								
 	          else{
-	          	  bufxxka[ 2 ] = 1;
+	          	  bufxxka[ 2 ] = 1;              Led_Test_Key_On1;
 	              }
 
-						if( InPin_X4 )
+						if( KEY_XX_STOP )
 							{
 								bufxxka[ 3 ] = 0;
 							}								
@@ -1180,10 +1186,11 @@ for( i = 0 ; i<5 ; i++ )
   	                  if ( bufxxkb[ i ] != bufxxka[ i ] )
   		                     {//滤波
   			                   bufxxkb[ i ] = bufxxka[ i ];
+  			                  //EventTimeLed=2;
   		                    }
   	               else { 
   	               	
-  	               	     if ( bufxxkc[ i ]  !=  bufxxkb[ i ] )
+  	               	    // if ( bufxxkc[ i ]  !=  bufxxkb[ i ] )
   	               	     	   {
   	         	                KeyProcess( bufxxkb, bufxxkc);
                               bufxxkc[ i ] =  bufxxkb[ i ];

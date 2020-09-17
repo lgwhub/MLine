@@ -307,7 +307,7 @@ void ModbusWriteWord(unsigned char Channl,unsigned char *p,unsigned short int le
 			_PlaceModbusFloat(p+7,ffp,ParaNumb);
 
 
-         if(   ( MODBUS_SUB_ADR_QUIET0  ==  *p  )  ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )   ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )  )
+         if(   ( MODBUS_SUB_ADR_QUIET0  ==  *p  )  ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )   ||  ( MODBUS_SUB_ADR_QUIET2  ==  *p  )  )
          	{  //  不回应的广播接收地址
          		return;
          	}
