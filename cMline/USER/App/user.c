@@ -643,7 +643,7 @@ for(;;)
 		  	
 		  	//软启动  软加速  软减速  速度步进量
 		  	
-		  	 #define  SOFT_START1   0
+		  	 #define  SOFT_START1   1
 		  	 
 		  	 //1234电机
 
@@ -653,7 +653,7 @@ for(;;)
            
             #if  SOFT_START1
                     //   ApmSetBuf     --->>>>  ApmSetVal    ..........
-                 for ( i = 0 ; i <4 ; i++ )			
+                 for ( i = 0 ; i <2 ; i++ )		//for ( i = 0 ; i <4 ; i++ )			
 			        {
                      if(    ApmSetVal [ i ]              <            ( ApmSetBuf [i]  *( 1 -  Per_Set_Add1234  )   )  ) //
                  	           { 
@@ -673,7 +673,7 @@ for(;;)
      	
               }    
    #else
-            for ( i = 0 ; i < 4 ; i++ )			
+            for ( i = 0 ; i <2 ; i++ )		//for ( i = 0 ; i < 4 ; i++ )			
 			        {
                  
                            ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
@@ -682,7 +682,8 @@ for(;;)
 
 
                      
-          for ( i = 0 ; i < 4 ; i++ )		
+          
+          for ( i = 0 ; i <2 ; i++ )		//for ( i = 0 ; i < 4 ; i++ )	
 			    {
                         if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
                         	            {
@@ -711,7 +712,7 @@ for(;;)
                      #if  SOFT_START1
                     //   ApmSetBuf     --->>>>  ApmSetVal    ..........
     
-                      for ( i = 4 ; i <6 ; i++ )			
+                      for ( i = 2 ; i <6 ; i++ )		//for ( i = 4 ; i <6 ; i++ )			
 			                      {              
                          
                                  
@@ -733,7 +734,7 @@ for(;;)
      	
                               }    
       #else
-                 for ( i = 4 ; i <6 ; i++ )			
+                  for ( i = 2 ; i <6 ; i++ )		//for ( i = 4 ; i <6 ; i++ )			
 			                    {
                  
                            ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
@@ -742,7 +743,7 @@ for(;;)
 
 
                      
-          for ( i = 4 ; i <6 ; i++ )			
+           for ( i = 2 ; i <6 ; i++ )		//for ( i = 4 ; i <6 ; i++ )			
 			    {
                         if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
                         	            {
@@ -1970,8 +1971,9 @@ unsigned short int TempUs;
 float  StepTim1 , StepTim2  ;	
 
 #define     StepRateAdd    25
-#define     StepRateDec    (1.2)
-	
+//#define     StepRateDec    (1.2)
+#define     StepRateDec    (1.06)	
+
 	StepTim1 = 375  ;
 	StepTim2  = 375 ;
 	
@@ -2034,12 +2036,6 @@ for(;;)
 		  	  {
 		  	  	 //3 #步进电机     PulseCircleSet=20;//20;		//20*50us  = 0.001s
 		  	  	 
-
-
-
-
-//#define     StepRateAdd    3
-//#define     StepRateDec    10
 //	
 //	StepTim1 = 0  ;
 //	StepTim2  = 0 ;
