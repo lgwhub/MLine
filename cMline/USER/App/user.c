@@ -2090,8 +2090,8 @@ for(;;)
                            
                             StepTim1 =   TempUs ;
 		  	  	  		//44444444444
-		  		       StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
-		  		      StepMotRun(  2  , 253000  );
+		  		      // StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
+		  		      StepMotRpm(  2  , 253000  ,  (unsigned short int)StepTim1  );
 		  	         }
 		  		
 		  			 //4 #步进电机
@@ -2103,8 +2103,8 @@ for(;;)
 		  	   	if (  ( StepTim1 * StepRateDec  ) < 374  )
 		  	  	  			    {
 		  	  	  			    StepTim1 *=  StepRateDec		;
-		  	  	  			     StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
-		  		                  StepMotRun(  2  , 253000  );
+		  	  	  			    // StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
+		  		                  StepMotRpm(  2  , 253000  ,  (unsigned short int)StepTim1   );
 		  	  	  			    
 		  	  	  			    }
 		  	  	  		else{
@@ -2135,8 +2135,8 @@ for(;;)
 //		  	  	  			   StepTim2 =   TempUs ;
 //		  	  	  		      }
 		  	  	  		StepTim2 =   TempUs ;
-		  	        StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;  //fast
-		  		    StepMotRun(  0 , 253000 );
+		  	        //StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;  //fast
+		  		    StepMotRpm(  0 , 253000  ,  (unsigned short int)StepTim2  );
 		  	     }
 		  		
 		  		 //2 #步进电机	  	
@@ -2149,8 +2149,8 @@ for(;;)
 		  	   	if (  ( StepTim2 * StepRateDec  ) < 374  )
 		  	  	  			    {
 		  	  	  			    StepTim2 *=  StepRateDec		;
-		  	  	  			     StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;//TempUs ;  //fast
-		  		                  StepMotRun(  0  , 253000  );
+		  	  	  			    // StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;//TempUs ;  //fast
+		  		                  StepMotRpm(  0  , 253000  ,  (unsigned short int)StepTim2   );
 		  	  	  			    
 		  	  	  			    }
 		  	  	  		else{

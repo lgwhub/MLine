@@ -47,6 +47,9 @@ void StepMoterPulseHandler(void);
 
 void StepMotRun( unsigned char chs , signed long int step_count);
 
+//步进电机一直走，只有速度调整
+void StepMotRpm( unsigned char chs , signed  long int step_count ,  unsigned int   PulseCircleSet);
+
 void StepMotStop(unsigned char chs);
 
 

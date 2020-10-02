@@ -198,7 +198,7 @@ void ModbusReadWord(unsigned char Channl, unsigned char *p, unsigned short int l
 			ffp = byte_position_ref + (unsigned char *)& Coldw;  //数据地址开始值
 
 		
-         if(   ( MODBUS_SUB_ADR_QUIET0  ==  *p  )  ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )   ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )  )
+         if(   ( MODBUS_SUB_ADR_QUIET0  ==  *p  )  ||  ( MODBUS_SUB_ADR_QUIET1  ==  *p  )   ||  ( MODBUS_SUB_ADR_QUIET2  ==  *p  )  )
          	{  //  不回应的广播接收地址
          		return;
          	}

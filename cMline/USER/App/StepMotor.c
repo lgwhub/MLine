@@ -250,7 +250,7 @@ void StepMoterPulseHandler(void)
 for(i=0;i<NUMBofSTEPs;i++)
     {
 	  
-		if(( StepMot[i].Enable ) && ( StepMot[i].PulseCount > 0 ))
+		if(( StepMot[i].Enable  >0 ) && ( StepMot[i].PulseCount > 0 ))
 			  {
 			  	SwitchBitEN(i,1);
 				if( StepMot[i].PulseCircleCount > 0 )//   脉冲输出速度控制
@@ -268,8 +268,10 @@ for(i=0;i<NUMBofSTEPs;i++)
 						else{
 								StepMot[i].ClkStatus=0;
 								SwitchBitCLK(i,0);//ClrBitCLK1;
-								
-								StepMot[i].PulseCount--;
+								if( StepMot[i].Enable  <= 1 )
+								      {
+								      	StepMot[i].PulseCount--;
+								      }
 								
 //                                  //记录行程								
 //								if(StepMot[i].Direction == MOTOR_STATUS_FORWORD)		//前
@@ -351,7 +353,40 @@ SwitchBitEN(chs,1);//SetBitEN1;
 StepMot[chs].Enable=1;
 }
 
+//步进电机一直走，只有速度调整
+void StepMotRpm( unsigned char chs , signed  long int step_count ,  unsigned int   PulseCircleSet)
+{
+	unsigned   long int  step16;
+	
+ //  StepMot[chs].Enable=0;
+ // SwitchBitEN(chs,1);//ClrBitEN1;  ????
+//  SwitchBitCLK(chs,0);//ClrBitCLK1;
 
+	if(step_count>0)//cw==MOTOR_STATUS_FORWORD)		//前
+		{
+			StepMot[chs].Direction=MOTOR_STATUS_FORWORD;  //方向
+		  SwitchBitCW(chs,0);//ClrBitCW1;
+		  step16=(unsigned  long int)step_count;
+		}
+	else{
+		  StepMot[chs].Direction=MOTOR_STATUS_BACKWORD;
+			SwitchBitCW(chs,1);//SetBitCW1;
+			step16=(unsigned  long int)(-step_count);
+			}
+			
+//OSTimeDly(OS_TICKS_PER_SEC/20);	    //延时0.05秒
+
+//StepMot[chs].PulseCircleCount=0;//StepMot[chs].PulseCircleSet;
+StepMot[chs].PulseCircleSet  =   PulseCircleSet ;
+
+StepMot[chs].PulseCount=step16;
+//StepMot[chs].ClkStatus=0;
+SwitchBitEN(chs,1);//SetBitEN1;
+
+//OSTimeDly(OS_TICKS_PER_SEC/20);	    //延时0.05秒
+
+StepMot[chs].Enable = 8;  //  >1
+}
 //步进电机脉冲速度调整
 //void StepMotAdjSpeed1(uint32 cycle)
 //{
