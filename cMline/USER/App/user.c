@@ -78,8 +78,14 @@ unsigned long ShiftKeySavennz;
 #define  FlagRuningnnz   (    Coldw.Flag_Runingnnz )    //控制 12 5 BLDC电机   12 步进电机  // (Coldw.TC_sx )                //温度上限设置值
 
 
-unsigned  short int  ApmSetBuf[ MAX_BLDC_CH6 + 1 ];   //速度设定值中间变量   
-unsigned  short int  ApmSetVal[ MAX_BLDC_CH6 + 1 ];   //速度设定值递增变量  //   ApmSetBuf     --->>>>  ApmSetVal    ..........       
+//unsigned  short int  ApmSetBuf[ MAX_BLDC_CH6 + 1 ];   //速度设定值中间变量   
+float  ApmSetVal[ MAX_BLDC_CH6 + 1 ];   //速度设定值递增变量  //   ApmSetBuf     --->>>>  ApmSetVal    ..........       
+
+unsigned short int RpmSync1;
+unsigned short int RpmSync2;
+
+float   StepRpmX1;   //步进电机速度
+unsigned short int TempUs;     //步进电机脉冲周期
 
 
 unsigned  short int  BLDC_PwmBuf[ MAX_BLDC_CH6 + 1 ];   //pwm速度中间变量
@@ -607,81 +613,83 @@ void SyncRpmProcess(void)
 	
 }
 ////////////////////
-////////////////////
-void TaskHpwm(void * pdata)
+
+void TaskSync(void * pdata)
 {
 INT8U err;
-
-unsigned char i;
-
-pdata = pdata;                          	 	// 避免编译警告		
-
-    for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )	
-              {
-              	ApmSetBuf [ i ] =  0 ; //   ApmSetBuf     --->>>>  ApmSetVal    ..........       
-              	ApmSetVal [ i ] =  0 ;
-                          	
-              }
+INT8U  i;
 
 
-OSTimeDly( OS_TICKS_PER_SEC / 100);	    //延时0.01秒
+	pdata = pdata;        	                  	 	// 避免编译警告	   
 
-for(;;)
-		{
-			
-			OSSemPend(  OSSemTimePid_PWM , 0 , &err );  //   OSSemTimePid_Heat
 
-		  if( FlagRuningnny  >=  1 )   //控制 34 6 BLDC电机
-		  	  {
-//		  		ApmSetBuf[2] = ( float ) Coldw.ApmCt[2]  * 2;  //3
-//		  		ApmSetBuf[3] = ( float )  Coldw.ApmCt[3]  * 2;  //4
-		  		ApmSetBuf[2] = ( float ) Coldw.ApmCt[2]  ;  //3
-		  		ApmSetBuf[3] = ( float )  Coldw.ApmCt[3]  ;  //4		  		
-		  		
-		  		ApmSetBuf[5] = ( float ) Coldw.ApmCt[5];  //6
-		  	  }
-		  else{
-		  		ApmSetBuf[2] = 0; //   ApmSetBuf     --->>>>  ApmSetVal    ..........       
-		  		ApmSetBuf[3] = 0;
-		  		ApmSetBuf[5] = 0;		  	
-		      }  
-		      	
-		  if( FlagRuningnnz  >=  1 )  //控制 12 5 BLDC电机
-		  	  {
-//		  		ApmSetBuf[0] = ( float ) Coldw.ApmCt[0]  * 2 ;  //1
-//		  		ApmSetBuf[1] = ( float ) Coldw.ApmCt[1]  * 2 ;  //2
-		  		ApmSetBuf[0] = ( float ) Coldw.ApmCt[0]  ;  //1
-		  		ApmSetBuf[1] = ( float ) Coldw.ApmCt[1]  ;  //2		
-		  		  		
-		  		ApmSetBuf[4] = ( float ) Coldw.ApmCt[4];  //5
-		  	  }
-		  else{
-		  		ApmSetBuf[0] = 0;
-		  		ApmSetBuf[1] = 0;
-		  		ApmSetBuf[4] = 0;		  	
-		      } 		  	
-		  	
+
+		for(;;)
+						{
+						//OS_ENTER_CRITICAL();
+						//OS_EXIT_CRITICAL();
+
+						OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时0.1秒		
+						
+
 		  	//软启动  软加速  软减速  速度步进量
 		  	
+            
+            
+            			if( FlagRuningnny  >=  1 )   //控制 34 6 BLDC电机
+		  	                       {
+		  	  	                      if(  RpmSync1 < (500-5))
+                                               RpmSync1 += 5;
+                                     else{
+                                 	
+                                 	             RpmSync1 =  500  ;
+                                               }
+		  	                          }
+		                else{
+  	                               	 if(  RpmSync1 >=1)
+                                               RpmSync1 -= 1;
+                                     else{
+                                 	
+                                 	             RpmSync1 =  0  ;
+                                               }
+		                       }  
+		      	
+		  if( FlagRuningnnz  >=  1 )  //控制 12 5 BLDC电机
+		  	                       {
+		  	  	                      if(  RpmSync2 < (500-5))
+                                               RpmSync2 +=5;
+                                     else{
+                                 	
+                                 	             RpmSync2 =  500  ;
+                                               }
+		  	                          }
+		                else{
+  	                               	 if(  RpmSync2 >=1)
+                                               RpmSync2 -= 1;
+                                     else{
+                                 	
+                                 	             RpmSync2 =  0  ;
+                                               }
+		                       } 
+            
+          //  #if  SOFT_START1
+                                //控制 34 6  BLDC电机
+                               ApmSetVal [2 ]        =     ( float ) Coldw.ApmCt[2]   * RpmSync1 /500  ;        
+                               ApmSetVal [3 ]        =     ( float ) Coldw.ApmCt[3]   * RpmSync1 /500  ;  
+                               ApmSetVal [5 ]        =     ( float ) Coldw.ApmCt[5]   * RpmSync1 /500  ;              
+            
+                                //控制 12 5 BLDC电机
+                               ApmSetVal [0 ]        =     ( float ) Coldw.ApmCt[0]   * RpmSync2 /500  ;        
+                               ApmSetVal [1 ]        =     ( float ) Coldw.ApmCt[1]   * RpmSync2 /500  ;  
+                               ApmSetVal [4 ]        =     ( float ) Coldw.ApmCt[4]   * RpmSync2 /500  ;  
+          
+                             
+                             
+                              StepRpmX1  =    ( float ) Coldw.ApmCt[6] * RpmSync1 / 500   ;   //步进电机速度
 
-           
-            #if  SOFT_START1
-                    //   ApmSetBuf     --->>>>  ApmSetVal    ..........
-                 for ( i = 0 ; i <4 ; i++ )			//for ( i = 0 ; i <2 ; i++ )		//
+                 for ( i = 0 ; i <6 ; i++ )			//for ( i = 0 ; i <2 ; i++ )		//
 			        {
-                     if(    ApmSetVal [ i ]              <            ( ApmSetBuf [i]  *( 1 -  Per_Set_Add1234  )   )  ) //
-                 	           { 
-                 	   	       ApmSetVal [ i ]        +=   ApmSetBuf [i]  *( Per_Set_Add1234  )  ;                      // 
-                 	          }
-                 else if (      ApmSetVal [ i ]              >                   (  ( float ) Coldw.ApmCt[i]  * Per_Set_Dec1234     )   )//
-                 	           { 
-                 	   	       ApmSetVal [ i ]        -=   ( float ) Coldw.ApmCt[i] *( Per_Set_Dec1234  )  ;                      // 
-                 	          }
-                else
-                 	       {
-                               ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
-                           }
-  
+                 	       
                  
                   if( ApmSetVal [ i ] > 30000 )        
                       {
@@ -696,16 +704,39 @@ for(;;)
      	        //Coldw.ApmDuty [ i ]   =    ApmSetVal [ i ];    //显示
      	
               }    
-   #else
-            for ( i = 0 ; i < 4 ; i++ )			//for ( i = 0 ; i <2 ; i++ )		//
-			        {
-                 
-                           ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
-                      }
-   #endif
+
+				
+						
+					}
+}
+////////////////////
+
+////////////////////
+void TaskHpwm(void * pdata)
+{
+INT8U err;
+
+unsigned char i;
+
+pdata = pdata;                          	 	// 避免编译警告		
+
+    for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )	
+              {
+
+              	ApmSetVal [ i ] =  0 ;
+                          	
+              }
 
 
-                     
+OSTimeDly( OS_TICKS_PER_SEC / 100);	    //延时0.01秒
+
+for(;;)
+		{
+			
+			OSSemPend(  OSSemTimePid_PWM , 0 , &err );  //   OSSemTimePid_Heat
+
+
+		   
           
           for ( i = 0 ; i < 4 ; i++ )	//for ( i = 0 ; i <2 ; i++ )		//
 			    {
@@ -723,7 +754,7 @@ for(;;)
 		                                             HeatPidBuf[i].  SumError =  0;
                                                       }
 		                                  else{
-		                                           HeatPidBuf[i]. SumError     =    100   /   (Coldw.Pidx[0].Integral  );  //100初始化电压
+		                                           HeatPidBuf[i]. SumError     =  0;//  100   /   (Coldw.Pidx[0].Integral  );  //100初始化电压
                                                      }		 		          	                              
 				                           }      
 			     }
@@ -733,45 +764,7 @@ for(;;)
 
             
                          
-                     #if  SOFT_START1
-                    //   ApmSetBuf     --->>>>  ApmSetVal    ..........
-    
-                      for ( i = 4 ; i <6 ; i++ )		//for ( i = 2 ; i <6 ; i++ )		//	
-			                      {              
-                         
-                                 
-                                        if(    ApmSetVal [ i ]              <            ( ApmSetBuf [i]  *( 1 -  Per_Set_Add56  )   )  ) //
-                 	                                       { 
-                 	   	                                    ApmSetVal [ i ]        +=   ApmSetBuf [i]  *( Per_Set_Add56  )  ;                      // 
-                 	                                         }
-                                          else if(    ApmSetVal [ i ]              >            (  ( float ) Coldw.ApmCt[i]  *  Per_Set_Dec56    )  ) //
-                 	                                         { 
-                 	   	                                      ApmSetVal [ i ]        -=    ( float ) Coldw.ApmCt[i]  *( Per_Set_Dec56  )  ;                      // 
-                 	                                         }
-                                            else
-                 	                                       {
-                                                             ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
-                                                          }
-                                                 
-                 
-                                   if( ApmSetVal [ i ] > 30000 )        
-                                        {
-                                          	ApmSetVal [ i ] = 30000;  
-                                         } 
-                                     if( ApmSetVal [ i ]  < 0 )        
-                                               {
-                                              	ApmSetVal [ i ] = 0;  
-                                                  }          
-     	                 //Coldw.ApmDuty [ i ]   =    ApmSetVal [ i ];    //显示
-     	
-                              }    
-      #else
-                  for ( i = 4 ; i <6 ; i++ )		//for ( i = 2 ; i <6 ; i++ )		//	
-			                    {
-                 
-                           ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
-                               }
-   #endif
+
 
 
                      
@@ -793,7 +786,7 @@ for(;;)
 		                                             HeatPidBuf[i].  SumError =  0;
                                                       }
 		                                  else{
-		                                           HeatPidBuf[i]. SumError     =  100  /   (Coldw.Pidx[0].Integral  );  //100初始化电压
+		                                           HeatPidBuf[i]. SumError     =  0;//100  /   (Coldw.Pidx[0].Integral  );  //100初始化电压
                                                      }		 		          	                              
 				                           }      
 			     }
@@ -1061,9 +1054,6 @@ OSSemPost(OSSemMotors);
 
 ////////////////////
 
-
-
-////////////////////
 
 void TaskKey(void * pdata)
 {
@@ -1999,7 +1989,7 @@ void TaskStepMotor(void * pdata)
 INT8U err;
 
 uchar i;
-unsigned short int TempUs;
+//unsigned short int TempUs;
 	
 float  StepTim1 , StepTim2  ;	
 
@@ -2007,8 +1997,10 @@ float  StepTim1 , StepTim2  ;
 //#define     StepRateDec    (1.2)
 #define     StepRateDec    (1.06)	
 
-	StepTim1 = 375  ;
-	StepTim2  = 375 ;
+#define    MaxStepTime    1375
+
+	StepTim1 =   MaxStepTime;// 375  ;
+	StepTim2  = MaxStepTime;// 375 ;
 	
 	
 	
@@ -2056,64 +2048,45 @@ for(;;)
 //		  	  	      }
 //		  	  	if (  TempUs < 5 )    TempUs  = 5;   //250us      4000/200/2 *60  =  600.0  apm
  		  	  	
- 		  	  	 if( Coldw.ApmCt[6]  >=1 )  // 1apm
+ 		  	  	 if( StepRpmX1  >=1 )  // 1apm
 		  	  	 	{
-		  	  	                 TempUs =  375 /  Coldw.ApmCt[6];
+		  	  	                 TempUs = (unsigned short int) ( MaxStepTime / StepRpmX1);// Coldw.ApmCt[6];
 		  	  	               }
 		  	  	else{
-		  	  		            TempUs = 375 ;  //1500ms 脉冲     66/400/2   * 60  = 0.5    apm
+		  	  		            TempUs = MaxStepTime ;  //1500ms 脉冲     66/400/2   * 60  = 0.5    apm
 		  	  	      }
 		  	  	if (  TempUs < 2 )    TempUs  = 2;   //250us      4000/400/2 *60  =  300  apm    
      
+
+     		  	  	  if( StepRpmX1  >=1 ) 
+		  	  	  	{
+                        //3 #步进电机     PulseCircleSet=20;//20;		//20*50us  = 0.001s
+                            StepTim1 =   TempUs ;
+
+		  		      StepMotRpm(  2  , 25300  ,  (unsigned short int)StepTim1  );
+		  	         }
+		  	     else{
+            	            StepMotStop(2);
+                           }       
+      if( StepRpmX1  >=1 ) 
+		  	  	  	{
+     		  	  	  //1 #步进电机
+		  	  	  		StepTim2 =   TempUs ;
+		  	        //StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;  //fast
+		  		    StepMotRpm(  0 , 25300  ,  (unsigned short int)StepTim2  );
+                      }
+            else{
+            	   StepMotStop(0);
+                }       
+     
      	if(  FlagRuningnny >=1  )   //控制 34 步进电机
 		  	  {
-		  	  	 //3 #步进电机     PulseCircleSet=20;//20;		//20*50us  = 0.001s
-		  	  	 
-//	
-//	StepTim1 = 0  ;
-//	StepTim2  = 0 ;
-               
-
-
-
-		  	  	  if( Coldw.ApmCt[6]  >=1 ) 
-		  	  	  	{
-		  	  	  		
-		  	  	  		//软启动
-//		  	  	  		if (  ( StepTim1 / StepRateAdd  )  >   TempUs  )
-//		  	  	  			    {
-//		  	  	  			    StepTim1 /=  StepRateAdd		;
-//		  	  	  			    }
-//		  	  	  		else{
-//		  	  	  			   StepTim1 =   TempUs ;
-//		  	  	  		      }
-                           
-                            StepTim1 =   TempUs ;
-		  	  	  		//44444444444
-		  		      // StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
-		  		      StepMotRpm(  2  , 253000  ,  (unsigned short int)StepTim1  );
-		  	         }
-		  		
 		  			 //4 #步进电机
 		  		StepMot[3].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
 		  		StepMotRun(  3 ,8 );
 		  	  }
 		  else{
-		  	   	//软停止
-		  	   	if (  ( StepTim1 * StepRateDec  ) < 374  )
-		  	  	  			    {
-		  	  	  			    StepTim1 *=  StepRateDec		;
-		  	  	  			    // StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
-		  		                  StepMotRpm(  2  , 253000  ,  (unsigned short int)StepTim1   );
-		  	  	  			    
-		  	  	  			    }
-		  	  	  		else{
-		  	  	  			   StepTim1 =   375 ;
-		  	  	  			   StepMotStop(2);  	 //3 #步进电机
-		  	  	  			   
-		  	  	  		      }
-		  	
-		  		
+
 		  		//StepMotStop(3);  	 //4 #步进电机
 		      }  
 		      	
@@ -2122,42 +2095,12 @@ for(;;)
 		      	
 		  if(FlagRuningnnz >= 1 )  //控制 12  步进电机
 		  	  {
-		  	  	  //1 #步进电机
-		  	  	  if( Coldw.ApmCt[6]  >=1 ) 
-		  	  	  	{
-		  	  	  		
-		  	  	  				  	  	  		//软启动
-//		  	  	  		if (  ( StepTim2 / StepRateAdd  )  >   TempUs  )
-//		  	  	  			    {
-//		  	  	  			    StepTim2 /=  StepRateAdd		;
-//		  	  	  			    }
-//		  	  	  		else{
-//		  	  	  			   StepTim2 =   TempUs ;
-//		  	  	  		      }
-		  	  	  		StepTim2 =   TempUs ;
-		  	        //StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;  //fast
-		  		    StepMotRpm(  0 , 253000  ,  (unsigned short int)StepTim2  );
-		  	     }
-		  		
 		  		 //2 #步进电机	  	
 		  		StepMot[1].PulseCircleSet = 60 +  Coldw.ApmCt[7];  //slow
 		  		StepMotRun(  1 , 8  );
 		  	  }
 		  else{
 
-		  		 	//软停止
-		  	   	if (  ( StepTim2 * StepRateDec  ) < 374  )
-		  	  	  			    {
-		  	  	  			    StepTim2 *=  StepRateDec		;
-		  	  	  			    // StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;//TempUs ;  //fast
-		  		                  StepMotRpm(  0  , 253000  ,  (unsigned short int)StepTim2   );
-		  	  	  			    
-		  	  	  			    }
-		  	  	  		else{
-		  	  	  			   StepTim2 =   375 ;
-		  	  	  			   StepMotStop(0);  	 //1 #步进电机
-		  	  	  			   
-		  	  	  		      }
 		  		//StepMotStop( 1 );	  //2 #步进电机	  	
 		      } 
      OSSemPost(OSSemMotors);

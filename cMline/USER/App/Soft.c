@@ -36,6 +36,7 @@ static  OS_STK         MyTASKStk[MyTASKStk_SIZE];
 static  OS_STK         TaskRecvStk[TaskRecvStk_SIZE];
 static  OS_STK         TaskApmStk[TaskApmStk_SIZE];
 static  OS_STK         TaskLedyStk[TaskLedyStk_SIZE];
+static  OS_STK         TaskSyncStk[TaskSyncStk_SIZE];
 static  OS_STK         TaskKeyStk[TaskKeyStk_SIZE];
 static  OS_STK         TaskSaveStk[TaskSaveStk_SIZE];
 static  OS_STK         TaskLedzStk[TaskLedzStk_SIZE];
@@ -123,7 +124,15 @@ OSSemProcCmdx = OSSemCreate(0);
                              (void          * ) 0,
                              (INT16U          )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
 
-
+    os_err = OSTaskCreateExt((void (*)(void *)) TaskSync,
+                             (void          * ) 0,
+                             (OS_STK        * )&TaskSyncStk[TaskSyncStk_SIZE - 1],
+                             (INT8U           ) TaskSync_PRIO,
+                             (INT16U          ) TaskSync_PRIO,
+                             (OS_STK        * )&TaskSyncStk[0],
+                             (INT32U          ) TaskSyncStk_SIZE,
+                             (void          * ) 0,
+                             (INT16U          )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
 
     os_err = OSTaskCreateExt((void (*)(void *)) TaskRecv,
                              (void          * ) 0,
@@ -234,7 +243,7 @@ OSSemProcCmdx = OSSemCreate(0);
 
     	OSTaskNameSet(TaskApm_PRIO, "TaskApm", &os_err);
 			OSTaskNameSet(TaskLedy_PRIO, "TaskLedy", &os_err);    	
-			OSTaskNameSet(TaskKey_PRIO, "TaskKey", &os_err);    	
+			OSTaskNameSet(TaskSync_PRIO, "TaskSync", &os_err);    	
 			OSTaskNameSet(TaskRecv_PRIO, "TaskRecv", &os_err);
     	OSTaskNameSet(TaskLedz_PRIO, "TaskLedz", &os_err);			
     	OSTaskNameSet(TaskSave_PRIO, "TaskSave", &os_err);

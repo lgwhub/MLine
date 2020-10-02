@@ -97,6 +97,7 @@ void TaskHpwm(void * pdata);
 void TaskStatus(void * pdata);
 
 void TaskLedy(void * pdata);
+void TaskSync(void * pdata);
 void TaskKey(void * pdata);
 void TaskApm(void * pdata);
 void TaskRecv(void * pdata);

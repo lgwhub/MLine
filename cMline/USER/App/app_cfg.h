@@ -92,6 +92,8 @@
 #define  TaskHpwm_PRIO          	 		(OS_LOWEST_PRIO - 14)
 #define  TaskStatus_PRIO          	 		(OS_LOWEST_PRIO - 13)
 
+#define  TaskSync_PRIO          	 		(OS_LOWEST_PRIO - 34)
+
 
 #define  TaskKey_PRIO          	 		(OS_LOWEST_PRIO - 10)
 #define  TaskRush_PRIO          	 		(OS_LOWEST_PRIO - 9)
@@ -121,7 +123,11 @@
 #define  TaskApmStk_SIZE                          (250+2u)
 
 #define  TaskLedyStk_SIZE                         90
+
+#define  TaskSyncStk_SIZE                         (124+2u)
+
 #define  TaskKeyStk_SIZE                         (124+2u)
+
 #define  TaskLedzStk_SIZE                          (96+2u)
 
 #define  TaskRecvStk_SIZE                          (76+2u)

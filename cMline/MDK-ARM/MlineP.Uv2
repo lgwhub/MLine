@@ -32,13 +32,13 @@ File 1,1,<..\USER\Test.c><Test.c>
 File 1,1,<..\USER\App\PID.c><PID.c>
 File 1,1,<..\USER\App\jump.c><jump.c>
 File 1,1,<..\USER\App\AT24C1024.C><AT24C1024.C>
-File 1,1,<..\USER\Hd_Prt3201\HD_159.c><HD_159.c>
 File 1,1,<..\PWM\pwm1.c><pwm1.c>
 File 1,1,<..\TimCap\TimCap.c><TimCap.c>
 File 1,1,<..\SPI\spi.c><spi.c>
 File 1,1,<..\USER\App\LedDisp.c><LedDisp.c>
 File 1,1,<..\USER\App\STM32_DeviceId.c><STM32_DeviceId.c>
 File 1,1,<..\USER\App\GetAverage.c><GetAverage.c>
+File 1,1,<..\USER\Hd_Prt3201\HD_M2.c><HD_M2.c>
 File 2,1,<..\Libraries\STM32F10x_StdPeriph_Driver\src\misc.c><misc.c>
 File 2,1,<..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c><stm32f10x_flash.c>
 File 2,1,<..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c><stm32f10x_gpio.c>
