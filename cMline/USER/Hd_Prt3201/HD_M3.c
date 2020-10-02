@@ -218,11 +218,11 @@ void  Init_Tim2 (void)
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
-    TIM_TimeBaseStructure.TIM_Period        = 2;//50;  //50us
+    TIM_TimeBaseStructure.TIM_Period        = 50;  //50us
 
     
                 
-    TIM_TimeBaseStructure.TIM_Prescaler     = 7;//71;//71;	//72·ÖÆµ
+    TIM_TimeBaseStructure.TIM_Prescaler     = 71;//71;	//72·ÖÆµ
     TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
 

@@ -455,6 +455,17 @@ unsigned short int _Param_SwapMemery(unsigned char type,unsigned char *p)  //typ
     _copy_4byte(type,(unsigned char *)&Coldw.Pidx[0].Derivative            , p , 4);         //微分常数
     p+=4;len+=4;
 
+
+    _copy_4byte(type,(unsigned char *)&Coldw.Pidx[1].Proportion            , p , 4);         //比例常数
+    p+=4;len+=4;
+    
+    _copy_4byte(type,(unsigned char *)&Coldw.Pidx[1].Integral            , p , 4);         //
+    p+=4;len+=4;    
+
+    _copy_4byte(type,(unsigned char *)&Coldw.Pidx[1].Derivative            , p , 4);         //微分常数
+    p+=4;len+=4;
+
+
     _copy_4byte(type,(unsigned char *)&Coldw.xx1UpSpeed                      , p , 4);         //渐进设定值速度xx1
     p+=4;len+=4;     
 

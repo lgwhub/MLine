@@ -6,14 +6,14 @@
 		  	 #define  SOFT_START1   1
 		  	 
 		  	 
-	         #define   Per_Set_Add_All     ( 0.003 )	
- 
+	         #define   Per_Set_Add_All     ( 0.01 )	
+              #define   Per_Set_Dec_All     ( 0.003 )	
 		  	 //1234电机
  
              #define   Per_Set_Add1234    Per_Set_Add_All 
-             #define   Per_Set_Dec1234    Per_Set_Add_All 
+             #define   Per_Set_Dec1234    Per_Set_Dec_All 
              #define   Per_Set_Add56        Per_Set_Add_All 
-             #define   Per_Set_Dec56        Per_Set_Add_All 
+             #define   Per_Set_Dec56        Per_Set_Dec_All
 
 
 
@@ -39,7 +39,7 @@ OS_EVENT *OSSemProcCmdx;
 //56高速电机
 #define  MaxRpm_Motor1234     12505
 #define  MaxRpm_Motor56         25005
-
+//#define  MaxRpm_Motor56         12505
 
 unsigned char lAddressKey;  //拨码开关PB12-PB15，值，最低4位
 
@@ -578,7 +578,7 @@ void TaskTimePr(void * pdata)
       OSTimeDly( OS_TICKS_PER_SEC / 100 );	    //延时0.01秒
       
                timer1++;
-               if(  timer1  >=  3 )  //30ms
+               if(  timer1  >=  5 )  //100ms   if(  timer1  >=  3 )  //30ms
                     {
                      timer1  = 0 ;
                    //  SyncRpmProcess();
@@ -667,15 +667,15 @@ for(;;)
            
             #if  SOFT_START1
                     //   ApmSetBuf     --->>>>  ApmSetVal    ..........
-                 for ( i = 0 ; i <2 ; i++ )		//for ( i = 0 ; i <4 ; i++ )			
+                 for ( i = 0 ; i <4 ; i++ )			//for ( i = 0 ; i <2 ; i++ )		//
 			        {
                      if(    ApmSetVal [ i ]              <            ( ApmSetBuf [i]  *( 1 -  Per_Set_Add1234  )   )  ) //
                  	           { 
                  	   	       ApmSetVal [ i ]        +=   ApmSetBuf [i]  *( Per_Set_Add1234  )  ;                      // 
                  	          }
-                 else if (      ApmSetVal [ i ]              >                   (  ( float ) Coldw.ApmCt[i]  * Per_Set_Add1234     )   )//
+                 else if (      ApmSetVal [ i ]              >                   (  ( float ) Coldw.ApmCt[i]  * Per_Set_Dec1234     )   )//
                  	           { 
-                 	   	       ApmSetVal [ i ]        -=   ( float ) Coldw.ApmCt[i] *( Per_Set_Add1234  )  ;                      // 
+                 	   	       ApmSetVal [ i ]        -=   ( float ) Coldw.ApmCt[i] *( Per_Set_Dec1234  )  ;                      // 
                  	          }
                 else
                  	       {
@@ -697,7 +697,7 @@ for(;;)
      	
               }    
    #else
-            for ( i = 0 ; i <2 ; i++ )		//for ( i = 0 ; i < 4 ; i++ )			
+            for ( i = 0 ; i < 4 ; i++ )			//for ( i = 0 ; i <2 ; i++ )		//
 			        {
                  
                            ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
@@ -707,9 +707,9 @@ for(;;)
 
                      
           
-          for ( i = 0 ; i <2 ; i++ )		//for ( i = 0 ; i < 4 ; i++ )	
+          for ( i = 0 ; i < 4 ; i++ )	//for ( i = 0 ; i <2 ; i++ )		//
 			    {
-                        if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
+                        if  (   ApmSetVal [i ]  >  5  )  //设定值至少大于5转
                         	            {
                                          HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] * 1000 / MaxRpm_Motor1234  ; //基本上多余 
 			                                   PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 1000 / MaxRpm_Motor1234      ); //一般是error = SetPoint - NewPoint ,这里反过来
@@ -736,7 +736,7 @@ for(;;)
                      #if  SOFT_START1
                     //   ApmSetBuf     --->>>>  ApmSetVal    ..........
     
-                      for ( i = 2 ; i <6 ; i++ )		//for ( i = 4 ; i <6 ; i++ )			
+                      for ( i = 4 ; i <6 ; i++ )		//for ( i = 2 ; i <6 ; i++ )		//	
 			                      {              
                          
                                  
@@ -766,7 +766,7 @@ for(;;)
      	
                               }    
       #else
-                  for ( i = 2 ; i <6 ; i++ )		//for ( i = 4 ; i <6 ; i++ )			
+                  for ( i = 4 ; i <6 ; i++ )		//for ( i = 2 ; i <6 ; i++ )		//	
 			                    {
                  
                            ApmSetVal [ i ]        =    ApmSetBuf[i] ;          //970
@@ -775,9 +775,9 @@ for(;;)
 
 
                      
-           for ( i = 2 ; i <6 ; i++ )		//for ( i = 4 ; i <6 ; i++ )			
+           for ( i = 4 ; i <6 ; i++ )			//for ( i = 2 ; i <6 ; i++ )		//
 			    {
-                        if  (   ApmSetVal [i ]  >  100  )  //设定值至少大于100转
+                        if  (   ApmSetVal [i ]  >  5  )  //设定值至少大于5转
                         	            {
                                          HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] * 1000 / MaxRpm_Motor56 ; //基本上多余 
 			                                   PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 1000 / MaxRpm_Motor56      ); //一般是error = SetPoint - NewPoint ,这里反过来
@@ -793,13 +793,13 @@ for(;;)
 		                                             HeatPidBuf[i].  SumError =  0;
                                                       }
 		                                  else{
-		                                           HeatPidBuf[i]. SumError     =  0; //  100   /   (Coldw.Pidx[0].Integral  );  //100初始化电压
+		                                           HeatPidBuf[i]. SumError     =  100  /   (Coldw.Pidx[0].Integral  );  //100初始化电压
                                                      }		 		          	                              
 				                           }      
 			     }
 			     //5656565656			     
 			     
-			      #define  SOFT_START2  1
+			      #define  SOFT_START2 0
 	     		  	//软启动  软加速  软减速  步进量
 		  	#define DLBC_STEP_ADD25  (50)
 		  	#define DLBC_STEP_DEC25  (50)
@@ -1610,8 +1610,9 @@ CaptureValueHigh_T4 = 0;
                
 
 							
-				OSTimeDly( OS_TICKS_PER_SEC  /100 );	    //延时10ms  
-										
+				//OSTimeDly( OS_TICKS_PER_SEC  /100 );	    //延时10ms  
+					//OSTimeDly( OS_TICKS_PER_SEC  /20 );	    //延时50ms  			
+					OSTimeDly( OS_TICKS_PER_SEC  /20 );	    //延时100ms  			
 
 					}
 }
@@ -2062,7 +2063,7 @@ for(;;)
 		  	  	else{
 		  	  		            TempUs = 375 ;  //1500ms 脉冲     66/400/2   * 60  = 0.5    apm
 		  	  	      }
-		  	  	if (  TempUs < 5 )    TempUs  = 5;   //250us      4000/400/2 *60  =  300  apm    
+		  	  	if (  TempUs < 2 )    TempUs  = 2;   //250us      4000/400/2 *60  =  300  apm    
      
      	if(  FlagRuningnny >=1  )   //控制 34 步进电机
 		  	  {
@@ -2090,7 +2091,7 @@ for(;;)
                             StepTim1 =   TempUs ;
 		  	  	  		//44444444444
 		  		       StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
-		  		      StepMotRun(  2  , 1800  );
+		  		      StepMotRun(  2  , 253000  );
 		  	         }
 		  		
 		  			 //4 #步进电机
@@ -2103,7 +2104,7 @@ for(;;)
 		  	  	  			    {
 		  	  	  			    StepTim1 *=  StepRateDec		;
 		  	  	  			     StepMot[2].PulseCircleSet =  (unsigned short int)StepTim1;//TempUs ;  //fast
-		  		                  StepMotRun(  2  , 1800  );
+		  		                  StepMotRun(  2  , 253000  );
 		  	  	  			    
 		  	  	  			    }
 		  	  	  		else{
@@ -2135,7 +2136,7 @@ for(;;)
 //		  	  	  		      }
 		  	  	  		StepTim2 =   TempUs ;
 		  	        StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;  //fast
-		  		    StepMotRun(  0 , 1800 );
+		  		    StepMotRun(  0 , 253000 );
 		  	     }
 		  		
 		  		 //2 #步进电机	  	
@@ -2149,7 +2150,7 @@ for(;;)
 		  	  	  			    {
 		  	  	  			    StepTim2 *=  StepRateDec		;
 		  	  	  			     StepMot[0].PulseCircleSet =  (unsigned short int)StepTim2;//TempUs ;  //fast
-		  		                  StepMotRun(  0  , 1800  );
+		  		                  StepMotRun(  0  , 253000  );
 		  	  	  			    
 		  	  	  			    }
 		  	  	  		else{
