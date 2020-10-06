@@ -3,20 +3,23 @@
 #include "includes.h"
 //extern 
 
-		  	 #define  SOFT_START1   1
+//		  	 #define  SOFT_START1   1
 		  	 
 		  	 
-	         #define   Per_Set_Add_All     ( 0.01 )	
-              #define   Per_Set_Dec_All     ( 0.003 )	
-		  	 //1234电机
- 
-             #define   Per_Set_Add1234    Per_Set_Add_All 
-             #define   Per_Set_Dec1234    Per_Set_Dec_All 
-             #define   Per_Set_Add56        Per_Set_Add_All 
-             #define   Per_Set_Dec56        Per_Set_Dec_All
-
-
-
+//	         #define   Per_Set_Add_All     ( 0.01 )	
+//              #define   Per_Set_Dec_All     ( 0.003 )	
+//		  	 //1234电机
+// 
+//             #define   Per_Set_Add1234    Per_Set_Add_All 
+//             #define   Per_Set_Dec1234    Per_Set_Dec_All 
+//             #define   Per_Set_Add56        Per_Set_Add_All 
+//             #define   Per_Set_Dec56        Per_Set_Dec_All
+  
+  #define   RPM_SYNC_MIN_ALL   50
+  #define   RPM_SYNC_MIN1   RPM_SYNC_MIN_ALL
+  #define   RPM_SYNC_MIN2   RPM_SYNC_MIN_ALL
+  
+  
 OS_EVENT *OSSemTest1;
 OS_EVENT *OSSemTest2;
 
@@ -498,9 +501,15 @@ temp16 =  Stm32IdSum6 ;
 		if(GetStm32F103_DeviceId_Sum6() == temp16 )  //Pmbuf->Stm32Id )
 				{
 					STM32DeviceId.Checked=1;
+					
+					    Coldw.SoftVer          =  680000 + 0*100 + SOFT_VER;     
+					
 				}
 		else{
 			STM32DeviceId.Checked=0;
+			
+			    Coldw.SoftVer          =  670000 + 0*100 + SOFT_VER;     
+			
 				}
 #endif	
 
@@ -646,7 +655,7 @@ INT8U  i;
                                                }
 		  	                          }
 		                else{
-  	                               	 if(  RpmSync1 >=1)
+  	                               	 if(  RpmSync1 >=   RPM_SYNC_MIN1  )
                                                RpmSync1 -= 1;
                                      else{
                                  	
@@ -664,7 +673,7 @@ INT8U  i;
                                                }
 		  	                          }
 		                else{
-  	                               	 if(  RpmSync2 >=1)
+  	                               	 if(  RpmSync2 >= RPM_SYNC_MIN2 )
                                                RpmSync2 -= 1;
                                      else{
                                  	
@@ -1997,7 +2006,8 @@ float  StepTim1 , StepTim2  ;
 //#define     StepRateDec    (1.2)
 #define     StepRateDec    (1.06)	
 
-#define    MaxStepTime    1375
+//#define    MaxStepTime    1375
+#define    MaxStepTime    860
 
 	StepTim1 =   MaxStepTime;// 375  ;
 	StepTim2  = MaxStepTime;// 375 ;

@@ -47,7 +47,7 @@
 //m3线路板不用显示板
 #define  CONFIG_SPI_DISP		0
 
-#define SOFT_VER   02
+#define SOFT_VER   05
 
 
 //#define CONFIG_CHECK_DEVICE_ID  1
