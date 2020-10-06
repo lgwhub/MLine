@@ -399,7 +399,23 @@ unsigned long int temp32;
          case 15:  //固定发送VD, VG，调试用
 
           break;
-    
+          
+          
+         case 66:  //
+  		  	  #if CONFIG_CHECK_DEVICE_ID	
+  		  	  	
+  		     Stm32IdSum6    = GetStm32F103_DeviceId_Sum6();  
+  		      
+  		      #endif
+          break;          
+          
+          
+         case 100:  //
+         	         
+         	         TimeRemotStop  =  5*100;
+         	         
+					 StopSystem();
+         break;    
 
         default:
         	
@@ -448,7 +464,7 @@ void _ModbusParameterProcess(unsigned char Channl,unsigned char *p,unsigned shor
 		  
 		  ModbusCommand2();  //STEP MOTOR TEST
 		  //PID_Para_Refush_All();
-		  TimeForSaveParam = 4;//10;//秒
+		  TimeForSaveParam = 24;//10;//秒
 		  break;	
 		  		  	
 		  default:

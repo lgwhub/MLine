@@ -42,7 +42,7 @@
 
 
 
-
+extern unsigned  short  TimeRemotStop  ;
 
 extern unsigned  char Capture_Flag[MAX_BLDC_CH6 + 1] ;
 extern unsigned  long int Apm_FREQ[MAX_BLDC_CH6 + 1] ; 

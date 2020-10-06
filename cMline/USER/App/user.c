@@ -65,7 +65,7 @@ unsigned char EventTimeLed=0;
 #define   KEY_XX_STOP        InPin_X4
 
 
-
+unsigned  short  TimeRemotStop  ;
 
 unsigned long ShiftKeyCurnny;   //显示板键盘当前值
 unsigned long ShiftKeyBnny,ShiftKeyCnny;
@@ -257,8 +257,8 @@ for(;;)
                  {    
                   case 0:
                   case 1:
-                  case 2:
-                  case 3:                  	
+//                  case 2:
+//                  case 3:                  	
                   	//  max 10000   apm      2x3
 //                  Apm_ForLed[ i ]   = temp32 / 20;    // Apm_FREQ[ i ]  / 20;  //除以20
 //                  Coldw.ApmGt[i]  =  (float)temp32 / 2 ;//(float)Apm_FREQ[ i ]/2; //除以2  	 
@@ -271,11 +271,17 @@ for(;;)
                                  
                   break;
                   
+                  
+                   case 2:
+                  case 3:                  
                   case 4:
                   case 5: 
                   	  	//  max 20000   apm      4x3
-                   Apm_ForLed[ i ] =  temp32 / 10;  //Apm_FREQ[ i ]  / 10;  //除以10    
-                   Coldw.ApmGt[i]  =   (float)temp32;//(float)Apm_FREQ[ i ];	            
+                  // Apm_ForLed[ i ] =  temp32 / 10;  //Apm_FREQ[ i ]  / 10;  //除以10    
+                 //  Coldw.ApmGt[i]  =   (float)temp32;//(float)Apm_FREQ[ i ];	        
+                   Apm_ForLed[ i ] =  temp32 / 5;  //Apm_FREQ[ i ]  / 10;  //除以10    
+                   Coldw.ApmGt[i]  =   (float)temp32*2;//(float)Apm_FREQ[ i ];	                           
+                       
                   break;	  
                              
                   }
@@ -511,14 +517,17 @@ temp16 =  Stm32IdSum6 ;
 			    Coldw.SoftVer          =  670000 + 0*100 + SOFT_VER;     
 			
 				}
+				
+#else				
+				  Coldw.SoftVer          =  680000 + 0*100 + SOFT_VER;     
 #endif	
 
 //                Stm32IdSum6 
-  		  	  #if CONFIG_CHECK_DEVICE_ID	
-  		  	  	
-  		     Stm32IdSum6    = GetStm32F103_DeviceId_Sum6();  
-  		      
-  		      #endif
+//  		  	  #if CONFIG_CHECK_DEVICE_ID	
+//  		  	  	
+//  		     Stm32IdSum6    = GetStm32F103_DeviceId_Sum6();  
+//  		      
+//  		      #endif
 
 
 
@@ -591,6 +600,8 @@ void TaskTimePr(void * pdata)
      {
 
       OSTimeDly( OS_TICKS_PER_SEC / 100 );	    //延时0.01秒
+      
+      if (  TimeRemotStop  >  0 ) TimeRemotStop --;
       
                timer1++;
                if(  timer1  >=  5 )  //100ms   if(  timer1  >=  3 )  //30ms
@@ -747,7 +758,7 @@ for(;;)
 
 		   
           
-          for ( i = 0 ; i < 4 ; i++ )	//for ( i = 0 ; i <2 ; i++ )		//
+          for ( i = 0 ; i <2 ; i++ )		//for ( i = 0 ; i < 4 ; i++ )	//
 			    {
                         if  (   ApmSetVal [i ]  >  5  )  //设定值至少大于5转
                         	            {
@@ -777,12 +788,12 @@ for(;;)
 
 
                      
-           for ( i = 4 ; i <6 ; i++ )			//for ( i = 2 ; i <6 ; i++ )		//
+           for ( i = 2 ; i <6 ; i++ )		//for ( i = 4 ; i <6 ; i++ )			//
 			    {
                         if  (   ApmSetVal [i ]  >  5  )  //设定值至少大于5转
                         	            {
                                          HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] * 1000 / MaxRpm_Motor56 ; //基本上多余 
-			                                   PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 1000 / MaxRpm_Motor56      ); //一般是error = SetPoint - NewPoint ,这里反过来
+			                                   PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 2*1000 / MaxRpm_Motor56      ); //一般是error = SetPoint - NewPoint ,这里反过来
 			                                 
 			                                 
 			                                 }
@@ -932,27 +943,11 @@ for(;;)
 ////////////////////
 
 
-void KeyProcess( uchar *curk,uchar *old)
+void		 StopSystem(void)
 {
 		INT8U err;
-	 //    OSSemPost(OSSemTest1);
-     //     OSSemPost(OSSemTest2);
-	if( * ( curk + 2  )  != 0 )
-		{
-			if( * ( curk + 2  )  !=  * ( old + 2  ) ) //xxkey3
-				{  //   KEY_BIT_RUN
-					
-					FlagRuningnny = 1 ;   //控制 34 6 BLDC电机   34 步进电机
-					
-                       FlagRuningnnz = 1 ;   //控制 34 6 BLDC电机   34 步进电机
-                       
-				}
-		}	
-	
-	if( * ( curk + 3  )  == 0 )
-		{  //常闭
-			//if( * ( curk + 3  )  !=  * ( old + 3  ) ) //xxkey4
-				{
+					 
+  
 			    //        KEY_BIT_STOP		
      	          FlagRuningnny = 0 ;   //控制 34 6 BLDC电机   34 步进电机
      	
@@ -964,8 +959,53 @@ void KeyProcess( uchar *curk,uchar *old)
      	        
      	         StepMotStop( 1 );	  //2 #步进电机	 
      	
-     	         OSSemPost(OSSemMotors);		
-				}
+     	         OSSemPost(OSSemMotors);	
+}	
+
+
+
+void KeyProcess( uchar *curk,uchar *old)
+{
+		INT8U err;
+	 //    OSSemPost(OSSemTest1);
+     //     OSSemPost(OSSemTest2);
+     
+    if  ( ( RpmSync1 > 450  )  && (   Coldw.ApmGt[0]  >  4000   ) )
+    	   {  //  auto stop
+	    if( * ( curk + 0  )  != 0 )
+	       	    {  //常闭
+			     StopSystem();
+		           }    	   	
+	    if( * ( curk + 1  )  != 0 )
+	       	    {  //常闭
+			     StopSystem();
+		           }    	   	
+    	     }
+     
+     if (  ( TimeRemotStop < 2 )   &&  ( Coldw.SoftVer      >  680000)  )
+        {
+        	
+        	//STM32DeviceId.Checked
+        	//Coldw.SoftVer          =  680000
+        	
+        	
+	   if( * ( curk + 2  )  != 0 )
+		     {
+			  if( * ( curk + 2  )  !=  * ( old + 2  ) ) //xxkey3
+				    {  //   KEY_BIT_RUN
+					
+					FlagRuningnny = 1 ;   //控制 34 6 BLDC电机   34 步进电机
+					
+                       FlagRuningnnz = 1 ;   //控制 34 6 BLDC电机   34 步进电机
+                       
+				  }
+		     }	
+	   }
+	
+	if( * ( curk + 3  )  == 0 )
+		{  //常闭
+			//if( * ( curk + 3  )  !=  * ( old + 3  ) ) //xxkey4
+				 StopSystem();
 		}
 		
 

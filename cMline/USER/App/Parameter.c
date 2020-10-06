@@ -214,6 +214,8 @@ TimeAutoLock2=0;
 TimeAutoLock3=0;
 
 FlagSetAllDefault = 0;	
+TimeRemotStop  = 0  ;
+
                                            //2×Ö½Ú
 
     Coldw.CMD          = 0;     //ÃüÁî¼Ä´æÆ÷
