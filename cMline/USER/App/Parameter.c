@@ -631,17 +631,20 @@ unsigned char Load_Param(void)
           {
            flag = _GetParamCheck( cMemBufA , Max_MemBuf);
           }
-      
-      if(  flag != 0)
-          {//
-           return 0;
-          }
-      //copy
-      _Param_SwapMemery(1,cMemBufA);   //cMemBufB ---> parameter
-      
+       else{
+       	       flag =  1;    //´íÎó
+             }   
           
+      if(  flag == 0)
+          {//
+						//copy
+           _Param_SwapMemery(1,cMemBufA);   //cMemBufB ---> parameter
+            return 1;   //ok
+          }
+
       }
-  return 1;
+ return 0;  //´íÎó
+
 }
 
 
