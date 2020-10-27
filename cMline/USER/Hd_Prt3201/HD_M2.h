@@ -6,7 +6,8 @@
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
-
+//第二版   3个电机
+#define  PCB_M2_X3    1
 
 
 
@@ -47,9 +48,24 @@
 //PC5  
 #define LED1_OFF		GPIO_ResetBits(GPIOC,GPIO_Pin_5)
 #define LED1_ON			GPIO_SetBits(GPIOC,GPIO_Pin_5)
+
+
 //PC13     FK103M5开发板上
-#define LED2_OFF		GPIO_ResetBits(GPIOC,GPIO_Pin_13)
-#define LED2_ON			GPIO_SetBits(GPIOC,GPIO_Pin_13)
+#if    PCB_M2_X3
+//第二版   3个电机
+     #define BRAKE_OFF		     GPIO_ResetBits(GPIOC,GPIO_Pin_13)
+     #define BRAKE_ON			GPIO_SetBits(GPIOC,GPIO_Pin_13)
+     #define LED2_OFF		    ;
+     #define LED2_ON			;
+#else
+
+     #define BRAKE_OFF		     ;
+     #define BRAKE_ON			;
+     #define LED2_OFF		    GPIO_ResetBits(GPIOC,GPIO_Pin_13)
+     #define LED2_ON			GPIO_SetBits(GPIOC,GPIO_Pin_13)
+#endif
+
+
 //PD7  TIM4--CH47
 #define LED3_OFF		GPIO_ResetBits(GPIOD,GPIO_Pin_7)
 #define LED3_ON			GPIO_SetBits(GPIOD,GPIO_Pin_7)

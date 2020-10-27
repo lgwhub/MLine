@@ -15,6 +15,9 @@
 //             #define   Per_Set_Add56        Per_Set_Add_All 
 //             #define   Per_Set_Dec56        Per_Set_Dec_All
   
+  
+  
+  //同步速度的下限   小于这个变成0
   #define   RPM_SYNC_MIN_ALL   50
   #define   RPM_SYNC_MIN1   RPM_SYNC_MIN_ALL
   #define   RPM_SYNC_MIN2   RPM_SYNC_MIN_ALL
@@ -604,7 +607,7 @@ void TaskTimePr(void * pdata)
       if (  TimeRemotStop  >  0 ) TimeRemotStop --;
       
                timer1++;
-               if(  timer1  >=  5 )  //100ms   if(  timer1  >=  3 )  //30ms
+           if(  timer1  >=  3 )  //30ms       if(  timer1  >=  5 )  //100ms      
                     {
                      timer1  = 0 ;
                    //  SyncRpmProcess();
@@ -649,19 +652,20 @@ INT8U  i;
 						//OS_ENTER_CRITICAL();
 						//OS_EXIT_CRITICAL();
 
-						OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时0.1秒		
-						
-
+						//OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时50秒		
+						OSTimeDly(OS_TICKS_PER_SEC/25);	    //延时20秒	
+						//OSTimeDly(OS_TICKS_PER_SEC/32);	    //延时16秒	
+                           //OSTimeDly(OS_TICKS_PER_SEC/40);	    //延时12.5秒	
 		  	//软启动  软加速  软减速  速度步进量
 		  	
             
             
             			if( FlagRuningnny  >=  1 )   //控制 34 6 BLDC电机
 		  	                       {
-		  	  	                      if(  RpmSync1 < (500-5))
-                                               RpmSync1 += 5;
+		  	  	                      if(  RpmSync1 < (500-2))
+                                               RpmSync1 += 2;
                                      else{
-                                 	
+                                 	             
                                  	             RpmSync1 =  500  ;
                                                }
 		  	                          }
@@ -676,8 +680,8 @@ INT8U  i;
 		      	
 		  if( FlagRuningnnz  >=  1 )  //控制 12 5 BLDC电机
 		  	                       {
-		  	  	                      if(  RpmSync2 < (500-5))
-                                               RpmSync2 +=5;
+		  	  	                      if(  RpmSync2 < (500-2))
+                                               RpmSync2 +=2;
                                      else{
                                  	
                                  	             RpmSync2 =  500  ;
@@ -691,6 +695,30 @@ INT8U  i;
                                  	             RpmSync2 =  0  ;
                                                }
 		                       } 
+            
+                    if (  (   RpmSync1 == 500   )  &&    (   RpmSync2 == 500   )   )
+                       	{  //加速完成
+                       		BRAKE_ON;   //加上刹车
+                       	}
+                      
+            
+            if( FlagRuningnny  >=  1 )   //控制 34 6 BLDC电机
+                       {//加速过程
+                  	   if (   RpmSync1 < 20   )  
+                  	   	{   //刚刚开始加速
+                  	   		BRAKE_OFF;   //取消刹车
+                  	   	}
+                       		
+                       	}    
+                       	
+            if( FlagRuningnnz  >=  1 )  //控制 12 5 BLDC电机
+                       {//加速过程
+                  	   if (   RpmSync2 < 20   )
+                  	   	      {  //刚刚开始加速
+                  	   		BRAKE_OFF;   //取消刹车
+                  	   	       }  
+                       		
+                       	}              
             
           //  #if  SOFT_START1
                                 //控制 34 6  BLDC电机
@@ -760,7 +788,7 @@ for(;;)
           
           for ( i = 0 ; i <2 ; i++ )		//for ( i = 0 ; i < 4 ; i++ )	//
 			    {
-                        if  (   ApmSetVal [i ]  >  5  )  //设定值至少大于5转
+                        if  (   ApmSetVal [i ]  >  1  )  //设定值至少大于5转
                         	            {
                                          HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] * 1000 / MaxRpm_Motor1234  ; //基本上多余 
 			                                   PID_Calc(&Coldw.Pidx[0], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 1000 / MaxRpm_Motor1234      ); //一般是error = SetPoint - NewPoint ,这里反过来
@@ -790,7 +818,7 @@ for(;;)
                      
            for ( i = 2 ; i <6 ; i++ )		//for ( i = 4 ; i <6 ; i++ )			//
 			    {
-                        if  (   ApmSetVal [i ]  >  5  )  //设定值至少大于5转
+                        if  (   ApmSetVal [i ]  >  1  )  //设定值至少大于5转
                         	            {
                                          HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] * 1000 / MaxRpm_Motor56 ; //基本上多余 
 			                                   PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 2*1000 / MaxRpm_Motor56      ); //一般是error = SetPoint - NewPoint ,这里反过来
@@ -812,10 +840,10 @@ for(;;)
 			     }
 			     //5656565656			     
 			     
-			      #define  SOFT_START2 0
+			      #define  SOFT_START2     1
 	     		  	//软启动  软加速  软减速  步进量
-		  	#define DLBC_STEP_ADD25  (50)
-		  	#define DLBC_STEP_DEC25  (50)
+		  	#define DLBC_STEP_ADD25  (20)
+		  	#define DLBC_STEP_DEC25  (20)
 		  	
 		
         for ( i = 0 ; i < MAX_BLDC_CH6 ; i++ )			
@@ -860,9 +888,8 @@ for(;;)
 			     
     Coldw.MONI_PX1 = HeatPidBuf[0].Px;  	   
     Coldw.MONI_IX1 = HeatPidBuf[0].Ix;  	
-    //Coldw.MONI_IX1 = HeatPidBuf[0].SumError ;
-    Coldw.MONI_DX1 = HeatPidBuf[0].SumError ;   
-    //Coldw.MONI_DX1 = HeatPidBuf[0].Dx;  	        
+    //Coldw.MONI_DX1 = HeatPidBuf[0].SumError ;   
+    Coldw.MONI_DX1 = HeatPidBuf[0].Dx;  	        
     Coldw.MONI_QX1 = HeatPidBuf[0].Qx; //0.14;           
                      
 	   TIM_SetCompare1(TIM5, BLDC_PwmVal[0]);
@@ -971,7 +998,7 @@ void KeyProcess( uchar *curk,uchar *old)
      //     OSSemPost(OSSemTest2);
      
     if  ( ( RpmSync1 > 450  )  && (   Coldw.ApmGt[0]  >  4000   ) )
-    	   {  //  auto stop
+    	   {  //  auto stop    短线自动停止
 	    if( * ( curk + 0  )  != 0 )
 	       	    {  //常闭
 			     StopSystem();
@@ -1650,8 +1677,9 @@ CaptureValueHigh_T4 = 0;
 
 							
 				//OSTimeDly( OS_TICKS_PER_SEC  /100 );	    //延时10ms  
+				OSTimeDly( OS_TICKS_PER_SEC  /50 );	    //延时20ms  
 					//OSTimeDly( OS_TICKS_PER_SEC  /20 );	    //延时50ms  			
-					OSTimeDly( OS_TICKS_PER_SEC  /20 );	    //延时100ms  			
+					//OSTimeDly( OS_TICKS_PER_SEC  /20 );	    //延时100ms  			
 
 					}
 }
