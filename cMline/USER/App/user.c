@@ -653,8 +653,8 @@ INT8U  i;
 						//OS_EXIT_CRITICAL();
 
 						//OSTimeDly(OS_TICKS_PER_SEC/10);	    //延时50秒		
-						OSTimeDly(OS_TICKS_PER_SEC/25);	    //延时20秒	
-						//OSTimeDly(OS_TICKS_PER_SEC/32);	    //延时16秒	
+						//OSTimeDly(OS_TICKS_PER_SEC/25);	    //延时20秒	
+						OSTimeDly(OS_TICKS_PER_SEC/32);	    //延时16秒	
                            //OSTimeDly(OS_TICKS_PER_SEC/40);	    //延时12.5秒	
 		  	//软启动  软加速  软减速  速度步进量
 		  	
@@ -675,6 +675,7 @@ INT8U  i;
                                      else{
                                  	
                                  	             RpmSync1 =  0  ;
+                                 	             BRAKE_ON2;   //加上刹车
                                                }
 		                       }  
 		      	
@@ -693,12 +694,13 @@ INT8U  i;
                                      else{
                                  	
                                  	             RpmSync2 =  0  ;
+                                 	             BRAKE_ON2;   //加上刹车
                                                }
 		                       } 
             
                     if (  (   RpmSync1 == 500   )  &&    (   RpmSync2 == 500   )   )
                        	{  //加速完成
-                       		BRAKE_ON;   //加上刹车
+                       		BRAKE_ON1;   //加上刹车
                        	}
                       
             
@@ -706,7 +708,8 @@ INT8U  i;
                        {//加速过程
                   	   if (   RpmSync1 < 20   )  
                   	   	{   //刚刚开始加速
-                  	   		BRAKE_OFF;   //取消刹车
+                  	   		BRAKE_OFF1;   //取消刹车
+                  	   		BRAKE_OFF2;   //取消刹车
                   	   	}
                        		
                        	}    
@@ -715,7 +718,8 @@ INT8U  i;
                        {//加速过程
                   	   if (   RpmSync2 < 20   )
                   	   	      {  //刚刚开始加速
-                  	   		BRAKE_OFF;   //取消刹车
+                  	   		BRAKE_OFF1;   //取消刹车
+                  	   		BRAKE_OFF2;   //取消刹车
                   	   	       }  
                        		
                        	}              

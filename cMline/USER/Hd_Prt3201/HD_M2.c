@@ -94,12 +94,12 @@ GPIO_Init(GPIOB,&GPIO_InitStructure);
  
  
  //PB0 PB1    TIM3 ÊäÈë¿Ú
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_14 ;
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_3 | GPIO_Pin_14 ;
  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
  GPIO_Init(GPIOB,&GPIO_InitStructure);
  
  
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 ;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_12 ;
  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
  GPIO_Init(GPIOB,&GPIO_InitStructure);

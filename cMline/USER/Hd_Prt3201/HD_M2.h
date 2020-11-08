@@ -31,7 +31,7 @@
 
 
 #define InPin_K1	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_3))
-#define InPin_K2	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4))
+#define InPin_K2  1  //	(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4))
 //PC1  开发板上
 #define InPin_K3	(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_1))
 #define InPin_K4	1
@@ -53,14 +53,17 @@
 //PC13     FK103M5开发板上
 #if    PCB_M2_X3
 //第二版   3个电机
-     #define BRAKE_OFF		     GPIO_ResetBits(GPIOC,GPIO_Pin_13)
-     #define BRAKE_ON			GPIO_SetBits(GPIOC,GPIO_Pin_13)
+     #define BRAKE_OFF2               GPIO_ResetBits(GPIOB,GPIO_Pin_4)
+     #define BRAKE_ON2                 GPIO_SetBits(GPIOB,GPIO_Pin_4)
+     #define BRAKE_OFF1		     GPIO_ResetBits(GPIOC,GPIO_Pin_13)
+     #define BRAKE_ON1			     GPIO_SetBits(GPIOC,GPIO_Pin_13)
      #define LED2_OFF		    ;
      #define LED2_ON			;
 #else
-
-     #define BRAKE_OFF		     ;
-     #define BRAKE_ON			;
+     #define BRAKE_ON2               ;
+     #define BRAKE_OFF2            ;
+     #define BRAKE_OFF1		     ;
+     #define BRAKE_ON1			;
      #define LED2_OFF		    GPIO_ResetBits(GPIOC,GPIO_Pin_13)
      #define LED2_ON			GPIO_SetBits(GPIOC,GPIO_Pin_13)
 #endif
