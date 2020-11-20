@@ -17,6 +17,11 @@
   
   
   
+#define      USER_SELECT_KERUIJI     1
+                   //科睿捷公司  速度显示差2倍
+  
+  
+  
   //同步速度的下限   小于这个变成0
   #define   RPM_SYNC_MIN_ALL   50
   #define   RPM_SYNC_MIN1   RPM_SYNC_MIN_ALL
@@ -44,8 +49,20 @@ OS_EVENT *OSSemProcCmdx;
 
 //56高速电机
 #define  MaxRpm_Motor1234     12505
-#define  MaxRpm_Motor56         25005
-//#define  MaxRpm_Motor56         12505
+
+
+#if    USER_SELECT_KERUIJI
+                   //科睿捷公司  速度显示差2倍
+      #define  MaxRpm_Motor56         35005
+      
+#else
+
+     #define  MaxRpm_Motor56         25005
+
+#endif
+
+
+
 
 unsigned char lAddressKey;  //拨码开关PB12-PB15，值，最低4位
 
@@ -283,7 +300,15 @@ for(;;)
                   // Apm_ForLed[ i ] =  temp32 / 10;  //Apm_FREQ[ i ]  / 10;  //除以10    
                  //  Coldw.ApmGt[i]  =   (float)temp32;//(float)Apm_FREQ[ i ];	        
                    Apm_ForLed[ i ] =  temp32 / 5;  //Apm_FREQ[ i ]  / 10;  //除以10    
+                   
+                   #if    USER_SELECT_KERUIJI
+                   //科睿捷公司  速度显示差2倍
+                   Coldw.ApmGt[i]  =   (float)temp32*1;//(float)Apm_FREQ[ i ];	           
+                   #else
                    Coldw.ApmGt[i]  =   (float)temp32*2;//(float)Apm_FREQ[ i ];	                           
+                    #endif
+                       
+                       
                        
                   break;	  
                              
@@ -743,9 +768,9 @@ INT8U  i;
 			        {
                  	       
                  
-                  if( ApmSetVal [ i ] > 30000 )        
+                  if( ApmSetVal [ i ] > 37000 )        
                       {
-                      	ApmSetVal [ i ] = 30000;  
+                      	ApmSetVal [ i ] = 37000;  
                       } 
                       
                   if( ApmSetVal [ i ]  < 0 )        
@@ -825,8 +850,13 @@ for(;;)
                         if  (   ApmSetVal [i ]  >  1  )  //设定值至少大于5转
                         	            {
                                          HeatPidBuf[i].SetPoint = (float) ApmSetVal [ i ] * 1000 / MaxRpm_Motor56 ; //基本上多余 
+			                                   
+			                                   #if    USER_SELECT_KERUIJI
+                                                //科睿捷公司  速度显示差2倍
+ 			                                   PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 1*1000 / MaxRpm_Motor56      ); //一般是error = SetPoint - NewPoint ,这里反过来
+			                                 #else                                               
 			                                   PID_Calc(&Coldw.Pidx[1], &HeatPidBuf[i] ,      (float)Apm_FREQ [i] * 2*1000 / MaxRpm_Motor56      ); //一般是error = SetPoint - NewPoint ,这里反过来
-			                                 
+			                                 #endif
 			                                 
 			                                 }
 			          else        {//设定值太小了，或者关闭
